@@ -129,8 +129,14 @@
   .vtab.active { background:var(--green); color:#fff; }
 
   .legend { display:flex; gap:16px; margin:12px 0 8px; flex-wrap:wrap; }
-  .leg { display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--mid); }
-  .leg-ln { width:26px; height:3px; border-radius:2px; }
+  .leg {
+    display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--mid);
+    cursor:pointer; user-select:none; padding:3px 8px 3px 4px;
+    border-radius:5px; transition:opacity .15s, background .15s;
+  }
+  .leg:hover { background:#F0F0EA; }
+  .leg.skjult { opacity:.35; }
+  .leg-ln { width:26px; height:3px; border-radius:2px; flex-shrink:0; }
   .leg-sq { width:11px; height:11px; border-radius:3px; flex-shrink:0; }
 
   .chart-wrap { position:relative; height:370px; }
@@ -229,10 +235,7 @@
       </div>
     </div>
 
-    <div class="legend" id="legend">
-      <div class="leg"><div class="leg-ln" style="background:var(--green)"></div>2025 — fuldt år</div>
-      <div class="leg"><div class="leg-ln" style="background:repeating-linear-gradient(to right,var(--gold) 0,var(--gold) 6px,transparent 6px,transparent 10px)"></div>2026 — foreløbig</div>
-    </div>
+    <div class="legend" id="legend"></div>
 
     <div class="chart-wrap">
       <canvas id="mainCanvas"></canvas>
@@ -405,8 +408,8 @@ function opdaterKPI(uge,indv,udv) {
 ════════════════════════════════════════════ */
 function cfgAkk(d) {
   return {type:'line',data:{labels:MND,datasets:[
-    {label:'2025 — akkumuleret',data:d.c25,borderColor:'#1A4D2E',backgroundColor:'rgba(26,77,46,0.09)',borderWidth:2.5,fill:true,tension:0.35,spanGaps:false,pointBackgroundColor:'#1A4D2E',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7},
-    {label:'2026 — akkumuleret (foreløbig)',data:d.c26,borderColor:'#C9973A',backgroundColor:'rgba(201,151,58,0.09)',borderDash:[7,4],borderWidth:2.5,fill:true,tension:0.35,spanGaps:false,pointBackgroundColor:'#C9973A',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7}
+    {label:'2025 — akkumuleret',data:d.c25,borderColor:'#1A4D2E',backgroundColor:'transparent',borderWidth:2.5,fill:false,tension:0.35,spanGaps:false,pointBackgroundColor:'#1A4D2E',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7},
+    {label:'2026 — akkumuleret (foreløbig)',data:d.c26,borderColor:'#C9973A',backgroundColor:'transparent',borderDash:[7,4],borderWidth:2.5,fill:false,tension:0.35,spanGaps:false,pointBackgroundColor:'#C9973A',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7}
   ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
     plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y===null?null:`  ${c.dataset.label}: ${c.parsed.y} akkumuleret`},backgroundColor:'#1C1C1A',titleFont:{family:'DM Sans',size:13,weight:'600'},bodyFont:{family:'DM Sans',size:13},padding:12,cornerRadius:6}},
     scales:{x:{ticks:{font:{family:'DM Sans',size:12},color:'#6A6A60',maxRotation:25},grid:{color:'rgba(0,0,0,0.04)'}},y:{beginAtZero:true,ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',stepSize:5,callback:v=>Number.isInteger(v)?v:''},grid:{color:'rgba(0,0,0,0.05)'},title:{display:true,text:'Akkumuleret antal',font:{family:'DM Sans',size:12},color:'#8A8A7E'}}}}
@@ -418,12 +421,12 @@ function cfgHist(indv,udv) {
   const dI=aar.map(y=>indv[y]??0),dU=aar.map(y=>udv[y]??0),dN=aar.map((_,i)=>dI[i]-dU[i]);
   return {type:'line',data:{labels:aar,datasets:[
     {label:'Indvandring',data:dI,
-      borderColor:'#1A4D2E',backgroundColor:'rgba(26,77,46,0.09)',
-      borderWidth:2.5,fill:true,tension:0.35,spanGaps:false,
+      borderColor:'#1A4D2E',backgroundColor:'transparent',
+      borderWidth:2.5,fill:false,tension:0.35,spanGaps:false,
       pointBackgroundColor:'#1A4D2E',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7},
     {label:'Udvandring',data:dU,
-      borderColor:'#C0392B',backgroundColor:'rgba(192,57,43,0.07)',
-      borderWidth:2.5,fill:true,tension:0.35,spanGaps:false,
+      borderColor:'#C0392B',backgroundColor:'transparent',
+      borderWidth:2.5,fill:false,tension:0.35,spanGaps:false,
       pointBackgroundColor:'#C0392B',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7},
     {label:'Nettomigration',data:dN,
       borderColor:'#C9973A',backgroundColor:'transparent',
@@ -443,16 +446,53 @@ const META={
   akkumuleret:{
     title:n=>`Akkumuleret indvandring pr. måned — 2025 vs. 2026`,
     desc: n=>`Løbende sum af ${n.toLowerCase()} indvandret til Hvidovre · Sammenligner tempoet i 2026 med 2025`,
-    note:'<strong>Kilde:</strong> DST tabel VAN1UGE (ugentlig) aggregeret til måneder via ISO-uge torsdagsregel',
-    legend:`<div class="leg"><div class="leg-ln" style="background:var(--green)"></div>2025 — fuldt år</div><div class="leg"><div class="leg-ln" style="background:repeating-linear-gradient(to right,var(--gold) 0,var(--gold) 6px,transparent 6px,transparent 10px)"></div>2026 — foreløbig</div>`
+    note:'<strong>Kilde:</strong> DST tabel VAN1UGE (ugentlig) aggregeret til måneder via ISO-uge torsdagsregel'
   },
   historisk:{
     title:n=>`Indvandring, udvandring og nettomigration — ${n}`,
     desc: n=>`${n} ind- og udvandret til/fra Hvidovre pr. år · Positive nettotal = befolkningstilvækst`,
-    note:'<strong>Kilde:</strong> DST tabeller VAN1AAR (indvandringer) og VAN2AAR (udvandringer) · Årsvis opgørelse',
-    legend:`<div class="leg"><div class="leg-ln" style="background:var(--green)"></div>Indvandring</div><div class="leg"><div class="leg-ln" style="background:var(--red)"></div>Udvandring</div><div class="leg"><div class="leg-ln" style="background:repeating-linear-gradient(to right,var(--gold) 0,var(--gold) 6px,transparent 6px,transparent 10px)"></div>Nettomigration (stiplet)</div>`
+    note:'<strong>Kilde:</strong> DST tabeller VAN1AAR (indvandringer) og VAN2AAR (udvandringer) · Årsvis opgørelse'
   }
 };
+
+/* ════════════════════════════════════════════
+   KLIKBAR LEGENDE
+════════════════════════════════════════════ */
+const SERIE_DEF = {
+  akkumuleret: [
+    {label:'2025 — fuldt år',          color:'#1A4D2E', dashed:false},
+    {label:'2026 — foreløbig',         color:'#C9973A', dashed:true}
+  ],
+  historisk: [
+    {label:'Indvandring',              color:'#1A4D2E', dashed:false},
+    {label:'Udvandring',               color:'#C0392B', dashed:false},
+    {label:'Nettomigration (stiplet)', color:'#C9973A', dashed:true}
+  ]
+};
+
+function byggLegende() {
+  const wrap = document.getElementById('legend');
+  wrap.innerHTML = '';
+  SERIE_DEF[visning].forEach((s, i) => {
+    const el = document.createElement('div');
+    el.className = 'leg';
+    el.dataset.idx = i;
+    const stil = s.dashed
+      ? `background:repeating-linear-gradient(to right,${s.color} 0,${s.color} 6px,transparent 6px,transparent 10px)`
+      : `background:${s.color}`;
+    el.innerHTML = `<div class="leg-ln" style="${stil}"></div>${s.label}`;
+    el.onclick = () => toggleSerie(i, el);
+    wrap.appendChild(el);
+  });
+}
+
+function toggleSerie(idx, el) {
+  if (!chart) return;
+  const meta = chart.getDatasetMeta(idx);
+  meta.hidden = !meta.hidden;
+  el.classList.toggle('skjult', meta.hidden);
+  chart.update();
+}
 
 function skiftVisning(v, ingenRedraw) {
   visning=v;
@@ -463,7 +503,7 @@ function skiftVisning(v, ingenRedraw) {
   document.getElementById('chartTitle').textContent=META[v].title(n);
   document.getElementById('chartDesc').textContent=META[v].desc(n);
   document.getElementById('chartNote').innerHTML=META[v].note;
-  document.getElementById('legend').innerHTML=META[v].legend;
+  byggLegende();
   if(!ingenRedraw && data) tegn();
 }
 
@@ -665,6 +705,7 @@ window.addEventListener('load', () => {
     } catch(e) {}
   }
 
+  byggLegende();
   loadData();
 });
 </script>
