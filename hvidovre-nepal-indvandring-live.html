@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nepalske statsborgere — Indvandring til Hvidovre</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap');
+
+  :root {
+    --green:     #1A4D2E;
+    --green-mid: #2E7D54;
+    --gold:      #C9973A;
+    --red:       #C0392B;
+    --bg:    #F9F6F0;
+    --card:  #FFFFFF;
+    --text:  #1C1C1A;
+    --mid:   #4A4A44;
+    --muted: #8A8A7E;
+    --border:#E2DDD4;
+    --shadow:0 2px 20px rgba(26,77,46,0.07);
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); }
+
+  /* HEADER */
+  .hdr {
+    background:var(--green); color:#fff;
+    padding:36px 48px 28px; position:relative; overflow:hidden;
+  }
+  .hdr::before {
+    content:''; position:absolute; right:-80px; bottom:-80px;
+    width:320px; height:320px; border-radius:50%;
+    background:rgba(255,255,255,.03); pointer-events:none;
+  }
+  .hdr-eye { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.5); margin-bottom:12px; }
+  .hdr h1  { font-family:'DM Serif Display',serif; font-size:clamp(21px,2.6vw,32px); font-weight:400; line-height:1.18; margin-bottom:9px; }
+  .hdr h1 em { font-style:italic; color:#E8C06A; }
+  .hdr p { font-size:13px; color:rgba(255,255,255,.62); font-weight:300; line-height:1.65; max-width:600px; }
+
+  /* TOOLBAR */
+  .toolbar {
+    background:#fff; border-bottom:1px solid var(--border);
+    padding:11px 48px; display:flex; align-items:center;
+    justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .btn-row { display:flex; gap:6px; flex-wrap:wrap; }
+  .btn {
+    padding:7px 16px; border:1.5px solid var(--border);
+    background:transparent; font-family:'DM Sans',sans-serif;
+    font-size:13px; color:var(--mid); cursor:pointer;
+    border-radius:6px; transition:all .15s; white-space:nowrap;
+  }
+  .btn:hover  { border-color:var(--green); color:var(--green); }
+  .btn.grn    { background:var(--green); border-color:var(--green); color:#fff; }
+  .btn.grn:hover { background:#143d24; }
+  .btn.gld    { background:var(--gold);  border-color:var(--gold);  color:#fff; }
+  .btn.gld:hover { background:var(--green); border-color:var(--green); }
+  #updateTime { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); }
+
+  /* STATUS */
+  .statusbar {
+    background:#fff; border-bottom:1px solid var(--border);
+    padding:9px 48px; display:flex; align-items:center; gap:9px; min-height:36px;
+  }
+  .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .dot.loading { background:var(--gold); animation:pulse .9s ease-in-out infinite; }
+  .dot.ok      { background:var(--green-mid); }
+  .dot.error   { background:var(--red); }
+  #statusMsg   { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  /* MAIN */
+  main { padding:32px 48px; max-width:1100px; }
+
+  /* KPI ROW */
+  .kpi-row {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(155px,1fr));
+    gap:12px; margin-bottom:30px;
+  }
+  .kpi {
+    background:var(--card); border:1px solid var(--border);
+    border-left:4px solid var(--green); border-radius:10px;
+    padding:15px 18px; box-shadow:var(--shadow);
+  }
+  .kpi.gld { border-left-color:var(--gold); }
+  .kpi.red { border-left-color:var(--red);  }
+  .kpi.mid { border-left-color:var(--green-mid); }
+  .kpi-lbl  { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+  .kpi-val  { font-family:'DM Serif Display',serif; font-size:34px; line-height:1; color:var(--text); margin-bottom:3px; }
+  .kpi-desc { font-size:12px; color:var(--mid); line-height:1.4; }
+
+  /* CHART CARD */
+  .chart-card {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:12px; padding:24px 28px 20px;
+    box-shadow:var(--shadow);
+  }
+
+  /* CHART CARD — TOP ROW */
+  .card-top {
+    display:flex; align-items:flex-start;
+    justify-content:space-between; gap:16px;
+    margin-bottom:4px; flex-wrap:wrap;
+  }
+  .card-titles h2 { font-family:'DM Serif Display',serif; font-size:18px; font-weight:400; margin-bottom:3px; }
+  .card-titles p  { font-size:13px; color:var(--muted); line-height:1.5; max-width:560px; }
+
+  /* VIEW TOGGLE — inde i kortet */
+  .view-toggle { display:flex; border:1.5px solid var(--border); border-radius:8px; overflow:hidden; flex-shrink:0; }
+  .vtab {
+    padding:7px 16px; border:none; background:transparent;
+    font-family:'DM Sans',sans-serif; font-size:12.5px; color:var(--mid);
+    cursor:pointer; transition:all .15s; white-space:nowrap;
+    border-right:1px solid var(--border);
+  }
+  .vtab:last-child { border-right:none; }
+  .vtab:hover  { background:#F0F0EA; color:var(--green); }
+  .vtab.active { background:var(--green); color:#fff; }
+
+  /* LEGEND */
+  .legend { display:flex; gap:18px; margin:14px 0 10px; flex-wrap:wrap; }
+  .leg    { display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--mid); }
+  .leg-ln { width:26px; height:3px; border-radius:2px; }
+  .leg-sq { width:11px; height:11px; border-radius:3px; flex-shrink:0; }
+
+  /* CANVAS */
+  .chart-wrap { position:relative; height:380px; }
+
+  /* LOADING OVERLAY */
+  .ov {
+    display:none; position:absolute; inset:0;
+    background:rgba(255,255,255,.86); border-radius:10px;
+    align-items:center; justify-content:center;
+    flex-direction:column; gap:12px;
+    font-family:'DM Mono',monospace; font-size:12px; color:var(--muted);
+  }
+  .ov.show { display:flex; }
+  .spin { width:26px; height:26px; border:3px solid var(--border); border-top-color:var(--green); border-radius:50%; animation:spin .8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  /* NOTE + SOURCE */
+  .note {
+    background:#FDF9F0; border:1px solid #EDD9A0; border-radius:8px;
+    padding:10px 15px; font-size:12.5px; color:#7A6020;
+    line-height:1.55; margin-top:14px;
+  }
+  .note strong { color:#5A4010; }
+  .source {
+    margin-top:28px; padding:12px 15px; background:#fff;
+    border:1px solid var(--border); border-radius:8px;
+    font-family:'DM Mono',monospace; font-size:10.5px;
+    color:var(--muted); line-height:1.7;
+  }
+  .source strong { color:var(--mid); }
+
+  @media (max-width:700px) {
+    .hdr, main, .toolbar, .statusbar { padding-left:18px; padding-right:18px; }
+    .chart-wrap { height:280px; }
+    .card-top { flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-eye">Hvidovre Kommune · Center for Økonomi og Personale · Befolkningsanalyse</div>
+  <h1>Nepalske statsborgere —<br><em>Indvandring til Hvidovre</em></h1>
+  <p>Live data fra Danmarks Statistik · Opdateres automatisk ved åbning · Skift mellem kumulativ årssammenligning og historisk ind-/udvandring med netto</p>
+</div>
+
+<div class="toolbar">
+  <div class="btn-row">
+    <button class="btn grn" onclick="loadData()">↺&nbsp; Opdater data</button>
+    <button class="btn gld" onclick="downloadRapport()">⬇&nbsp; Gem rapport</button>
+  </div>
+  <span id="updateTime"></span>
+</div>
+
+<div class="statusbar">
+  <div id="dot" class="dot loading"></div>
+  <span id="statusMsg">Forbinder til Danmarks Statistik…</span>
+</div>
+
+<main>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-lbl">Indvandringer 2025</div>
+      <div class="kpi-val" id="k1">—</div>
+      <div class="kpi-desc">Hele 2025, ugentlig kilde</div>
+    </div>
+    <div class="kpi gld">
+      <div class="kpi-lbl">Indvandringer 2026</div>
+      <div class="kpi-val" id="k2">—</div>
+      <div class="kpi-desc" id="k2d">Foreløbig, indeværende år</div>
+    </div>
+    <div class="kpi mid">
+      <div class="kpi-lbl">Indvandringer seneste år</div>
+      <div class="kpi-val" id="k3">—</div>
+      <div class="kpi-desc" id="k3d">VAN1AAR</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-lbl">Udvandringer seneste år</div>
+      <div class="kpi-val" id="k4">—</div>
+      <div class="kpi-desc" id="k4d">VAN2AAR</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">Nettomigration seneste år</div>
+      <div class="kpi-val" id="k5">—</div>
+      <div class="kpi-desc" id="k5d">Indv. minus udv.</div>
+    </div>
+  </div>
+
+  <!-- ENKELT CHART-KORT MED TOGGLE -->
+  <div class="chart-card">
+
+    <div class="card-top">
+      <div class="card-titles">
+        <h2 id="chartTitle">Akkumuleret indvandring pr. måned — 2025 vs. 2026</h2>
+        <p id="chartDesc">Løbende sum af nepalske statsborgere indvandret til Hvidovre · Sammenligner tempoet i 2026 med 2025</p>
+      </div>
+      <div class="view-toggle">
+        <button class="vtab active" id="tab1" onclick="skiftVisning('akkumuleret')">Akkumuleret 2025/26</button>
+        <button class="vtab"        id="tab2" onclick="skiftVisning('historisk')">Historisk ind/ud/netto</button>
+      </div>
+    </div>
+
+    <!-- LEGEND — skiftes dynamisk -->
+    <div class="legend" id="legend">
+      <div class="leg"><div class="leg-ln" style="background:var(--green)"></div>2025 — fuldt år</div>
+      <div class="leg"><div class="leg-ln" style="background:repeating-linear-gradient(to right,var(--gold) 0,var(--gold) 6px,transparent 6px,transparent 10px)"></div>2026 — foreløbig</div>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="mainCanvas"></canvas>
+      <div id="ov" class="ov show"><div class="spin"></div>Henter data fra Danmarks Statistik…</div>
+    </div>
+
+  </div>
+
+  <div class="note" id="chartNote">
+    <strong>Kilde:</strong> DST tabel VAN1UGE (ugentlig indvandring) aggregeret til måneder via ISO-uge torsdagsregel · Data hentes live ved åbning
+  </div>
+
+  <div class="source">
+    <strong>Data:</strong> Danmarks Statistik API · api.statbank.dk/v1/data (POST JSONSTAT) ·
+    Tabeller: VAN1UGE, VAN1AAR, VAN2AAR · Nepal = 5464 · Hvidovre = 167 ·
+    <strong>Senest hentet:</strong> <span id="fetchTs">—</span>
+  </div>
+
+</main>
+
+<script>
+/* ════════════════════════════════════
+   KONSTANTER
+════════════════════════════════════ */
+const API   = 'https://api.statbank.dk/v1/data';
+const OMRD  = '167';
+const NEPAL = '5464';
+const MND   = ['Januar','Februar','Marts','April','Maj','Juni','Juli','August','September','Oktober','November','December'];
+
+let chart = null;
+let visning = 'akkumuleret'; // aktiv visning
+let data = null;             // { uge, indv, udv } - holdes i memory
+
+/* ════════════════════════════════════
+   DST KALD
+════════════════════════════════════ */
+async function dst(table, variables) {
+  const r = await fetch(API, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({table, format:'JSONSTAT', lang:'da', variables})
+  });
+  if (!r.ok) throw new Error(`${table}: HTTP ${r.status}`);
+  return r.json();
+}
+
+/* ════════════════════════════════════
+   JSONSTAT HJÆLPER
+════════════════════════════════════ */
+function dimLabels(ds, dim) {
+  const cat = ds.dimension[dim].category;
+  const out = new Array(Object.keys(cat.index).length);
+  for (const [id, i] of Object.entries(cat.index)) out[i] = id;
+  return out;
+}
+
+/* ════════════════════════════════════
+   ISO-UGE → MÅNED
+════════════════════════════════════ */
+function uge2mnd(yr, uge) {
+  const jan4    = new Date(yr, 0, 4);
+  const jan4day = (jan4.getDay() + 6) % 7;
+  const man     = new Date(jan4.getTime() - jan4day*864e5 + (uge-1)*7*864e5);
+  return new Date(man.getTime() + 3*864e5).getMonth();
+}
+
+/* ════════════════════════════════════
+   BEHANDL VAN1UGE
+════════════════════════════════════ */
+function behandlUge(ds) {
+  const tids = dimLabels(ds, 'Tid');
+  const nKon = dimLabels(ds, 'KØN').length;
+  const vals = ds.value;
+  const m25  = new Array(12).fill(0);
+  const m26  = new Array(12).fill(null);
+  let sisteUge = 0;
+
+  tids.forEach((tid, i) => {
+    const m = tid.match(/^(\d{4})U(\d{2})$/);
+    if (!m) return;
+    const yr = +m[1], uge = +m[2];
+    let sum = 0;
+    for (let j=0; j<nKon; j++) { const v=vals[i*nKon+j]; if(v!=null) sum+=v; }
+
+    const mi = uge2mnd(yr, uge);
+    if (yr===2025) { m25[mi] += sum; }
+    else if (yr===2026) { if(m26[mi]===null) m26[mi]=0; m26[mi]+=sum; if(uge>sisteUge) sisteUge=uge; }
+  });
+
+  // Kumulativ sum
+  const c25=[], c26=[];
+  let s25=0, s26=0;
+  for (let i=0; i<12; i++) {
+    s25+=m25[i]; c25.push(s25);
+    if (m26[i]!==null) { s26+=m26[i]; c26.push(s26); } else c26.push(null);
+  }
+  return {c25, c26, sisteUge};
+}
+
+/* ════════════════════════════════════
+   BEHANDL ÅRSDATA
+════════════════════════════════════ */
+function behandlAar(ds) {
+  const tids = dimLabels(ds,'Tid');
+  const nKon = dimLabels(ds,'KØN').length;
+  const vals = ds.value;
+  const res  = {};
+  tids.forEach((tid,i) => {
+    let sum=0;
+    for(let j=0;j<nKon;j++){const v=vals[i*nKon+j];if(v!=null)sum+=v;}
+    res[tid]=sum;
+  });
+  return res;
+}
+
+/* ════════════════════════════════════
+   STATUS UI
+════════════════════════════════════ */
+function setStatus(type, msg) {
+  document.getElementById('dot').className = 'dot '+type;
+  document.getElementById('statusMsg').textContent = msg;
+}
+
+/* ════════════════════════════════════
+   KPI OPDATERING
+════════════════════════════════════ */
+function opdaterKPI(uge, indv, udv) {
+  const tot25 = uge.c25[11];
+  const tot26 = uge.c26.filter(v=>v!==null).slice(-1)[0] ?? 0;
+  const latYr = Object.keys(indv).sort().slice(-1)[0];
+  const lI    = indv[latYr]??0, lU=udv[latYr]??0, net=lI-lU;
+
+  document.getElementById('k1').textContent  = tot25;
+  document.getElementById('k2').textContent  = tot26;
+  document.getElementById('k2d').textContent = `Foreløbig t.o.m. uge ${uge.sisteUge}`;
+  document.getElementById('k3').textContent  = lI;
+  document.getElementById('k3d').textContent = `Indvandringer ${latYr} (VAN1AAR)`;
+  document.getElementById('k4').textContent  = lU;
+  document.getElementById('k4d').textContent = `Udvandringer ${latYr} (VAN2AAR)`;
+  document.getElementById('k5').textContent  = (net>=0?'+':'')+net;
+  document.getElementById('k5d').textContent = `Netto ${latYr} (${lI} − ${lU})`;
+}
+
+/* ════════════════════════════════════
+   TEGN GRAF — AKKUMULERET
+════════════════════════════════════ */
+function tegn_akkumuleret() {
+  const d = data.uge;
+  return {
+    type:'line',
+    data:{
+      labels: MND,
+      datasets:[
+        {
+          label:'2025 — akkumuleret',
+          data: d.c25,
+          borderColor:'#1A4D2E', backgroundColor:'rgba(26,77,46,0.09)',
+          borderWidth:2.5, fill:true, tension:0.35, spanGaps:false,
+          pointBackgroundColor:'#1A4D2E', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:5, pointHoverRadius:7
+        },
+        {
+          label:'2026 — akkumuleret (foreløbig)',
+          data: d.c26,
+          borderColor:'#C9973A', backgroundColor:'rgba(201,151,58,0.09)',
+          borderDash:[7,4], borderWidth:2.5, fill:true, tension:0.35, spanGaps:false,
+          pointBackgroundColor:'#C9973A', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:5, pointHoverRadius:7
+        }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{ label:c => c.parsed.y===null ? null : `  ${c.dataset.label}: ${c.parsed.y} akkumuleret` },
+          backgroundColor:'#1C1C1A', titleFont:{family:'DM Sans',size:13,weight:'600'},
+          bodyFont:{family:'DM Sans',size:13}, padding:12, cornerRadius:6
+        }
+      },
+      scales:{
+        x:{ ticks:{font:{family:'DM Sans',size:12},color:'#6A6A60',maxRotation:25}, grid:{color:'rgba(0,0,0,0.04)'} },
+        y:{ beginAtZero:true,
+          ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',stepSize:5,callback:v=>Number.isInteger(v)?v:''},
+          grid:{color:'rgba(0,0,0,0.05)'},
+          title:{display:true,text:'Akkumuleret antal',font:{family:'DM Sans',size:12},color:'#8A8A7E'}
+        }
+      }
+    }
+  };
+}
+
+/* ════════════════════════════════════
+   TEGN GRAF — HISTORISK
+════════════════════════════════════ */
+function tegn_historisk() {
+  const indv = data.indv, udv = data.udv;
+  const aar  = [...new Set([...Object.keys(indv),...Object.keys(udv)])].sort();
+  const dI   = aar.map(y=>indv[y]??0);
+  const dU   = aar.map(y=>udv[y] ??0);
+  const dN   = aar.map((_,i)=>dI[i]-dU[i]);
+
+  return {
+    data:{
+      labels: aar,
+      datasets:[
+        {
+          type:'bar', label:'Indvandring', data:dI, order:2,
+          backgroundColor:'rgba(26,77,46,0.72)', borderColor:'#1A4D2E', borderWidth:1, borderRadius:3
+        },
+        {
+          type:'bar', label:'Udvandring', data:dU, order:2,
+          backgroundColor:'rgba(192,57,43,0.65)', borderColor:'#C0392B', borderWidth:1, borderRadius:3
+        },
+        {
+          type:'line', label:'Nettomigration', data:dN, order:1,
+          borderColor:'#1A4D2E', backgroundColor:'transparent',
+          borderWidth:2.5, fill:false, tension:0.3,
+          pointBackgroundColor:dN.map(v=>v>=0?'#1A4D2E':'#C0392B'),
+          pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:5, pointHoverRadius:7
+        }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            label:c=>`  ${c.dataset.label}: ${c.dataset.label==='Nettomigration'&&c.parsed.y>=0?'+':''}${c.parsed.y}`
+          },
+          backgroundColor:'#1C1C1A', titleFont:{family:'DM Sans',size:13,weight:'600'},
+          bodyFont:{family:'DM Sans',size:13}, padding:12, cornerRadius:6
+        }
+      },
+      scales:{
+        x:{ ticks:{font:{family:'DM Mono',size:11},color:'#6A6A60'}, grid:{display:false} },
+        y:{ beginAtZero:true,
+          ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',stepSize:2,callback:v=>Number.isInteger(v)?v:''},
+          grid:{color:'rgba(0,0,0,0.05)'},
+          title:{display:true,text:'Antal personer',font:{family:'DM Sans',size:12},color:'#8A8A7E'}
+        }
+      }
+    }
+  };
+}
+
+/* ════════════════════════════════════
+   SKIFT VISNING
+════════════════════════════════════ */
+const META = {
+  akkumuleret: {
+    title:  'Akkumuleret indvandring pr. måned — 2025 vs. 2026',
+    desc:   'Løbende sum af nepalske statsborgere indvandret til Hvidovre · Sammenligner tempoet i 2026 med 2025',
+    note:   '<strong>Kilde:</strong> DST tabel VAN1UGE (ugentlig) aggregeret til måneder via ISO-uge torsdagsregel · Data opdateres ugentligt af DST',
+    legend: `<div class="leg"><div class="leg-ln" style="background:var(--green)"></div>2025 — fuldt år</div>
+             <div class="leg"><div class="leg-ln" style="background:repeating-linear-gradient(to right,var(--gold) 0,var(--gold) 6px,transparent 6px,transparent 10px)"></div>2026 — foreløbig (opdateres løbende)</div>`
+  },
+  historisk: {
+    title:  'Indvandring, udvandring og nettomigration — 2007 til seneste år',
+    desc:   'Nepalske statsborgere ind- og udvandret til/fra Hvidovre pr. år · Positive nettotal = befolkningstilvækst fra Nepal',
+    note:   '<strong>Kilde:</strong> DST tabeller VAN1AAR (indvandringer, årsvis) og VAN2AAR (udvandringer, årsvis) · Statsborgerskab Nepal (5464) · Hvidovre (167)',
+    legend: `<div class="leg"><div class="leg-sq" style="background:rgba(26,77,46,0.72)"></div>Indvandring</div>
+             <div class="leg"><div class="leg-sq" style="background:rgba(192,57,43,0.65)"></div>Udvandring</div>
+             <div class="leg"><div class="leg-ln" style="background:var(--green);height:2.5px"></div>Netto (linje)</div>`
+  }
+};
+
+function skiftVisning(v) {
+  if (!data) return;
+  visning = v;
+
+  // Tabs
+  document.getElementById('tab1').classList.toggle('active', v==='akkumuleret');
+  document.getElementById('tab2').classList.toggle('active', v==='historisk');
+
+  // Meta tekst
+  document.getElementById('chartTitle').textContent  = META[v].title;
+  document.getElementById('chartDesc').textContent   = META[v].desc;
+  document.getElementById('chartNote').innerHTML     = META[v].note;
+  document.getElementById('legend').innerHTML        = META[v].legend;
+
+  // Tegn ny graf
+  if (chart) { chart.destroy(); chart=null; }
+  const cfg = v==='akkumuleret' ? tegn_akkumuleret() : tegn_historisk();
+  chart = new Chart(document.getElementById('mainCanvas').getContext('2d'), cfg);
+}
+
+/* ════════════════════════════════════
+   HENT AL DATA
+════════════════════════════════════ */
+async function loadData() {
+  setStatus('loading','Henter data fra Danmarks Statistik…');
+  document.getElementById('ov').classList.add('show');
+
+  try {
+    const [ugeRaw, indvRaw, udvRaw] = await Promise.all([
+      dst('VAN1UGE', [
+        {code:'OMRÅDE', values:[OMRD]},
+        {code:'KØN',    values:['1','2']},
+        {code:'STATSB', values:[NEPAL]},
+        {code:'Tid',    values:['*']}
+      ]),
+      dst('VAN1AAR', [
+        {code:'OMRÅDE', values:[OMRD]},
+        {code:'STATSB', values:[NEPAL]},
+        {code:'KØN',    values:['1','2']},
+        {code:'Tid',    values:['*']}
+      ]),
+      dst('VAN2AAR', [
+        {code:'OMRÅDE', values:[OMRD]},
+        {code:'STATSB', values:[NEPAL]},
+        {code:'KØN',    values:['1','2']},
+        {code:'Tid',    values:['*']}
+      ])
+    ]);
+
+    data = {
+      uge:  behandlUge(ugeRaw.dataset),
+      indv: behandlAar(indvRaw.dataset),
+      udv:  behandlAar(udvRaw.dataset)
+    };
+
+    opdaterKPI(data.uge, data.indv, data.udv);
+    document.getElementById('ov').classList.remove('show');
+
+    // Tegn den aktive visning
+    skiftVisning(visning);
+
+    const ts = new Date().toLocaleString('da-DK',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    document.getElementById('fetchTs').textContent   = ts;
+    document.getElementById('updateTime').textContent= 'Senest hentet: '+ts;
+    setStatus('ok','Opdateret fra Danmarks Statistik · '+ts);
+
+  } catch(err) {
+    setStatus('error','Fejl: '+err.message);
+    document.getElementById('ov').classList.remove('show');
+    console.error(err);
+  }
+}
+
+/* ════════════════════════════════════
+   DOWNLOAD
+════════════════════════════════════ */
+function downloadRapport() {
+  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='hvidovre-nepal-indvandring-live.html'; a.click();
+}
+
+/* ════════════════════════════════════
+   AUTO-START
+════════════════════════════════════ */
+window.addEventListener('load', loadData);
+</script>
+</body>
+</html>
