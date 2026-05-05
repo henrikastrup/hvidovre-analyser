@@ -262,13 +262,13 @@ Chart.register(ChartDataLabels);
 // Fælles datalabels-konfiguration for faktisk-datasættet
 function datalabelsCfg(farve) {
   return {
-    display: ctx => ctx.parsed.y !== null,
+    display: ctx => ctx.parsed?.y != null,
     anchor: 'end',
     align: 'top',
     offset: 4,
     color: farve,
     font: { family:'DM Mono', size:10.5, weight:'500' },
-    formatter: v => v === null ? null : Math.round(v).toLocaleString('da-DK'),
+    formatter: (v, ctx) => ctx.parsed?.y == null ? null : Math.round(ctx.parsed.y).toLocaleString('da-DK'),
     padding: { bottom: 2 }
   };
 }
