@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hvidovre Folketal — Befolkningsprognose 2026</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap');
 
@@ -256,22 +255,73 @@ const ALLE_GRUPPER = [
 
 function range(a, b) { const o=[]; for(let i=a;i<b;i++) o.push(i); return o; }
 
-// Registrér datalabels plugin globalt (kun til faktisk-datasæt)
-// NB: UMD-buildet auto-registrerer, så Chart.register er ikke nødvendig
-
-// Fælles datalabels-konfiguration for faktisk-datasættet
-function datalabelsCfg(farve) {
-  return {
-    display: true,
-    anchor: 'end',
-    align: 'top',
-    offset: 4,
-    color: farve,
-    font: { family:'DM Mono', size:10.5, weight:'500' },
-    formatter: value => (value == null) ? null : Math.round(value).toLocaleString('da-DK'),
-    padding: { bottom: 2 }
-  };
+/* ═══════════════════════════════════════════════════
+   INLINE DATALABELS PLUGIN — tegnes direkte på canvas
+   Aktiveres pr. datasæt via _labelOpts: {color, ...}
+═══════════════════════════════════════════════════ */
+function rrect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
 }
+
+const inlineLabelPlugin = {
+  id: 'inlineLabels',
+  afterDatasetsDraw(chart) {
+    const ctx = chart.ctx;
+    const {left, right, top} = chart.chartArea;
+    const font = '500 10px "DM Mono", monospace';
+
+    chart.data.datasets.forEach((ds, i) => {
+      if (!ds._labelOpts) return;
+      const meta = chart.getDatasetMeta(i);
+      if (meta.hidden) return;
+      const {color} = ds._labelOpts;
+
+      ctx.save();
+      ctx.font = font;
+
+      meta.data.forEach((pt, j) => {
+        const val = ds.data[j];
+        if (val == null || isNaN(val)) return;
+
+        const text = Math.round(val).toLocaleString('da-DK');
+        const tw   = ctx.measureText(text).width;
+        const pw = tw + 10, ph = 17, r = 3;
+
+        // Clamp x so pill stays inside chart area
+        const cx = Math.max(left + pw / 2, Math.min(right - pw / 2, pt.x));
+        const cy = Math.max(top + ph / 2 + 2, pt.y - pt.options.radius - 7 - ph / 2);
+
+        // Pill background
+        ctx.fillStyle = 'rgba(255,255,255,0.93)';
+        rrect(ctx, cx - pw / 2, cy - ph / 2, pw, ph, r);
+        ctx.fill();
+
+        // Pill border
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 0.9;
+        ctx.stroke();
+
+        // Text
+        ctx.fillStyle = color;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, cx, cy);
+      });
+
+      ctx.restore();
+    });
+  }
+};
 
 /* ═══════════════════════════════════════════════════
    KONSTANTER
@@ -584,7 +634,6 @@ function renderAlle() {
       pointBackgroundColor: '#C9973A',
       pointBorderColor: '#fff', pointBorderWidth: 1.5,
       order: 1,
-      datalabels: { display: false }
     },
     {
       label: 'Faktisk folketal',
@@ -598,7 +647,7 @@ function renderAlle() {
       pointBackgroundColor: '#1A4D2E',
       pointBorderColor: '#fff', pointBorderWidth: 2,
       order: 0,
-      datalabels: datalabelsCfg('#1A4D2E')
+      _labelOpts: {color:'#1A4D2E'}
     }
   ];
 
@@ -624,7 +673,8 @@ function renderAlle() {
           grid:{color:'rgba(0,0,0,0.05)'},
           title:{display:true,text:'Antal borgere',font:{family:'DM Sans',size:11},color:'#8A8A7E'}}
       }
-    }
+    },
+    plugins: [inlineLabelPlugin]
   });
 
   byggLegende([
@@ -658,8 +708,7 @@ function renderIndividuel() {
       pointRadius: 3, pointHoverRadius: 6,
       pointBackgroundColor: '#C9973A',
       pointBorderColor: '#fff', pointBorderWidth: 1.5,
-      order: 1,
-      datalabels: { display: false }
+      order: 1
     },
     {
       label: `Faktisk — ${g.label}`,
@@ -673,7 +722,7 @@ function renderIndividuel() {
       pointBackgroundColor: g.farve,
       pointBorderColor: '#fff', pointBorderWidth: 2,
       order: 0,
-      datalabels: datalabelsCfg(g.farve)
+      _labelOpts: {color: g.farve}
     }
   ];
 
@@ -699,7 +748,8 @@ function renderIndividuel() {
           grid:{color:'rgba(0,0,0,0.05)'},
           title:{display:true,text:'Antal borgere',font:{family:'DM Sans',size:11},color:'#8A8A7E'}}
       }
-    }
+    },
+    plugins: [inlineLabelPlugin]
   });
 
   byggLegende([
