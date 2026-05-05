@@ -262,11 +262,10 @@ const API     = 'https://api.statbank.dk/v1/data';
 const OMRD    = '167';
 const MND_DA  = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
 
-// Alle måneder vi viser: 2025M01 → 2026M12
+// Vi viser kun 2026-måneder
 const ALL_LABELS = [];
-for (let y=2025; y<=2026; y++)
-  for (let m=1; m<=12; m++)
-    ALL_LABELS.push(`${y}M${String(m).padStart(2,'0')}`);
+for (let m=1; m<=12; m++)
+  ALL_LABELS.push(`2026M${String(m).padStart(2,'0')}`);
 
 function fmtLabel(tid) {
   const y=tid.slice(0,4), m=parseInt(tid.slice(5))-1;
@@ -361,7 +360,7 @@ function mergeJsonstat(ds1, ds2) {
 
   // Byg fælles Tid-liste (kun 2025+), sorteret
   const allTids = [...new Set([...p1.tids, ...p2.tids])]
-    .filter(t => t >= '2025M01')
+    .filter(t => t >= '2026M01')
     .sort();
 
   // Byg fælles alder-liste
@@ -531,75 +530,80 @@ function render() {
    RENDER — ALLE ALDERSGRUPPER
 ═══════════════════════════════════════════════════ */
 function renderAlle() {
-  document.getElementById('tblWrap').style.display = 'none';
+  document.getElementById('tblWrap').style.display  = 'none';
   document.getElementById('mainCanvas').style.display = 'block';
-  document.getElementById('chartTitle').textContent = 'Folketal pr. aldersgruppe — faktisk udvikling';
-  document.getElementById('chartDesc').textContent  = 'Alle syv aldersgrupper · Klik på en fane for at zoome ind og se prognosen for den enkelte gruppe · 2025 vist i lysere tone';
+  document.getElementById('chartTitle').textContent = 'Samlet folketal — faktisk vs. prognose 2026';
+  document.getElementById('chartDesc').textContent  = 'Faktisk samlet folketal (IALT) pr. måned sammenlignet med kommunens prognose · Grøn zone = over prognose · Rød zone = under prognose';
 
-  const labels  = ALL_LABELS.map(fmtLabel);
-  const jan26lb = fmtLabel('2026M01');
+  const g      = ALLE_GRUPPER[0];
+  const labels = ALL_LABELS.map(fmtLabel);
+  const actual = ALL_LABELS.map(tid => getGruppeVal(folkeData, g, tid));
+  const prog   = prognoseSerie(g);
 
-  const datasets = ALLE_GRUPPER.slice(1).map(g => {
-    const data = ALL_LABELS.map(tid => getGruppeVal(folkeData, g, tid));
-    return {
-      label: g.label,
-      data,
-      borderColor: g.farve,
+  const datasets = [
+    {
+      label: 'Prognose 2026',
+      data:  prog,
+      borderColor: 'rgba(201,151,58,0.85)',
       backgroundColor: 'transparent',
-      borderWidth: 2,
-      fill: false,
-      tension: 0.35,
-      spanGaps: false,
-      pointRadius: 3,
-      pointHoverRadius: 6,
-      pointBackgroundColor: g.farve,
-      pointBorderColor: '#fff',
-      pointBorderWidth: 1.5,
-      segment: {
-        borderColor: ctx => {
-          const lbl = labels[ctx.p0DataIndex];
-          return lbl?.endsWith("'25") ? hexToRgba(g.farve, 0.38) : g.farve;
-        },
-        borderWidth: ctx => labels[ctx.p0DataIndex]?.endsWith("'25") ? 1.5 : 2.2
-      }
-    };
-  });
+      borderDash: [7,4], borderWidth: 2,
+      fill: false, tension: 0.3, spanGaps: true,
+      pointRadius: 3, pointHoverRadius: 6,
+      pointBackgroundColor: '#C9973A',
+      pointBorderColor: '#fff', pointBorderWidth: 1.5,
+      order: 1
+    },
+    {
+      label: 'Faktisk folketal',
+      data:  actual,
+      borderColor: '#1A4D2E',
+      backgroundColor: 'transparent',
+      borderWidth: 2.5,
+      fill: {target:0, above:'rgba(46,125,84,0.13)', below:'rgba(192,57,43,0.13)'},
+      tension: 0.35, spanGaps: false,
+      pointRadius: 4, pointHoverRadius: 7,
+      pointBackgroundColor: '#1A4D2E',
+      pointBorderColor: '#fff', pointBorderWidth: 2,
+      order: 0
+    }
+  ];
 
   if (chart) chart.destroy();
   chart = new Chart(document.getElementById('mainCanvas').getContext('2d'), {
-    type:'line',
+    type: 'line',
     data: {labels, datasets},
     options: {
-      responsive:true, maintainAspectRatio:false,
-      interaction:{mode:'index',intersect:false},
-      plugins:{
-        legend:{display:false},
-        tooltip:{
-          callbacks:{label:c=>c.parsed.y===null?null:`  ${c.dataset.label}: ${Math.round(c.parsed.y).toLocaleString('da-DK')}`},
-          backgroundColor:'#1C1C1A',titleFont:{family:'DM Sans',size:13,weight:'600'},
-          bodyFont:{family:'DM Sans',size:12},padding:12,cornerRadius:6
+      responsive: true, maintainAspectRatio: false,
+      interaction: {mode:'index', intersect:false},
+      plugins: {
+        legend: {display:false},
+        tooltip: {
+          callbacks: {label: c => c.parsed.y===null ? null : `  ${c.dataset.label}: ${Math.round(c.parsed.y).toLocaleString('da-DK')}`},
+          backgroundColor:'#1C1C1A', titleFont:{family:'DM Sans',size:13,weight:'600'},
+          bodyFont:{family:'DM Sans',size:12}, padding:12, cornerRadius:6
         }
       },
-      scales:{
-        x:{ticks:{font:{family:'DM Sans',size:11},color:'#6A6A60',maxRotation:35},grid:{color:'rgba(0,0,0,0.04)'}},
-        y:{beginAtZero:false,
+      scales: {
+        x: {ticks:{font:{family:'DM Sans',size:12},color:'#6A6A60',maxRotation:25}, grid:{color:'rgba(0,0,0,0.04)'}},
+        y: {beginAtZero:false,
           ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>v.toLocaleString('da-DK')},
           grid:{color:'rgba(0,0,0,0.05)'},
           title:{display:true,text:'Antal borgere',font:{family:'DM Sans',size:11},color:'#8A8A7E'}}
       }
-    },
-    plugins:[jan2026Plugin]
+    }
   });
 
-  // Byg klikbar legende
-  byggLegende(ALLE_GRUPPER.slice(1).map(g => ({label:g.label, farve:g.farve})));
+  byggLegende([
+    {label:'Faktisk folketal', farve:'#1A4D2E', dashed:false},
+    {label:'Prognose 2026',    farve:'#C9973A', dashed:true}
+  ]);
 }
 
 /* ═══════════════════════════════════════════════════
    RENDER — INDIVIDUEL ALDERSGRUPPE
 ═══════════════════════════════════════════════════ */
 function renderIndividuel() {
-  document.getElementById('tblWrap').style.display = 'none';
+  document.getElementById('tblWrap').style.display  = 'none';
   document.getElementById('mainCanvas').style.display = 'block';
 
   const g      = ALLE_GRUPPER.find(x => x.id === aktivGruppe);
@@ -608,73 +612,64 @@ function renderIndividuel() {
   const prog   = prognoseSerie(g);
 
   document.getElementById('chartTitle').textContent = `${g.label} — faktisk vs. prognose 2026`;
-  document.getElementById('chartDesc').textContent  = `Faktisk folketal (${g.label}) sammenlignet med kommunens prognose · Grøn zone = over prognose · Rød zone = under prognose · 2025 som historisk kontekst`;
+  document.getElementById('chartDesc').textContent  = `Faktisk folketal (${g.label}) sammenlignet med kommunens prognose · Grøn zone = over prognose · Rød zone = under prognose`;
 
   const datasets = [
     {
-      label:'Prognose 2026',
-      data: prog,
-      borderColor: 'rgba(201,151,58,0.8)',
-      backgroundColor:'transparent',
-      borderDash:[7,4], borderWidth:2,
-      fill:false, tension:0.3, spanGaps:false,
-      pointRadius: ALL_LABELS.map(t => t.startsWith('2026') ? 3 : 0),
-      pointBackgroundColor:'#C9973A',
-      pointBorderColor:'#fff', pointBorderWidth:1.5,
-      pointHoverRadius:6,
-      order:1
+      label: 'Prognose 2026',
+      data:  prog,
+      borderColor: 'rgba(201,151,58,0.85)',
+      backgroundColor: 'transparent',
+      borderDash: [7,4], borderWidth: 2,
+      fill: false, tension: 0.3, spanGaps: true,
+      pointRadius: 3, pointHoverRadius: 6,
+      pointBackgroundColor: '#C9973A',
+      pointBorderColor: '#fff', pointBorderWidth: 1.5,
+      order: 1
     },
     {
-      label:`Faktisk — ${g.label}`,
-      data: actual,
+      label: `Faktisk — ${g.label}`,
+      data:  actual,
       borderColor: g.farve,
-      backgroundColor:'transparent',
-      borderWidth:2.5,
-      fill:{target:0, above:'rgba(46,125,84,0.12)', below:'rgba(192,57,43,0.12)'},
-      tension:0.35, spanGaps:false,
-      pointRadius:3, pointHoverRadius:6,
+      backgroundColor: 'transparent',
+      borderWidth: 2.5,
+      fill: {target:0, above:'rgba(46,125,84,0.12)', below:'rgba(192,57,43,0.12)'},
+      tension: 0.35, spanGaps: false,
+      pointRadius: 4, pointHoverRadius: 7,
       pointBackgroundColor: g.farve,
-      pointBorderColor:'#fff', pointBorderWidth:1.5,
-      segment:{
-        borderColor: ctx => {
-          const lbl = labels[ctx.p0DataIndex];
-          return lbl?.endsWith("'25") ? hexToRgba(g.farve, 0.38) : g.farve;
-        },
-        borderWidth: ctx => labels[ctx.p0DataIndex]?.endsWith("'25") ? 1.5 : 2.5
-      },
-      order:0
+      pointBorderColor: '#fff', pointBorderWidth: 2,
+      order: 0
     }
   ];
 
   if (chart) chart.destroy();
   chart = new Chart(document.getElementById('mainCanvas').getContext('2d'), {
-    type:'line',
-    data:{labels, datasets},
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      interaction:{mode:'index',intersect:false},
-      plugins:{
-        legend:{display:false},
-        tooltip:{
-          callbacks:{label:c=>c.parsed.y===null?null:`  ${c.dataset.label}: ${Math.round(c.parsed.y).toLocaleString('da-DK')}`},
-          backgroundColor:'#1C1C1A',titleFont:{family:'DM Sans',size:13,weight:'600'},
-          bodyFont:{family:'DM Sans',size:12},padding:12,cornerRadius:6
+    type: 'line',
+    data: {labels, datasets},
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: {mode:'index', intersect:false},
+      plugins: {
+        legend: {display:false},
+        tooltip: {
+          callbacks: {label: c => c.parsed.y===null ? null : `  ${c.dataset.label}: ${Math.round(c.parsed.y).toLocaleString('da-DK')}`},
+          backgroundColor:'#1C1C1A', titleFont:{family:'DM Sans',size:13,weight:'600'},
+          bodyFont:{family:'DM Sans',size:12}, padding:12, cornerRadius:6
         }
       },
-      scales:{
-        x:{ticks:{font:{family:'DM Sans',size:11},color:'#6A6A60',maxRotation:35},grid:{color:'rgba(0,0,0,0.04)'}},
-        y:{beginAtZero:false,
+      scales: {
+        x: {ticks:{font:{family:'DM Sans',size:12},color:'#6A6A60',maxRotation:25}, grid:{color:'rgba(0,0,0,0.04)'}},
+        y: {beginAtZero:false,
           ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>v.toLocaleString('da-DK')},
           grid:{color:'rgba(0,0,0,0.05)'},
           title:{display:true,text:'Antal borgere',font:{family:'DM Sans',size:11},color:'#8A8A7E'}}
       }
-    },
-    plugins:[jan2026Plugin]
+    }
   });
 
   byggLegende([
-    {label:`Faktisk — ${g.label}`, farve:g.farve, solid:true},
-    {label:'Prognose 2026',        farve:'#C9973A', dashed:true}
+    {label:`Faktisk — ${g.label}`, farve:g.farve,    dashed:false},
+    {label:'Prognose 2026',        farve:'#C9973A',   dashed:true}
   ]);
 }
 
@@ -684,46 +679,29 @@ function renderIndividuel() {
 function renderTabel() {
   if (chart) { chart.destroy(); chart=null; }
   document.getElementById('mainCanvas').style.display = 'none';
-  document.getElementById('tblWrap').style.display = 'block';
+  document.getElementById('tblWrap').style.display    = 'block';
+  document.getElementById('legend').innerHTML         = '';
 
-  const g      = ALLE_GRUPPER.find(x => x.id === aktivGruppe) || ALLE_GRUPPER[0];
-  const isAlle = g.id === 'alle';
-  const head   = document.getElementById('tblHead');
-  const body   = document.getElementById('tblBody');
+  const g    = ALLE_GRUPPER.find(x => x.id === aktivGruppe) || ALLE_GRUPPER[0];
+  const head = document.getElementById('tblHead');
+  const body = document.getElementById('tblBody');
+  head.innerHTML = `<tr><th>Måned</th><th>Faktisk</th><th>Prognose</th><th>Afvigelse</th></tr>`;
+  body.innerHTML = '';
 
-  if (isAlle) {
-    head.innerHTML = `<tr><th>Måned</th>${ALLE_GRUPPER.slice(1).map(x=>`<th>${x.label}</th>`).join('')}<th>I alt</th></tr>`;
-    body.innerHTML = '';
-    ALL_LABELS.forEach(tid => {
-      const vals = ALLE_GRUPPER.slice(1).map(grp => getGruppeVal(folkeData, grp, tid));
-      const ialt = getGruppeVal(folkeData, ALLE_GRUPPER[0], tid);
-      if (vals.every(v=>v===null) && ialt===null) return;
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${fmtLabel(tid)}</td>${vals.map(v=>
-        `<td class="${v>0?'hi':''}">${v!==null?Math.round(v).toLocaleString('da-DK'):'—'}</td>`
-      ).join('')}<td class="hi">${ialt!==null?Math.round(ialt).toLocaleString('da-DK'):'—'}</td>`;
-      body.appendChild(tr);
-    });
-  } else {
-    head.innerHTML = `<tr><th>Måned</th><th>Faktisk</th><th>Prognose</th><th>Afvigelse</th></tr>`;
-    body.innerHTML = '';
-    ALL_LABELS.forEach(tid => {
-      const faktisk = getGruppeVal(folkeData, g, tid);
-      if (faktisk === null) return;
-      const prog = progForTid(g, tid);
-      const afv  = prog ? faktisk - prog : null;
-      const tr   = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${fmtLabel(tid)}</td>
-        <td class="hi">${Math.round(faktisk).toLocaleString('da-DK')}</td>
-        <td>${prog ? Math.round(prog).toLocaleString('da-DK') : '—'}</td>
-        <td class="${afv===null?'':afv>=0?'pos':'neg'}">${afv!==null?(afv>=0?'+':'')+Math.round(afv).toLocaleString('da-DK'):'—'}</td>
-      `;
-      body.appendChild(tr);
-    });
-  }
-
-  document.getElementById('legend').innerHTML = '';
+  ALL_LABELS.forEach(tid => {
+    const faktisk = getGruppeVal(folkeData, g, tid);
+    if (faktisk === null) return;
+    const prog = progForTid(g, tid);
+    const afv  = prog !== null ? faktisk - prog : null;
+    const tr   = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${fmtLabel(tid)}</td>
+      <td class="hi">${Math.round(faktisk).toLocaleString('da-DK')}</td>
+      <td>${prog !== null ? Math.round(prog).toLocaleString('da-DK') : '—'}</td>
+      <td class="${afv===null?'':afv>=0?'pos':'neg'}">${afv!==null?(afv>=0?'+':'')+Math.round(afv).toLocaleString('da-DK'):'—'}</td>
+    `;
+    body.appendChild(tr);
+  });
 }
 
 /* ═══════════════════════════════════════════════════
