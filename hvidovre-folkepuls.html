@@ -885,17 +885,8 @@ const ANALYSE_URL = 'https://raw.githubusercontent.com/henrikastrup/hvidovre-ana
 let analyseData = null;  // gemmer den hentede JSON
 let aktivAiTab  = 'alle';
 
-// Gruppe-id → analyse-nøgle i JSON
-const AI_NOEGLE = {
-  alle:    'alle',
-  g0_2:   '0-2',
-  g3_5:   '3-5',
-  g6_17:  '6-17',
-  g18_24: '18-24',
-  g25_66: '25-66',
-  g67_79: '67-79',
-  g80p:   '80+'
-};
+// Gruppe-id matcher direkte JSON-nøglerne fra n8n (g0_2, g3_5, ...)
+// Ingen mapping nødvendig — brug aktivAiTab direkte som nøgle
 
 async function loadAnalyse() {
   try {
@@ -950,8 +941,9 @@ function visAnalyse() {
 
 function visAnalyseTekst() {
   if (!analyseData) return;
-  const noegle = AI_NOEGLE[aktivAiTab] || 'alle';
-  const tekst  = analyseData.analyse?.[noegle] || analyseData.analyse?.alle || 'Ingen analyse for denne gruppe.';
+  const tekst = analyseData.analyse?.[aktivAiTab]
+             || analyseData.analyse?.alle
+             || 'Ingen analyse for denne gruppe.';
   document.getElementById('aiTekst').textContent = tekst;
 }
 
