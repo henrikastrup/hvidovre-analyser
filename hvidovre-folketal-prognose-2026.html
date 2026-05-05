@@ -518,6 +518,8 @@ function showTabel() {
   document.getElementById('chartDesc').style.display = 'none';
   if (chart) { chart.destroy(); chart = null; }
 }
+
+function skiftDisplay(d) {
   display = d;
   localStorage.setItem('hv_prognose_display', d);
   document.getElementById('btnGraf').classList.toggle('grn', d==='graf');
