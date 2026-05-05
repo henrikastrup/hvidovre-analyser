@@ -219,7 +219,7 @@
       </div>
     </div>
     <div class="legend" id="legend"></div>
-    <div class="chart-wrap">
+    <div class="chart-wrap" id="chartWrap">
       <canvas id="mainCanvas"></canvas>
       <div id="ov" class="ov show"><div class="spin"></div>Henter data fra Danmarks Statistik…</div>
     </div>
@@ -257,18 +257,18 @@ const ALLE_GRUPPER = [
 function range(a, b) { const o=[]; for(let i=a;i<b;i++) o.push(i); return o; }
 
 // Registrér datalabels plugin globalt (kun til faktisk-datasæt)
-Chart.register(ChartDataLabels);
+// NB: UMD-buildet auto-registrerer, så Chart.register er ikke nødvendig
 
 // Fælles datalabels-konfiguration for faktisk-datasættet
 function datalabelsCfg(farve) {
   return {
-    display: ctx => ctx.parsed?.y != null,
+    display: true,
     anchor: 'end',
     align: 'top',
     offset: 4,
     color: farve,
     font: { family:'DM Mono', size:10.5, weight:'500' },
-    formatter: (v, ctx) => ctx.parsed?.y == null ? null : Math.round(ctx.parsed.y).toLocaleString('da-DK'),
+    formatter: value => (value == null) ? null : Math.round(value).toLocaleString('da-DK'),
     padding: { bottom: 2 }
   };
 }
@@ -504,7 +504,20 @@ function skiftGruppe(id) {
 /* ═══════════════════════════════════════════════════
    DISPLAY TOGGLE
 ═══════════════════════════════════════════════════ */
-function skiftDisplay(d) {
+function showGraf() {
+  document.getElementById('chartWrap').style.display = 'block';
+  document.getElementById('legend').style.display    = 'flex';
+  document.getElementById('tblWrap').style.display   = 'none';
+  document.getElementById('chartDesc').style.display = 'block';
+}
+
+function showTabel() {
+  document.getElementById('chartWrap').style.display = 'none';
+  document.getElementById('legend').style.display    = 'none';
+  document.getElementById('tblWrap').style.display   = 'block';
+  document.getElementById('chartDesc').style.display = 'none';
+  if (chart) { chart.destroy(); chart = null; }
+}
   display = d;
   localStorage.setItem('hv_prognose_display', d);
   document.getElementById('btnGraf').classList.toggle('grn', d==='graf');
@@ -548,8 +561,7 @@ function render() {
    RENDER — ALLE ALDERSGRUPPER
 ═══════════════════════════════════════════════════ */
 function renderAlle() {
-  document.getElementById('tblWrap').style.display  = 'none';
-  document.getElementById('mainCanvas').style.display = 'block';
+  showGraf();
   document.getElementById('chartTitle').textContent = 'Samlet folketal — faktisk vs. prognose 2026';
   document.getElementById('chartDesc').textContent  = 'Faktisk samlet folketal (IALT) pr. måned sammenlignet med kommunens prognose · Grøn zone = over prognose · Rød zone = under prognose';
 
@@ -623,8 +635,7 @@ function renderAlle() {
    RENDER — INDIVIDUEL ALDERSGRUPPE
 ═══════════════════════════════════════════════════ */
 function renderIndividuel() {
-  document.getElementById('tblWrap').style.display  = 'none';
-  document.getElementById('mainCanvas').style.display = 'block';
+  showGraf();
 
   const g      = ALLE_GRUPPER.find(x => x.id === aktivGruppe);
   const labels = ALL_LABELS.map(fmtLabel);
@@ -699,10 +710,7 @@ function renderIndividuel() {
    RENDER — TABEL
 ═══════════════════════════════════════════════════ */
 function renderTabel() {
-  if (chart) { chart.destroy(); chart=null; }
-  document.getElementById('mainCanvas').style.display = 'none';
-  document.getElementById('tblWrap').style.display    = 'block';
-  document.getElementById('legend').innerHTML         = '';
+  showTabel();
 
   const g    = ALLE_GRUPPER.find(x => x.id === aktivGruppe) || ALLE_GRUPPER[0];
   const head = document.getElementById('tblHead');
