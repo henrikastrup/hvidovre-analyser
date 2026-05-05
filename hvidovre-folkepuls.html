@@ -483,6 +483,7 @@ async function loadData() {
     setStatus('ok', 'Folketal opdateret fra Danmarks Statistik · '+ts);
     document.getElementById('ov').classList.remove('show');
     kpiDim(false);
+  opdaterOverskrift(aktivGruppe);
 
   } catch(err) {
     setStatus('error','Fejl: '+err.message);
@@ -961,8 +962,7 @@ function visAnalyse() {
 
   // Overskrift
   const g = ALLE_GRUPPER.find(x => x.id === aktivAiTab) || ALLE_GRUPPER[0];
-  document.getElementById('aiHeading').textContent =
-    g.id === 'alle' ? 'Befolkningsudviklingen i Hvidovre' : `Befolkningsudvikling — ${g.label}`;
+  opdaterOverskrift(g.id);
 
   // Badge
   const badge = document.getElementById('aiBadge');
@@ -983,8 +983,7 @@ function visAnalyse() {
     btn.textContent = grp.label;
     btn.onclick = () => {
       aktivAiTab = grp.id;
-      document.getElementById('aiHeading').textContent =
-        grp.id === 'alle' ? 'Befolkningsudviklingen i Hvidovre' : `Befolkningsudvikling — ${grp.label}`;
+      opdaterOverskrift(grp.id);
       document.querySelectorAll('.ai-tab').forEach(t => t.classList.remove('active'));
       btn.classList.add('active');
       visAnalyseTekst();
@@ -1017,14 +1016,40 @@ function skiftGruppeOgAI(id) {
   render();
   if (analyseData) {
     const g = ALLE_GRUPPER.find(x => x.id === id);
-    document.getElementById('aiHeading').textContent =
-      id === 'alle' ? 'Befolkningsudviklingen i Hvidovre' : `Befolkningsudvikling — ${g?.label || id}`;
+    opdaterOverskrift(id);
     document.querySelectorAll('.ai-tab').forEach(t => {
       const grp = ALLE_GRUPPER.find(x => x.label === t.textContent);
       t.classList.toggle('active', grp?.id === id);
     });
     visAnalyseTekst();
   }
+}
+
+/* ═══════════════════════════════════════════════════
+   DYNAMISK OVERSKRIFT
+═══════════════════════════════════════════════════ */
+function genererOverskrift(gruppeId) {
+  if (analyseData?.overskrift?.[gruppeId]) return analyseData.overskrift[gruppeId];
+
+  const periode = document.getElementById('k1d').textContent || '';
+  const faktisk = document.getElementById('k1').textContent  || '—';
+  const afvEl   = document.getElementById('k3').textContent  || '';
+  const afvNum  = parseInt(afvEl.replace(/\./g,'').replace('+','')) || 0;
+  const g       = ALLE_GRUPPER.find(x => x.id === gruppeId) || ALLE_GRUPPER[0];
+
+  if (gruppeId === 'alle') {
+    if (!periode || faktisk === '—') return 'Befolkningsudviklingen i Hvidovre';
+    const afvTekst = afvNum === 0 ? 'præcis på prognosen'
+                   : afvNum >  0 ? `${afvEl} over prognosen`
+                   :               `${Math.abs(afvNum).toLocaleString('da-DK')} under prognosen`;
+    return `${faktisk} hvidovreaner i ${periode} — ${afvTekst}`;
+  }
+  if (!periode || faktisk === '—') return `${g.label} — befolkningsudvikling`;
+  return `${g.label}: ${faktisk} borgere i ${periode}`;
+}
+
+function opdaterOverskrift(id) {
+  document.getElementById('aiHeading').textContent = genererOverskrift(id);
 }
 
 function downloadRapport() {
