@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indvandring til Hvidovre — efter statsborgerskab</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap');
+
+  :root {
+    --green:     #1A4D2E;
+    --green-mid: #2E7D54;
+    --gold:      #C9973A;
+    --red:       #C0392B;
+    --bg:    #F9F6F0;
+    --card:  #FFFFFF;
+    --text:  #1C1C1A;
+    --mid:   #4A4A44;
+    --muted: #8A8A7E;
+    --border:#E2DDD4;
+    --shadow:0 2px 20px rgba(26,77,46,0.07);
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); }
+
+  /* LOCAL FILE BANNER */
+  .local-banner {
+    display:none; background:#FEF3C7; border-bottom:1px solid #F59E0B;
+    padding:10px 48px; font-size:13px; color:#92400E;
+    align-items:center; gap:10px;
+  }
+  .local-banner.show { display:flex; }
+  .local-banner strong { color:#78350F; }
+  .local-banner a { color:#78350F; font-weight:600; }
+
+  /* HEADER */
+  .hdr {
+    background:var(--green); color:#fff;
+    padding:32px 48px 26px; position:relative; overflow:hidden;
+  }
+  .hdr::before {
+    content:''; position:absolute; right:-80px; bottom:-80px;
+    width:300px; height:300px; border-radius:50%;
+    background:rgba(255,255,255,.03); pointer-events:none;
+  }
+  .hdr-eye { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.5); margin-bottom:10px; }
+  .hdr h1  { font-family:'DM Serif Display',serif; font-size:clamp(20px,2.5vw,31px); font-weight:400; line-height:1.2; margin-bottom:8px; }
+  .hdr h1 em { font-style:italic; color:#E8C06A; }
+  .hdr p { font-size:13px; color:rgba(255,255,255,.6); font-weight:300; line-height:1.6; max-width:580px; }
+
+  /* TOOLBAR */
+  .toolbar {
+    background:#fff; border-bottom:1px solid var(--border);
+    padding:10px 48px; display:flex; align-items:center;
+    gap:10px; flex-wrap:wrap;
+  }
+  .select-wrap { position:relative; flex-shrink:0; }
+  .select-wrap::after {
+    content:'▾'; position:absolute; right:12px; top:50%;
+    transform:translateY(-50%); font-size:12px; color:var(--muted); pointer-events:none;
+  }
+  #countrySelect {
+    appearance:none; -webkit-appearance:none;
+    padding:8px 36px 8px 14px;
+    border:1.5px solid var(--green); border-radius:7px;
+    font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; color:var(--green);
+    background:#fff; cursor:pointer; min-width:200px; max-width:290px;
+    transition:box-shadow .15s;
+  }
+  #countrySelect:focus { outline:none; box-shadow:0 0 0 3px rgba(26,77,46,.15); }
+
+  .divider { width:1px; height:28px; background:var(--border); flex-shrink:0; }
+  .btn {
+    padding:7px 15px; border:1.5px solid var(--border); background:transparent;
+    font-family:'DM Sans',sans-serif; font-size:13px; color:var(--mid); cursor:pointer;
+    border-radius:6px; transition:all .15s; white-space:nowrap; flex-shrink:0;
+  }
+  .btn:hover { border-color:var(--green); color:var(--green); }
+  .btn.grn { background:var(--green); border-color:var(--green); color:#fff; }
+  .btn.grn:hover { background:#143d24; }
+  .btn.gld { background:var(--gold); border-color:var(--gold); color:#fff; }
+  .btn.gld:hover { background:var(--green); border-color:var(--green); }
+  #updateTime { font-family:'DM Mono',monospace; font-size:10.5px; color:var(--muted); margin-left:auto; }
+
+  /* STATUS */
+  .statusbar {
+    background:#fff; border-bottom:1px solid var(--border);
+    padding:8px 48px; display:flex; align-items:center; gap:9px; min-height:34px;
+  }
+  .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .dot.loading { background:var(--gold); animation:pulse .9s ease-in-out infinite; }
+  .dot.ok      { background:var(--green-mid); }
+  .dot.error   { background:var(--red); }
+  #statusMsg   { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  /* MAIN */
+  main { padding:28px 48px; max-width:1100px; }
+
+  /* KPI */
+  .kpi-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:11px; margin-bottom:26px; }
+  .kpi {
+    background:var(--card); border:1px solid var(--border); border-left:4px solid var(--green);
+    border-radius:10px; padding:14px 17px; box-shadow:var(--shadow); transition:opacity .3s;
+  }
+  .kpi.gld { border-left-color:var(--gold); }
+  .kpi.red { border-left-color:var(--red); }
+  .kpi.mid { border-left-color:var(--green-mid); }
+  .kpi.dim { opacity:.35; }
+  .kpi-lbl  { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+  .kpi-val  { font-family:'DM Serif Display',serif; font-size:33px; line-height:1; color:var(--text); margin-bottom:3px; }
+  .kpi-desc { font-size:11.5px; color:var(--mid); line-height:1.4; }
+
+  /* CHART CARD */
+  .chart-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:22px 26px 18px; box-shadow:var(--shadow); }
+  .card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:4px; flex-wrap:wrap; }
+  .card-titles h2 { font-family:'DM Serif Display',serif; font-size:17px; font-weight:400; margin-bottom:3px; }
+  .card-titles p  { font-size:12.5px; color:var(--muted); line-height:1.5; max-width:520px; }
+
+  .view-toggle { display:flex; border:1.5px solid var(--border); border-radius:7px; overflow:hidden; flex-shrink:0; }
+  .vtab {
+    padding:6px 15px; border:none; background:transparent;
+    font-family:'DM Sans',sans-serif; font-size:12.5px; color:var(--mid);
+    cursor:pointer; transition:all .15s; white-space:nowrap; border-right:1px solid var(--border);
+  }
+  .vtab:last-child { border-right:none; }
+  .vtab:hover  { background:#F0F0EA; color:var(--green); }
+  .vtab.active { background:var(--green); color:#fff; }
+
+  .legend { display:flex; gap:16px; margin:12px 0 8px; flex-wrap:wrap; }
+  .leg { display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--mid); }
+  .leg-ln { width:26px; height:3px; border-radius:2px; }
+  .leg-sq { width:11px; height:11px; border-radius:3px; flex-shrink:0; }
+
+  .chart-wrap { position:relative; height:370px; }
+
+  .ov {
+    display:none; position:absolute; inset:0; background:rgba(255,255,255,.88);
+    border-radius:10px; align-items:center; justify-content:center;
+    flex-direction:column; gap:11px; z-index:10;
+    font-family:'DM Mono',monospace; font-size:12px; color:var(--muted);
+  }
+  .ov.show { display:flex; }
+  .spin { width:24px; height:24px; border:3px solid var(--border); border-top-color:var(--green); border-radius:50%; animation:spin .8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  .empty-state { display:none; position:absolute; inset:0; align-items:center; justify-content:center; flex-direction:column; gap:10px; text-align:center; padding:24px; }
+  .empty-state.show { display:flex; }
+  .empty-icon { font-size:36px; opacity:.4; }
+  .empty-msg  { font-size:14px; color:var(--muted); line-height:1.6; }
+
+  .note { background:#FDF9F0; border:1px solid #EDD9A0; border-radius:8px; padding:10px 14px; font-size:12px; color:#7A6020; line-height:1.55; margin-top:12px; }
+  .note strong { color:#5A4010; }
+
+  .source { margin-top:24px; padding:11px 14px; background:#fff; border:1px solid var(--border); border-radius:8px; font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); line-height:1.7; }
+  .source strong { color:var(--mid); }
+
+  @media (max-width:700px) {
+    .hdr, main, .toolbar, .statusbar, .local-banner { padding-left:16px; padding-right:16px; }
+    .chart-wrap { height:270px; }
+    .card-top { flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- BANNER: vises kun når filen åbnes lokalt fra harddisk -->
+<div class="local-banner" id="localBanner">
+  ⚠️ <span><strong>Lokalt filsystem:</strong> Browseren blokerer kald til Danmarks Statistik, når filen åbnes direkte fra harddisken. <a href="https://henrikastrup.github.io/hvidovre-analyser/hvidovre-indvandring-live.html" target="_blank">Åbn rapporten på GitHub Pages</a> for at se live data.</span>
+</div>
+
+<div class="hdr">
+  <div class="hdr-eye">Hvidovre Kommune · Center for Økonomi og Personale · Befolkningsanalyse</div>
+  <h1>Ind- og udvandring til Hvidovre —<br><em id="hdrLand">Nepalske statsborgere</em></h1>
+  <p>Live data fra Danmarks Statistik · Vælg statsborgerskab i dropdown-menuen · Opdateres automatisk</p>
+</div>
+
+<div class="toolbar">
+  <div class="select-wrap">
+    <select id="countrySelect" onchange="onLandSkift()">
+      <!-- Bygges dynamisk ved load — hardkodet liste bruges som fallback -->
+    </select>
+  </div>
+  <div class="divider"></div>
+  <button class="btn grn" onclick="loadData()">↺&nbsp; Opdater</button>
+  <button class="btn gld" onclick="downloadRapport()">⬇&nbsp; Gem rapport</button>
+  <span id="updateTime"></span>
+</div>
+
+<div class="statusbar">
+  <div id="dot" class="dot loading"></div>
+  <span id="statusMsg">Forbinder til Danmarks Statistik…</span>
+</div>
+
+<main>
+  <div class="kpi-row">
+    <div class="kpi"     id="kpi1"><div class="kpi-lbl">Indvandringer 2025</div><div class="kpi-val" id="k1">—</div><div class="kpi-desc">Hele 2025, ugentlig kilde</div></div>
+    <div class="kpi gld" id="kpi2"><div class="kpi-lbl">Indvandringer 2026</div><div class="kpi-val" id="k2">—</div><div class="kpi-desc" id="k2d">Foreløbig, indeværende år</div></div>
+    <div class="kpi mid" id="kpi3"><div class="kpi-lbl">Indvandringer seneste år</div><div class="kpi-val" id="k3">—</div><div class="kpi-desc" id="k3d">VAN1AAR</div></div>
+    <div class="kpi red" id="kpi4"><div class="kpi-lbl">Udvandringer seneste år</div><div class="kpi-val" id="k4">—</div><div class="kpi-desc" id="k4d">VAN2AAR</div></div>
+    <div class="kpi"     id="kpi5"><div class="kpi-lbl">Nettomigration seneste år</div><div class="kpi-val" id="k5">—</div><div class="kpi-desc" id="k5d">Indv. minus udv.</div></div>
+  </div>
+
+  <div class="chart-card">
+    <div class="card-top">
+      <div class="card-titles">
+        <h2 id="chartTitle">Akkumuleret indvandring pr. måned — 2025 vs. 2026</h2>
+        <p  id="chartDesc">Løbende sum af indvandrede statsborgere til Hvidovre · Sammenligner tempoet i 2026 med 2025</p>
+      </div>
+      <div class="view-toggle">
+        <button class="vtab active" id="tab1" onclick="skiftVisning('akkumuleret')">Akkumuleret 2025/26</button>
+        <button class="vtab"        id="tab2" onclick="skiftVisning('historisk')">Historisk ind/ud/netto</button>
+      </div>
+    </div>
+
+    <div class="legend" id="legend">
+      <div class="leg"><div class="leg-ln" style="background:var(--green)"></div>2025 — fuldt år</div>
+      <div class="leg"><div class="leg-ln" style="background:repeating-linear-gradient(to right,var(--gold) 0,var(--gold) 6px,transparent 6px,transparent 10px)"></div>2026 — foreløbig</div>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="mainCanvas"></canvas>
+      <div id="ov" class="ov show"><div class="spin"></div><span id="ovMsg">Henter data…</span></div>
+      <div id="emptyState" class="empty-state">
+        <div class="empty-icon">📭</div>
+        <div class="empty-msg" id="emptyMsg">Ingen data fundet for det valgte statsborgerskab i Hvidovre.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note" id="chartNote">
+    <strong>Kilde:</strong> DST tabel VAN1UGE (ugentlig indvandring) aggregeret til måneder via ISO-uge torsdagsregel
+  </div>
+
+  <div class="source">
+    <strong>Data:</strong> Danmarks Statistik API · api.statbank.dk/v1 · Tabeller: VAN1UGE, VAN1AAR, VAN2AAR · Hvidovre = 167 ·
+    Statsborgerskab: <span id="srcLand">Nepal = 5464</span> ·
+    <strong>Senest hentet:</strong> <span id="fetchTs">—</span>
+  </div>
+</main>
+
+<script>
+/* ════════════════════════════════════════════
+   HARDKODET LANDE-LISTE (fallback + hurtig load)
+   Kilde: DST tableinfo VAN1AAR, STATSB, maj 2025
+════════════════════════════════════════════ */
+const ALLE_LANDE = [{"id":"5535","text":"Abu Dhabi"},{"id":"5404","text":"Afghanistan"},{"id":"5299","text":"Afrika uoplyst"},{"id":"5122","text":"Albanien"},{"id":"5202","text":"Algeriet"},{"id":"5124","text":"Andorra"},{"id":"5204","text":"Angola"},{"id":"5309","text":"Antigua og Barbuda"},{"id":"5302","text":"Argentina"},{"id":"5708","text":"Armenien"},{"id":"5301","text":"Aruba"},{"id":"5710","text":"Aserbajdsjan"},{"id":"5471","text":"Asien uoplyst"},{"id":"5502","text":"Australien"},{"id":"5303","text":"Bahamas"},{"id":"5406","text":"Bahrain"},{"id":"5410","text":"Bangladesh"},{"id":"5305","text":"Barbados"},{"id":"5706","text":"Belarus"},{"id":"5126","text":"Belgien"},{"id":"5526","text":"Belize"},{"id":"5281","text":"Benin"},{"id":"5307","text":"Bermuda"},{"id":"5408","text":"Bhutan"},{"id":"5304","text":"Bolivia"},{"id":"5754","text":"Bosnien-Hercegovina"},{"id":"5207","text":"Botswana"},{"id":"5306","text":"Brasilien"},{"id":"5394","text":"Britisk Vestindien"},{"id":"5412","text":"Brunei"},{"id":"5128","text":"Bulgarien"},{"id":"5294","text":"Burkina Faso"},{"id":"5213","text":"Burundi"},{"id":"5416","text":"Cambodja"},{"id":"5277","text":"Cameroun"},{"id":"5314","text":"Canada"},{"id":"5276","text":"Centralafrikanske Republik"},{"id":"5316","text":"Chile"},{"id":"5318","text":"Colombia"},{"id":"5215","text":"Comorerne"},{"id":"5278","text":"Congo, Demokratiske Republik"},{"id":"5279","text":"Congo, Republikken"},{"id":"5516","text":"Cookøerne"},{"id":"5322","text":"Costa Rica"},{"id":"5324","text":"Cuba"},{"id":"5325","text":"Curacao"},{"id":"5422","text":"Cypern"},{"id":"5184","text":"DDR"},{"id":"5525","text":"Djibouti"},{"id":"5345","text":"Dominica"},{"id":"5326","text":"Dominikanske Republik"},{"id":"5531","text":"Dubai"},{"id":"5328","text":"Ecuador"},{"id":"5272","text":"Egypten"},{"id":"5372","text":"El Salvador"},{"id":"5282","text":"Elfenbenskysten"},{"id":"5216","text":"Eritrea"},{"id":"5607","text":"Estland"},{"id":"5259","text":"Eswantini"},{"id":"5214","text":"Etiopien"},{"id":"5114","text":"Europa uoplyst"},{"id":"5530","text":"Falklandsøerne"},{"id":"5508","text":"Fiji"},{"id":"5474","text":"Filippinerne"},{"id":"5104","text":"Finland"},{"id":"5403","text":"Forenede Arabiske Emirater"},{"id":"5130","text":"Frankrig"},{"id":"5529","text":"Fransk Guyana"},{"id":"5336","text":"Fransk Vestindien"},{"id":"5506","text":"Franske besiddelser i Stillehavet"},{"id":"5283","text":"Gabon"},{"id":"5222","text":"Gambia"},{"id":"5223","text":"Gaza"},{"id":"5724","text":"Georgien"},{"id":"5228","text":"Ghana"},{"id":"5339","text":"Grenada"},{"id":"5134","text":"Grækenland"},{"id":"5528","text":"Guadeloupe"},{"id":"5338","text":"Guatemala"},{"id":"5232","text":"Guinea"},{"id":"5231","text":"Guinea-Bissau"},{"id":"5308","text":"Guyana"},{"id":"5342","text":"Haiti"},{"id":"5348","text":"Honduras"},{"id":"5428","text":"Hongkong"},{"id":"5432","text":"Indien"},{"id":"5498","text":"Indokina"},{"id":"5434","text":"Indonesien"},{"id":"5436","text":"Irak"},{"id":"5438","text":"Iran"},{"id":"5142","text":"Irland"},{"id":"5105","text":"Island"},{"id":"5442","text":"Israel"},{"id":"5150","text":"Italien"},{"id":"5352","text":"Jamaica"},{"id":"5444","text":"Japan"},{"id":"5446","text":"Jordan"},{"id":"5152","text":"Jugoslavien"},{"id":"5758","text":"Jugoslavien, Forbundsrepublikken"},{"id":"5233","text":"Kap Verde"},{"id":"5716","text":"Kasakhstan"},{"id":"5234","text":"Kenya"},{"id":"5448","text":"Kina"},{"id":"5720","text":"Kirgisistan"},{"id":"5274","text":"Kiribati"},{"id":"5761","text":"Kosovo"},{"id":"5750","text":"Kroatien"},{"id":"5452","text":"Kuwait"},{"id":"5454","text":"Laos"},{"id":"5235","text":"Lesotho"},{"id":"5609","text":"Letland"},{"id":"5456","text":"Libanon"},{"id":"5236","text":"Liberia"},{"id":"5238","text":"Libyen"},{"id":"5107","text":"Liechtenstein"},{"id":"5611","text":"Litauen"},{"id":"5108","text":"Luxembourg"},{"id":"5533","text":"Macao"},{"id":"5242","text":"Madagaskar"},{"id":"5297","text":"Malawi"},{"id":"5458","text":"Malaysia"},{"id":"5457","text":"Maldiverne"},{"id":"5243","text":"Mali"},{"id":"5153","text":"Malta"},{"id":"5244","text":"Marokko"},{"id":"5248","text":"Marshalløerne"},{"id":"5353","text":"Martinique"},{"id":"5284","text":"Mauretanien"},{"id":"5245","text":"Mauritius"},{"id":"5487","text":"Mellemøsten uoplyst"},{"id":"5354","text":"Mexico"},{"id":"5712","text":"Moldova"},{"id":"5109","text":"Monaco"},{"id":"5459","text":"Mongoliet"},{"id":"5759","text":"Montenegro"},{"id":"5240","text":"Mozambique"},{"id":"5414","text":"Myanmar"},{"id":"5247","text":"Namibia"},{"id":"5310","text":"Nauru"},{"id":"5140","text":"Nederlandene"},{"id":"5346","text":"Nederlandske Antiller"},{"id":"5464","text":"Nepal"},{"id":"5514","text":"New Zealand"},{"id":"5356","text":"Nicaragua"},{"id":"5285","text":"Niger"},{"id":"5246","text":"Nigeria"},{"id":"5397","text":"Nordamerika uoplyst"},{"id":"5111","text":"Nordirland"},{"id":"5466","text":"Nordkorea"},{"id":"5756","text":"Nordmakedonien"},{"id":"5494","text":"Nordyemen"},{"id":"5110","text":"Norge"},{"id":"5462","text":"Oman"},{"id":"5472","text":"Pakistan"},{"id":"5157","text":"Palæstina"},{"id":"5358","text":"Panama"},{"id":"5534","text":"Papua Ny Guinea"},{"id":"5364","text":"Paraguay"},{"id":"5366","text":"Peru"},{"id":"5154","text":"Polen"},{"id":"5156","text":"Portugal"},{"id":"5527","text":"Puerto Rico"},{"id":"5496","text":"Qatar"},{"id":"5286","text":"Reunion"},{"id":"5158","text":"Rumænien"},{"id":"5700","text":"Rusland"},{"id":"5287","text":"Rwanda"},{"id":"5623","text":"Salomonøerne"},{"id":"5522","text":"Samoa"},{"id":"5159","text":"San Marino"},{"id":"5621","text":"Sao Tome og Principe"},{"id":"5478","text":"Saudi-Arabien"},{"id":"5160","text":"Schweiz"},{"id":"5288","text":"Senegal"},{"id":"5757","text":"Serbien"},{"id":"5151","text":"Serbien og Montenegro"},{"id":"5298","text":"Seychellerne"},{"id":"5255","text":"Sierra Leone"},{"id":"5480","text":"Sikkim"},{"id":"5482","text":"Singapore"},{"id":"5253","text":"Skt. Helena"},{"id":"5625","text":"Skt. Kitts og Nevis"},{"id":"5347","text":"Skt. Lucia"},{"id":"5311","text":"Skt. Vincent og Grenadinerne"},{"id":"5778","text":"Slovakiet"},{"id":"5752","text":"Slovenien"},{"id":"5289","text":"Somalia"},{"id":"5162","text":"Sovjetunionen"},{"id":"5164","text":"Spanien"},{"id":"5256","text":"Spanske besiddelser i Afrika"},{"id":"5418","text":"Sri Lanka"},{"id":"5103","text":"Statsløs"},{"id":"5170","text":"Storbritannien"},{"id":"5258","text":"Sudan"},{"id":"5344","text":"Surinam"},{"id":"5120","text":"Sverige"},{"id":"5319","text":"Syd- og Mellemamerika uoplyst"},{"id":"5262","text":"Sydafrika"},{"id":"5484","text":"Sydkorea"},{"id":"5260","text":"Sydsudan"},{"id":"5264","text":"Sydvestafrika"},{"id":"5486","text":"Syrien"},{"id":"5722","text":"Tadsjikistan"},{"id":"5424","text":"Taiwan"},{"id":"5266","text":"Tanzania"},{"id":"5292","text":"Tchad"},{"id":"5492","text":"Thailand"},{"id":"5776","text":"Tjekkiet"},{"id":"5129","text":"Tjekkoslovakiet"},{"id":"5293","text":"Togo"},{"id":"5505","text":"Tonga"},{"id":"5374","text":"Trinidad og Tobago"},{"id":"5493","text":"Trucial Oman"},{"id":"5268","text":"Tunesien"},{"id":"5718","text":"Turkmenistan"},{"id":"5273","text":"Tuvalu"},{"id":"5172","text":"Tyrkiet"},{"id":"5180","text":"Tyskland"},{"id":"5390","text":"USA"},{"id":"5269","text":"Uganda"},{"id":"5704","text":"Ukraine"},{"id":"5174","text":"Ungarn"},{"id":"5999","text":"Uoplyst"},{"id":"5376","text":"Uruguay"},{"id":"5714","text":"Usbekistan"},{"id":"5275","text":"Vanuatu"},{"id":"5176","text":"Vatikanstaten"},{"id":"5392","text":"Venezuela"},{"id":"5393","text":"Vestbredden"},{"id":"5473","text":"Vestbredden og Gaza"},{"id":"5395","text":"Vestindiske Øer"},{"id":"5468","text":"Vietnam"},{"id":"5402","text":"Yemen"},{"id":"5296","text":"Zambia"},{"id":"5295","text":"Zimbabwe"},{"id":"5230","text":"Ækvatorialguinea"},{"id":"5599","text":"Øer i Stillehavet"},{"id":"5437","text":"Østjerusalem"},{"id":"5182","text":"Østrig"},{"id":"5532","text":"Østtimor"}];
+
+/* ════════════════════════════════════════════
+   KONSTANTER
+════════════════════════════════════════════ */
+const API        = 'https://api.statbank.dk/v1/data';
+const OMRD       = '167';
+const DEFAULT_ID = '5464';
+const MND = ['Januar','Februar','Marts','April','Maj','Juni','Juli','August','September','Oktober','November','December'];
+
+let chart   = null;
+let visning = 'akkumuleret';
+let data    = null;
+let aktivLand = {id:DEFAULT_ID, navn:'Nepal'};
+
+/* ════════════════════════════════════════════
+   DST KALD
+════════════════════════════════════════════ */
+async function dst(table, variables) {
+  const r = await fetch(API, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({table, format:'JSONSTAT', lang:'da', variables})
+  });
+  if (!r.ok) throw new Error(`${table}: HTTP ${r.status}`);
+  return r.json();
+}
+
+/* ════════════════════════════════════════════
+   JSONSTAT HJÆLPER
+════════════════════════════════════════════ */
+function dimLabels(ds, dim) {
+  const cat=ds.dimension[dim].category, out=new Array(Object.keys(cat.index).length);
+  for(const [id,i] of Object.entries(cat.index)) out[i]=id;
+  return out;
+}
+
+/* ════════════════════════════════════════════
+   ISO-UGE → MÅNED
+════════════════════════════════════════════ */
+function uge2mnd(yr, uge) {
+  const jan4=new Date(yr,0,4), jan4day=(jan4.getDay()+6)%7;
+  const man=new Date(jan4.getTime()-jan4day*864e5+(uge-1)*7*864e5);
+  return new Date(man.getTime()+3*864e5).getMonth();
+}
+
+/* ════════════════════════════════════════════
+   BYGG DROPDOWN
+════════════════════════════════════════════ */
+function byggDropdownFraListe(lande) {
+  const sel = document.getElementById('countrySelect');
+  sel.innerHTML = '';
+
+  const topIds  = ['5464','5704','5486','5436','5432','5472','5418'];
+  const topLand = topIds.map(id => lande.find(l=>l.id===id)).filter(Boolean);
+
+  const topGrp = document.createElement('optgroup');
+  topGrp.label = 'Hyppigt brugte';
+  topLand.forEach(l => {
+    const o=document.createElement('option');
+    o.value=l.id; o.textContent=l.text;
+    if(l.id===DEFAULT_ID) o.selected=true;
+    topGrp.appendChild(o);
+  });
+
+  const allGrp = document.createElement('optgroup');
+  allGrp.label = 'Alle lande';
+  lande.forEach(l => {
+    const o=document.createElement('option');
+    o.value=l.id; o.textContent=l.text;
+    allGrp.appendChild(o);
+  });
+
+  sel.appendChild(topGrp);
+  sel.appendChild(allGrp);
+  sel.value = DEFAULT_ID;
+}
+
+function byggDropdown() {
+  byggDropdownFraListe(ALLE_LANDE);
+}
+
+/* ════════════════════════════════════════════
+   DATABEHANDLING
+════════════════════════════════════════════ */
+function behandlUge(ds) {
+  const tids=dimLabels(ds,'Tid'), nKon=dimLabels(ds,'KØN').length, vals=ds.value;
+  const m25=new Array(12).fill(0), m26=new Array(12).fill(null);
+  let sisteUge=0;
+  tids.forEach((tid,i)=>{
+    const m=tid.match(/^(\d{4})U(\d{2})$/); if(!m) return;
+    const yr=+m[1],uge=+m[2];
+    let sum=0; for(let j=0;j<nKon;j++){const v=vals[i*nKon+j];if(v!=null)sum+=v;}
+    const mi=uge2mnd(yr,uge);
+    if(yr===2025){m25[mi]+=sum;}
+    else if(yr===2026){if(m26[mi]===null)m26[mi]=0;m26[mi]+=sum;if(uge>sisteUge)sisteUge=uge;}
+  });
+  const c25=[],c26=[]; let s25=0,s26=0;
+  for(let i=0;i<12;i++){
+    s25+=m25[i];c25.push(s25);
+    if(m26[i]!==null){s26+=m26[i];c26.push(s26);}else c26.push(null);
+  }
+  return {c25,c26,sisteUge,total25:s25,total26:s26};
+}
+
+function behandlAar(ds) {
+  const tids=dimLabels(ds,'Tid'),nKon=dimLabels(ds,'KØN').length,vals=ds.value,res={};
+  tids.forEach((tid,i)=>{let sum=0;for(let j=0;j<nKon;j++){const v=vals[i*nKon+j];if(v!=null)sum+=v;}res[tid]=sum;});
+  return res;
+}
+
+function harData(obj){return Object.values(obj).some(v=>v>0);}
+
+/* ════════════════════════════════════════════
+   STATUS + KPI
+════════════════════════════════════════════ */
+function setStatus(type,msg){document.getElementById('dot').className='dot '+type;document.getElementById('statusMsg').textContent=msg;}
+function kpiDim(on){['kpi1','kpi2','kpi3','kpi4','kpi5'].forEach(id=>document.getElementById(id).classList.toggle('dim',on));}
+
+function opdaterKPI(uge,indv,udv) {
+  const latYr=Object.keys(indv).sort().slice(-1)[0];
+  const lI=indv[latYr]??0,lU=udv[latYr]??0,net=lI-lU;
+  document.getElementById('k1').textContent=uge.total25;
+  document.getElementById('k2').textContent=uge.total26;
+  document.getElementById('k2d').textContent=`Foreløbig t.o.m. uge ${uge.sisteUge}`;
+  document.getElementById('k3').textContent=lI;
+  document.getElementById('k3d').textContent=`Indvandringer ${latYr} (VAN1AAR)`;
+  document.getElementById('k4').textContent=lU;
+  document.getElementById('k4d').textContent=`Udvandringer ${latYr} (VAN2AAR)`;
+  document.getElementById('k5').textContent=(net>=0?'+':'')+net;
+  document.getElementById('k5d').textContent=`Netto ${latYr} (${lI} − ${lU})`;
+  kpiDim(false);
+}
+
+/* ════════════════════════════════════════════
+   CHART CONFIGS
+════════════════════════════════════════════ */
+function cfgAkk(d) {
+  return {type:'line',data:{labels:MND,datasets:[
+    {label:'2025 — akkumuleret',data:d.c25,borderColor:'#1A4D2E',backgroundColor:'rgba(26,77,46,0.09)',borderWidth:2.5,fill:true,tension:0.35,spanGaps:false,pointBackgroundColor:'#1A4D2E',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7},
+    {label:'2026 — akkumuleret (foreløbig)',data:d.c26,borderColor:'#C9973A',backgroundColor:'rgba(201,151,58,0.09)',borderDash:[7,4],borderWidth:2.5,fill:true,tension:0.35,spanGaps:false,pointBackgroundColor:'#C9973A',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y===null?null:`  ${c.dataset.label}: ${c.parsed.y} akkumuleret`},backgroundColor:'#1C1C1A',titleFont:{family:'DM Sans',size:13,weight:'600'},bodyFont:{family:'DM Sans',size:13},padding:12,cornerRadius:6}},
+    scales:{x:{ticks:{font:{family:'DM Sans',size:12},color:'#6A6A60',maxRotation:25},grid:{color:'rgba(0,0,0,0.04)'}},y:{beginAtZero:true,ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',stepSize:5,callback:v=>Number.isInteger(v)?v:''},grid:{color:'rgba(0,0,0,0.05)'},title:{display:true,text:'Akkumuleret antal',font:{family:'DM Sans',size:12},color:'#8A8A7E'}}}}
+  };
+}
+
+function cfgHist(indv,udv) {
+  const aar=[...new Set([...Object.keys(indv),...Object.keys(udv)])].sort();
+  const dI=aar.map(y=>indv[y]??0),dU=aar.map(y=>udv[y]??0),dN=aar.map((_,i)=>dI[i]-dU[i]);
+  return {data:{labels:aar,datasets:[
+    {type:'bar',label:'Indvandring',data:dI,order:2,backgroundColor:'rgba(26,77,46,0.72)',borderColor:'#1A4D2E',borderWidth:1,borderRadius:3},
+    {type:'bar',label:'Udvandring',data:dU,order:2,backgroundColor:'rgba(192,57,43,0.65)',borderColor:'#C0392B',borderWidth:1,borderRadius:3},
+    {type:'line',label:'Nettomigration',data:dN,order:1,borderColor:'#1A4D2E',backgroundColor:'transparent',borderWidth:2.5,fill:false,tension:0.3,pointBackgroundColor:dN.map(v=>v>=0?'#1A4D2E':'#C0392B'),pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`  ${c.dataset.label}: ${c.dataset.label==='Nettomigration'&&c.parsed.y>=0?'+':''}${c.parsed.y}`},backgroundColor:'#1C1C1A',titleFont:{family:'DM Sans',size:13,weight:'600'},bodyFont:{family:'DM Sans',size:13},padding:12,cornerRadius:6}},
+    scales:{x:{ticks:{font:{family:'DM Mono',size:11},color:'#6A6A60'},grid:{display:false}},y:{beginAtZero:true,ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',stepSize:2,callback:v=>Number.isInteger(v)?v:''},grid:{color:'rgba(0,0,0,0.05)'},title:{display:true,text:'Antal personer',font:{family:'DM Sans',size:12},color:'#8A8A7E'}}}}
+  };
+}
+
+/* ════════════════════════════════════════════
+   SKIFT VISNING
+════════════════════════════════════════════ */
+const META={
+  akkumuleret:{
+    title:n=>`Akkumuleret indvandring pr. måned — 2025 vs. 2026`,
+    desc: n=>`Løbende sum af ${n.toLowerCase()} indvandret til Hvidovre · Sammenligner tempoet i 2026 med 2025`,
+    note:'<strong>Kilde:</strong> DST tabel VAN1UGE (ugentlig) aggregeret til måneder via ISO-uge torsdagsregel',
+    legend:`<div class="leg"><div class="leg-ln" style="background:var(--green)"></div>2025 — fuldt år</div><div class="leg"><div class="leg-ln" style="background:repeating-linear-gradient(to right,var(--gold) 0,var(--gold) 6px,transparent 6px,transparent 10px)"></div>2026 — foreløbig</div>`
+  },
+  historisk:{
+    title:n=>`Indvandring, udvandring og nettomigration — ${n}`,
+    desc: n=>`${n} ind- og udvandret til/fra Hvidovre pr. år · Positive nettotal = befolkningstilvækst`,
+    note:'<strong>Kilde:</strong> DST tabeller VAN1AAR (indvandringer) og VAN2AAR (udvandringer) · Årsvis opgørelse',
+    legend:`<div class="leg"><div class="leg-sq" style="background:rgba(26,77,46,0.72)"></div>Indvandring</div><div class="leg"><div class="leg-sq" style="background:rgba(192,57,43,0.65)"></div>Udvandring</div><div class="leg"><div class="leg-ln" style="background:var(--green);height:2.5px"></div>Netto (linje)</div>`
+  }
+};
+
+function skiftVisning(v, ingenRedraw) {
+  visning=v;
+  localStorage.setItem('hvidovre_visning', v);
+  document.getElementById('tab1').classList.toggle('active',v==='akkumuleret');
+  document.getElementById('tab2').classList.toggle('active',v==='historisk');
+  const n=aktivLand.navn;
+  document.getElementById('chartTitle').textContent=META[v].title(n);
+  document.getElementById('chartDesc').textContent=META[v].desc(n);
+  document.getElementById('chartNote').innerHTML=META[v].note;
+  document.getElementById('legend').innerHTML=META[v].legend;
+  if(!ingenRedraw && data) tegn();
+}
+
+/* ════════════════════════════════════════════
+   TEGN
+════════════════════════════════════════════ */
+function tegn() {
+  if(chart){chart.destroy();chart=null;}
+  document.getElementById('emptyState').classList.remove('show');
+  const ikkeTom=visning==='akkumuleret'?(data.uge.total25>0||data.uge.total26>0):(harData(data.indv)||harData(data.udv));
+  if(!ikkeTom){
+    document.getElementById('emptyMsg').textContent=`Ingen registrerede ind-/udvandringer fundet for ${aktivLand.navn} i Hvidovre.`;
+    document.getElementById('emptyState').classList.add('show');
+    return;
+  }
+  const cfg=visning==='akkumuleret'?cfgAkk(data.uge):cfgHist(data.indv,data.udv);
+  chart=new Chart(document.getElementById('mainCanvas').getContext('2d'),cfg);
+}
+
+/* ════════════════════════════════════════════
+   HENT DATA
+════════════════════════════════════════════ */
+async function loadData() {
+  const sel=document.getElementById('countrySelect');
+  const landId=sel.value;
+  const landNavn=sel.selectedOptions[0]?.textContent||landId;
+  aktivLand={id:landId,navn:landNavn};
+
+  setStatus('loading',`Henter data for ${landNavn}…`);
+  document.getElementById('ov').classList.add('show');
+  document.getElementById('emptyState').classList.remove('show');
+  document.getElementById('ovMsg').textContent=`Henter data for ${landNavn}…`;
+  kpiDim(true);
+  document.getElementById('hdrLand').textContent=landNavn+' statsborgere';
+  document.getElementById('srcLand').textContent=`${landNavn} = ${landId}`;
+  skiftVisning(visning,true);
+
+  try {
+    const [ugeRaw,indvRaw,udvRaw]=await Promise.all([
+      dst('VAN1UGE',[{code:'OMRÅDE',values:[OMRD]},{code:'KØN',values:['1','2']},{code:'STATSB',values:[landId]},{code:'Tid',values:['*']}]),
+      dst('VAN1AAR',[{code:'OMRÅDE',values:[OMRD]},{code:'STATSB',values:[landId]},{code:'KØN',values:['1','2']},{code:'Tid',values:['*']}]),
+      dst('VAN2AAR',[{code:'OMRÅDE',values:[OMRD]},{code:'STATSB',values:[landId]},{code:'KØN',values:['1','2']},{code:'Tid',values:['*']}])
+    ]);
+    data={uge:behandlUge(ugeRaw.dataset),indv:behandlAar(indvRaw.dataset),udv:behandlAar(udvRaw.dataset)};
+    opdaterKPI(data.uge,data.indv,data.udv);
+    document.getElementById('ov').classList.remove('show');
+    tegn();
+    const ts=new Date().toLocaleString('da-DK',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    document.getElementById('fetchTs').textContent=ts;
+    document.getElementById('updateTime').textContent='Hentet: '+ts;
+    setStatus('ok',`${landNavn} · opdateret fra Danmarks Statistik · ${ts}`);
+  } catch(err) {
+    setStatus('error','Fejl: '+err.message);
+    document.getElementById('ov').classList.remove('show');
+    kpiDim(false);
+    console.error(err);
+  }
+}
+
+function onLandSkift(){
+  const sel=document.getElementById('countrySelect');
+  localStorage.setItem('hvidovre_land', JSON.stringify({id:sel.value, navn:sel.selectedOptions[0]?.textContent||sel.value}));
+  loadData();
+}
+
+/* ════════════════════════════════════════════
+   DOWNLOAD
+════════════════════════════════════════════ */
+function downloadRapport(){
+  const blob=new Blob([document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`hvidovre-indvandring-${aktivLand.navn.toLowerCase().replace(/\s+/g,'-')}.html`;a.click();
+}
+
+/* ════════════════════════════════════════════
+   STARTUP
+════════════════════════════════════════════ */
+window.addEventListener('load', () => {
+  if (window.location.protocol === 'file:') {
+    document.getElementById('localBanner').classList.add('show');
+  }
+
+  // Gendan gemt visning
+  const gemtVisning = localStorage.getItem('hvidovre_visning');
+  if (gemtVisning === 'historisk') {
+    visning = 'historisk';
+    document.getElementById('tab1').classList.remove('active');
+    document.getElementById('tab2').classList.add('active');
+  }
+
+  // Gendan gemt land og sæt dropdown
+  byggDropdown();
+  const gemtLand = localStorage.getItem('hvidovre_land');
+  if (gemtLand) {
+    try {
+      const {id} = JSON.parse(gemtLand);
+      const sel = document.getElementById('countrySelect');
+      if (sel.querySelector(`option[value="${id}"]`)) sel.value = id;
+    } catch(e) {}
+  }
+
+  loadData();
+});
+</script>
+</body>
+</html>
