@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hvidovre Folketal — Befolkningsprognose 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap');
+
+  :root {
+    --green:     #1A4D2E;
+    --green-mid: #2E7D54;
+    --gold:      #C9973A;
+    --red:       #C0392B;
+    --bg:    #F9F6F0;
+    --card:  #FFFFFF;
+    --text:  #1C1C1A;
+    --mid:   #4A4A44;
+    --muted: #8A8A7E;
+    --border:#E2DDD4;
+    --shadow:0 2px 20px rgba(26,77,46,0.07);
+    --g0:  #5DADE2; /* 0-2 */
+    --g1:  #48C9B0; /* 3-5 */
+    --g2:  #2E7D54; /* 6-17 */
+    --g3:  #1A4D2E; /* 18-24 */
+    --g4:  #C9973A; /* 25-66 */
+    --g5:  #C0392B; /* 67-79 */
+    --g6:  #8E44AD; /* 80+ */
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); }
+
+  /* HEADER */
+  .hdr {
+    background:var(--green); color:#fff;
+    padding:32px 48px 26px; position:relative; overflow:hidden;
+  }
+  .hdr::before {
+    content:''; position:absolute; right:-60px; bottom:-60px;
+    width:280px; height:280px; border-radius:50%;
+    background:rgba(255,255,255,.03); pointer-events:none;
+  }
+  .hdr-eye { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.5); margin-bottom:10px; }
+  .hdr h1  { font-family:'DM Serif Display',serif; font-size:clamp(20px,2.5vw,30px); font-weight:400; line-height:1.2; margin-bottom:8px; }
+  .hdr h1 em { font-style:italic; color:#E8C06A; }
+  .hdr p   { font-size:13px; color:rgba(255,255,255,.6); font-weight:300; line-height:1.65; max-width:600px; }
+
+  /* TOOLBAR */
+  .toolbar {
+    background:#fff; border-bottom:1px solid var(--border);
+    padding:10px 48px; display:flex; align-items:center;
+    gap:10px; flex-wrap:wrap;
+  }
+  .btn {
+    padding:7px 15px; border:1.5px solid var(--border); background:transparent;
+    font-family:'DM Sans',sans-serif; font-size:13px; color:var(--mid);
+    cursor:pointer; border-radius:6px; transition:all .15s; white-space:nowrap;
+  }
+  .btn:hover  { border-color:var(--green); color:var(--green); }
+  .btn.grn    { background:var(--green); border-color:var(--green); color:#fff; }
+  .btn.grn:hover { background:#143d24; }
+  .btn.gld    { background:var(--gold); border-color:var(--gold); color:#fff; }
+  .btn.gld:hover { background:var(--green); border-color:var(--green); }
+  #updateTime { font-family:'DM Mono',monospace; font-size:10.5px; color:var(--muted); margin-left:auto; }
+
+  /* STATUS */
+  .statusbar {
+    background:#fff; border-bottom:1px solid var(--border);
+    padding:8px 48px; display:flex; align-items:center; gap:9px; min-height:34px;
+  }
+  .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .dot.loading { background:var(--gold); animation:pulse .9s ease-in-out infinite; }
+  .dot.ok      { background:var(--green-mid); }
+  .dot.error   { background:var(--red); }
+  #statusMsg   { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  /* MAIN */
+  main { padding:26px 48px; max-width:1140px; }
+
+  /* KPI */
+  .kpi-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:11px; margin-bottom:24px; }
+  .kpi {
+    background:var(--card); border:1px solid var(--border); border-left:4px solid var(--green);
+    border-radius:10px; padding:14px 17px; box-shadow:var(--shadow); transition:opacity .3s;
+  }
+  .kpi.gld { border-left-color:var(--gold); }
+  .kpi.red { border-left-color:var(--red);  }
+  .kpi.mid { border-left-color:var(--green-mid); }
+  .kpi.dim { opacity:.35; }
+  .kpi-lbl  { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+  .kpi-val  { font-family:'DM Serif Display',serif; font-size:30px; line-height:1; color:var(--text); margin-bottom:3px; }
+  .kpi-desc { font-size:11.5px; color:var(--mid); line-height:1.4; }
+
+  /* AGE GROUP TABS */
+  .tab-scroll { overflow-x:auto; margin-bottom:16px; padding-bottom:2px; }
+  .tab-row { display:flex; gap:5px; min-width:max-content; }
+  .atab {
+    padding:7px 14px; border:1.5px solid var(--border); background:#fff;
+    font-family:'DM Sans',sans-serif; font-size:12.5px; color:var(--mid);
+    cursor:pointer; border-radius:7px; transition:all .15s; white-space:nowrap;
+    font-weight:400;
+  }
+  .atab:hover { border-color:var(--green); color:var(--green); }
+  .atab.active { color:#fff; border-color:transparent; font-weight:500; }
+  .atab.alle-tab { font-weight:600; }
+
+  /* CHART CARD */
+  .chart-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:22px 26px 18px; box-shadow:var(--shadow); }
+  .card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:2px; flex-wrap:wrap; }
+  .card-titles h2 { font-family:'DM Serif Display',serif; font-size:18px; font-weight:400; margin-bottom:3px; }
+  .card-titles p  { font-size:12.5px; color:var(--muted); line-height:1.5; max-width:560px; }
+
+  /* DISPLAY TOGGLE */
+  .display-toggle { display:flex; border:1.5px solid var(--border); border-radius:7px; overflow:hidden; flex-shrink:0; }
+  .dtab {
+    padding:6px 14px; border:none; background:transparent;
+    font-family:'DM Sans',sans-serif; font-size:12px; color:var(--mid);
+    cursor:pointer; transition:all .15s; white-space:nowrap; border-right:1px solid var(--border);
+  }
+  .dtab:last-child { border-right:none; }
+  .dtab:hover  { background:#F0F0EA; color:var(--green); }
+  .dtab.active { background:var(--green); color:#fff; }
+
+  /* LEGEND */
+  .legend { display:flex; gap:14px; margin:12px 0 8px; flex-wrap:wrap; }
+  .leg {
+    display:flex; align-items:center; gap:7px; font-size:12px; color:var(--mid);
+    cursor:pointer; user-select:none; padding:3px 8px 3px 4px;
+    border-radius:5px; transition:opacity .15s, background .15s;
+  }
+  .leg:hover { background:#F0F0EA; }
+  .leg.skjult { opacity:.3; }
+  .leg-ln { width:24px; height:3px; border-radius:2px; flex-shrink:0; }
+
+  /* CHART */
+  .chart-wrap { position:relative; height:380px; }
+  .ov {
+    display:none; position:absolute; inset:0; background:rgba(255,255,255,.88);
+    border-radius:10px; align-items:center; justify-content:center;
+    flex-direction:column; gap:11px; z-index:10;
+    font-family:'DM Mono',monospace; font-size:12px; color:var(--muted);
+  }
+  .ov.show { display:flex; }
+  .spin { width:24px; height:24px; border:3px solid var(--border); border-top-color:var(--green); border-radius:50%; animation:spin .8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  /* TABLE */
+  .tbl-wrap { display:none; overflow-x:auto; margin-top:4px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  thead tr { background:var(--green); color:#fff; }
+  thead th { padding:10px 14px; text-align:left; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; font-weight:500; }
+  tbody tr:nth-child(even) { background:#F6F3ED; }
+  tbody tr:hover { background:#EBF4EF; }
+  tbody td { padding:9px 14px; border-bottom:1px solid var(--border); color:var(--mid); }
+  tbody td:first-child { font-family:'DM Mono',monospace; font-size:12px; color:var(--text); font-weight:500; }
+  .pos { color:var(--green-mid) !important; font-weight:700; }
+  .neg { color:var(--red) !important; font-weight:700; }
+  .hi  { font-weight:700; color:var(--text) !important; }
+
+  /* NOTE + SOURCE */
+  .note { background:#FDF9F0; border:1px solid #EDD9A0; border-radius:8px; padding:10px 14px; font-size:12px; color:#7A6020; line-height:1.55; margin-top:12px; }
+  .note strong { color:#5A4010; }
+  .source { margin-top:22px; padding:11px 14px; background:#fff; border:1px solid var(--border); border-radius:8px; font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); line-height:1.7; }
+  .source strong { color:var(--mid); }
+
+  @media (max-width:700px) {
+    .hdr, main, .toolbar, .statusbar { padding-left:16px; padding-right:16px; }
+    .chart-wrap { height:280px; }
+    .card-top { flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-eye">Hvidovre Kommune · Center for Økonomi og Personale · Befolkningsanalyse</div>
+  <h1>Hvidovre folketal —<br><em>sammenholdt med befolkningsprognose 2026</em></h1>
+  <p>Live data fra Danmarks Statistik FOLK1AM · Opdateres automatisk månedligt · Faktisk folketal sammenlignes med kommunens 5-årige prognose (lineær interpolation jan 2026 → jan 2027)</p>
+</div>
+
+<div class="toolbar">
+  <button class="btn grn" onclick="loadData()">↺&nbsp; Opdater</button>
+  <button class="btn" id="btnGraf" onclick="skiftDisplay('graf')">📈 Graf</button>
+  <button class="btn" id="btnTabel" onclick="skiftDisplay('tabel')">🗂 Tabel</button>
+  <button class="btn gld" onclick="downloadRapport()">⬇&nbsp; Gem rapport</button>
+  <span id="updateTime"></span>
+</div>
+
+<div class="statusbar">
+  <div id="dot" class="dot loading"></div>
+  <span id="statusMsg">Henter folketal fra Danmarks Statistik…</span>
+</div>
+
+<main>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-row" id="kpiRow">
+    <div class="kpi"    ><div class="kpi-lbl">Faktisk folketal</div><div class="kpi-val" id="k1">—</div><div class="kpi-desc" id="k1d">Seneste måned</div></div>
+    <div class="kpi gld"><div class="kpi-lbl">Prognose denne måned</div><div class="kpi-val" id="k2">—</div><div class="kpi-desc" id="k2d">Lineær interpolation</div></div>
+    <div class="kpi"    ><div class="kpi-lbl">Afvigelse</div><div class="kpi-val" id="k3">—</div><div class="kpi-desc" id="k3d">Faktisk minus prognose</div></div>
+    <div class="kpi mid"><div class="kpi-lbl">Ændring fra jan 2026</div><div class="kpi-val" id="k4">—</div><div class="kpi-desc" id="k4d">Faktisk udvikling</div></div>
+    <div class="kpi"    ><div class="kpi-lbl">Prognose årsslut 2026</div><div class="kpi-val" id="k5">—</div><div class="kpi-desc" id="k5d">Forventet dec 2026</div></div>
+  </div>
+
+  <!-- AGE GROUP TABS -->
+  <div class="tab-scroll">
+    <div class="tab-row" id="tabRow"></div>
+  </div>
+
+  <!-- CHART CARD -->
+  <div class="chart-card">
+    <div class="card-top">
+      <div class="card-titles">
+        <h2 id="chartTitle">Folketal — alle aldersgrupper</h2>
+        <p  id="chartDesc">Faktisk månedlig befolkningsudvikling pr. aldersgruppe · Klik på aldersgruppe-fanerne for at zoome ind</p>
+      </div>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="chart-wrap">
+      <canvas id="mainCanvas"></canvas>
+      <div id="ov" class="ov show"><div class="spin"></div>Henter data fra Danmarks Statistik…</div>
+    </div>
+    <div class="tbl-wrap" id="tblWrap">
+      <table><thead id="tblHead"></thead><tbody id="tblBody"></tbody></table>
+    </div>
+  </div>
+
+  <div class="note" id="chartNote">
+    <strong>Prognose:</strong> Lineær interpolation mellem kommunens egne prognosetal (1. jan 2026: 54.243 borgere → 1. jan 2027: 54.740 borgere) · Prognoselinjen viser forventet folketal pr. 1. i hver måned
+  </div>
+
+  <div class="source">
+    <strong>Data:</strong> Danmarks Statistik API · FOLK1AM (befolkning 1. dag i måneden) · Hvidovre = kode 167 ·
+    Prognose: Hvidovre Kommunes befolkningsprognose 2026 ·
+    <strong>Senest hentet:</strong> <span id="fetchTs">—</span>
+  </div>
+</main>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   PROGNOSEDATA — Hvidovre 5-årig prognose 2026
+═══════════════════════════════════════════════════ */
+const ALLE_GRUPPER = [
+  {id:'alle',   label:'Alle aldersgrupper', aldre:null,                    prog26:54243, prog27:54740, farve:'#1A4D2E'},
+  {id:'g0_2',   label:'0–2 år',            aldre:range(0,3),              prog26:1627,  prog27:1630,  farve:'#5DADE2'},
+  {id:'g3_5',   label:'3–5 år',            aldre:range(3,6),              prog26:1924,  prog27:1921,  farve:'#48C9B0'},
+  {id:'g6_17',  label:'6–17 år',           aldre:range(6,18),             prog26:8265,  prog27:8300,  farve:'#2E7D54'},
+  {id:'g18_24', label:'18–24 år',          aldre:range(18,25),            prog26:4528,  prog27:4611,  farve:'#C9973A'},
+  {id:'g25_66', label:'25–66 år',          aldre:range(25,67),            prog26:29183, prog27:29485, farve:'#C0392B'},
+  {id:'g67_79', label:'67–79 år',          aldre:range(67,80),            prog26:5886,  prog27:5831,  farve:'#8E44AD'},
+  {id:'g80p',   label:'80+ år',            aldre:range(80,126),           prog26:2830,  prog27:2962,  farve:'#2980B9'},
+];
+
+function range(a, b) { const o=[]; for(let i=a;i<b;i++) o.push(i); return o; }
+
+/* ═══════════════════════════════════════════════════
+   KONSTANTER
+═══════════════════════════════════════════════════ */
+const API     = 'https://api.statbank.dk/v1/data';
+const OMRD    = '167';
+const MND_DA  = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+
+// Alle måneder vi viser: 2025M01 → 2026M12
+const ALL_LABELS = [];
+for (let y=2025; y<=2026; y++)
+  for (let m=1; m<=12; m++)
+    ALL_LABELS.push(`${y}M${String(m).padStart(2,'0')}`);
+
+function fmtLabel(tid) {
+  const y=tid.slice(0,4), m=parseInt(tid.slice(5))-1;
+  return `${MND_DA[m]} '${y.slice(2)}`;
+}
+
+/* ═══════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════ */
+let chart       = null;
+let display     = localStorage.getItem('hv_prognose_display') || 'graf';
+let aktivGruppe = localStorage.getItem('hv_prognose_gruppe')  || 'alle';
+let folkeData   = null;  // {tid: string[], alder: string[], vals: number[], nTid, nAlder}
+
+/* ═══════════════════════════════════════════════════
+   DST KALD
+═══════════════════════════════════════════════════ */
+async function loadData() {
+  setStatus('loading','Henter folketal fra Danmarks Statistik…');
+  document.getElementById('ov').classList.add('show');
+  kpiDim(true);
+
+  try {
+    const ageList = ['IALT', ...range(0,126).map(String)];
+    const tidList = ALL_LABELS; // 24 måneder; API returnerer kun eksisterende
+
+    const r = await fetch(API, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        table:'FOLK1AM', format:'JSONSTAT', lang:'da',
+        variables:[
+          {code:'OMRÅDE', values:[OMRD]},
+          {code:'KØN',    values:['TOT']},
+          {code:'ALDER',  values:ageList},
+          {code:'Tid',    values:tidList}
+        ]
+      })
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const json = await r.json();
+    folkeData = parseJsonstat(json.dataset);
+
+    opdaterKPI();
+    render();
+
+    const ts = new Date().toLocaleString('da-DK',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    document.getElementById('fetchTs').textContent   = ts;
+    document.getElementById('updateTime').textContent = 'Hentet: '+ts;
+    setStatus('ok', 'Folketal opdateret fra Danmarks Statistik · '+ts);
+    document.getElementById('ov').classList.remove('show');
+    kpiDim(false);
+
+  } catch(err) {
+    setStatus('error','Fejl: '+err.message);
+    document.getElementById('ov').classList.remove('show');
+    kpiDim(false);
+    console.error(err);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   JSONSTAT PARSING
+═══════════════════════════════════════════════════ */
+function parseJsonstat(ds) {
+  const dimOrder = ds['dimension']['id'];
+  const dimSizes = ds['dimension']['size'];
+  const nAlder   = dimSizes[dimOrder.indexOf('ALDER')];
+  const nTid     = dimSizes[dimOrder.indexOf('Tid')];
+
+  const alderCat = ds['dimension']['ALDER']['category'];
+  const aldere   = new Array(nAlder);
+  for (const [k,v] of Object.entries(alderCat['index'])) aldere[v] = k;
+
+  const tidCat = ds['dimension']['Tid']['category'];
+  const tids   = new Array(nTid);
+  for (const [k,v] of Object.entries(tidCat['index'])) tids[v] = k;
+
+  return {tids, aldere, vals: ds['value'], nAlder, nTid,
+          alderIdx: Object.fromEntries(aldere.map((a,i) => [a,i]))};
+}
+
+function getVal(fd, alderStr, ti) {
+  const ai = fd.alderIdx[alderStr];
+  if (ai === undefined || ti < 0 || ti >= fd.nTid) return null;
+  return fd.vals[ai * fd.nTid + ti] ?? null;
+}
+
+function getGruppeVal(fd, gruppe, tidStr) {
+  const ti = fd.tids.indexOf(tidStr);
+  if (ti < 0) return null;
+  if (gruppe.aldre === null) return getVal(fd, 'IALT', ti);
+  let sum = 0;
+  for (const a of gruppe.aldre) {
+    const v = getVal(fd, String(a), ti);
+    if (v === null) return null;
+    sum += v;
+  }
+  return sum;
+}
+
+/* ═══════════════════════════════════════════════════
+   PROGNOSE BEREGNING
+═══════════════════════════════════════════════════ */
+function prognoseSerie(g) {
+  // Returnerer array med 24 værdier (null for 2025, prognose for 2026)
+  const diff    = g.prog27 - g.prog26;
+  const monthly = diff / 12;
+  return ALL_LABELS.map(tid => {
+    if (!tid.startsWith('2026')) return null;
+    const mIdx = parseInt(tid.slice(5)) - 1; // 0=jan, 11=dec
+    return Math.round((g.prog26 + mIdx * monthly) * 10) / 10;
+  });
+}
+
+function progForTid(g, tid) {
+  if (!tid.startsWith('2026')) return null;
+  const mIdx = parseInt(tid.slice(5)) - 1;
+  return g.prog26 + mIdx * (g.prog27 - g.prog26) / 12;
+}
+
+/* ═══════════════════════════════════════════════════
+   KPI OPDATERING
+═══════════════════════════════════════════════════ */
+function kpiDim(on) {
+  document.querySelectorAll('.kpi').forEach(el => el.classList.toggle('dim', on));
+}
+
+function opdaterKPI() {
+  const fd = folkeData;
+  const g  = ALLE_GRUPPER.find(x => x.id === aktivGruppe) || ALLE_GRUPPER[0];
+
+  // Find seneste tilgængelige 2026-måned med data
+  let senesteTid = null, senesteVal = null;
+  for (const tid of [...fd.tids].reverse()) {
+    const v = getGruppeVal(fd, g, tid);
+    if (v !== null && v > 0) { senesteTid = tid; senesteVal = v; break; }
+  }
+  if (!senesteTid) { senesteTid = fd.tids[fd.tids.length-1]; senesteVal = getGruppeVal(fd, g, senesteTid); }
+
+  const prog     = senesteTid ? Math.round(progForTid(g, senesteTid) ?? 0) : null;
+  const afv      = (senesteVal && prog) ? senesteVal - prog : null;
+  const jan26    = getGruppeVal(fd, g, '2026M01');
+  const aendring = (senesteVal && jan26) ? senesteVal - jan26 : null;
+  const progDec  = Math.round(g.prog26 + 11 * (g.prog27 - g.prog26) / 12);
+
+  const fmt = n => n !== null ? Math.round(n).toLocaleString('da-DK') : '—';
+  const fmtSign = n => n !== null ? (n >= 0 ? '+' : '') + Math.round(n).toLocaleString('da-DK') : '—';
+
+  document.getElementById('k1').textContent  = fmt(senesteVal);
+  document.getElementById('k1d').textContent = senesteTid ? fmtLabel(senesteTid) : '—';
+  document.getElementById('k2').textContent  = prog ? fmt(prog) : '—';
+  document.getElementById('k2d').textContent = senesteTid ? `Prognose ${fmtLabel(senesteTid)}` : '—';
+  document.getElementById('k3').textContent  = fmtSign(afv);
+  document.getElementById('k3d').textContent = afv !== null ? (afv >= 0 ? 'Over prognose' : 'Under prognose') : '—';
+  document.getElementById('k4').textContent  = fmtSign(aendring);
+  document.getElementById('k4d').textContent = 'Siden jan 2026';
+  document.getElementById('k5').textContent  = fmt(progDec);
+  document.getElementById('k5d').textContent = `${g.label} · dec 2026`;
+
+  // Farv afvigelse-kort
+  const k3el = document.getElementById('k3').parentElement;
+  k3el.className = 'kpi ' + (afv === null ? '' : afv >= 0 ? 'mid' : 'red');
+}
+
+/* ═══════════════════════════════════════════════════
+   TAB-RAD BYGG
+═══════════════════════════════════════════════════ */
+function byggTabs() {
+  const row = document.getElementById('tabRow');
+  row.innerHTML = '';
+  ALLE_GRUPPER.forEach(g => {
+    const btn = document.createElement('button');
+    btn.className = 'atab' + (g.id === 'alle' ? ' alle-tab' : '') + (g.id === aktivGruppe ? ' active' : '');
+    if (g.id === aktivGruppe) btn.style.background = g.farve;
+    btn.textContent = g.label;
+    btn.onclick = () => skiftGruppe(g.id);
+    row.appendChild(btn);
+  });
+}
+
+function skiftGruppe(id) {
+  aktivGruppe = id;
+  localStorage.setItem('hv_prognose_gruppe', id);
+  byggTabs();
+  opdaterKPI();
+  render();
+}
+
+/* ═══════════════════════════════════════════════════
+   DISPLAY TOGGLE
+═══════════════════════════════════════════════════ */
+function skiftDisplay(d) {
+  display = d;
+  localStorage.setItem('hv_prognose_display', d);
+  document.getElementById('btnGraf').classList.toggle('grn', d==='graf');
+  document.getElementById('btnTabel').classList.toggle('grn', d==='tabel');
+  if (folkeData) render();
+}
+
+/* ═══════════════════════════════════════════════════
+   VERTICAL LINE PLUGIN
+═══════════════════════════════════════════════════ */
+const jan2026Plugin = {
+  id: 'jan2026',
+  afterDraw(chart) {
+    const idx = chart.data.labels.indexOf(fmtLabel('2026M01'));
+    if (idx < 0) return;
+    const x   = chart.scales.x.getPixelForValue(idx);
+    const {top, bottom} = chart.chartArea;
+    const ctx = chart.ctx;
+    ctx.save();
+    ctx.setLineDash([5,4]);
+    ctx.strokeStyle = 'rgba(138,138,126,0.55)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x,top); ctx.lineTo(x,bottom); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(138,138,126,0.75)';
+    ctx.font = '10px DM Mono, monospace';
+    ctx.fillText('◀ 2025   Prognose ▶', x - 80, top + 14);
+    ctx.restore();
+  }
+};
+
+/* ═══════════════════════════════════════════════════
+   RENDER DISPATCH
+═══════════════════════════════════════════════════ */
+function render() {
+  if (display === 'tabel') { renderTabel(); return; }
+  if (aktivGruppe === 'alle') renderAlle(); else renderIndividuel();
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER — ALLE ALDERSGRUPPER
+═══════════════════════════════════════════════════ */
+function renderAlle() {
+  document.getElementById('tblWrap').style.display = 'none';
+  document.getElementById('mainCanvas').style.display = 'block';
+  document.getElementById('chartTitle').textContent = 'Folketal pr. aldersgruppe — faktisk udvikling';
+  document.getElementById('chartDesc').textContent  = 'Alle syv aldersgrupper · Klik på en fane for at zoome ind og se prognosen for den enkelte gruppe · 2025 vist i lysere tone';
+
+  const labels  = ALL_LABELS.map(fmtLabel);
+  const jan26lb = fmtLabel('2026M01');
+
+  const datasets = ALLE_GRUPPER.slice(1).map(g => {
+    const data = ALL_LABELS.map(tid => getGruppeVal(folkeData, g, tid));
+    return {
+      label: g.label,
+      data,
+      borderColor: g.farve,
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      fill: false,
+      tension: 0.35,
+      spanGaps: false,
+      pointRadius: 3,
+      pointHoverRadius: 6,
+      pointBackgroundColor: g.farve,
+      pointBorderColor: '#fff',
+      pointBorderWidth: 1.5,
+      segment: {
+        borderColor: ctx => {
+          const lbl = labels[ctx.p0DataIndex];
+          return lbl?.endsWith("'25") ? hexToRgba(g.farve, 0.38) : g.farve;
+        },
+        borderWidth: ctx => labels[ctx.p0DataIndex]?.endsWith("'25") ? 1.5 : 2.2
+      }
+    };
+  });
+
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById('mainCanvas').getContext('2d'), {
+    type:'line',
+    data: {labels, datasets},
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{label:c=>c.parsed.y===null?null:`  ${c.dataset.label}: ${Math.round(c.parsed.y).toLocaleString('da-DK')}`},
+          backgroundColor:'#1C1C1A',titleFont:{family:'DM Sans',size:13,weight:'600'},
+          bodyFont:{family:'DM Sans',size:12},padding:12,cornerRadius:6
+        }
+      },
+      scales:{
+        x:{ticks:{font:{family:'DM Sans',size:11},color:'#6A6A60',maxRotation:35},grid:{color:'rgba(0,0,0,0.04)'}},
+        y:{beginAtZero:false,
+          ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>v.toLocaleString('da-DK')},
+          grid:{color:'rgba(0,0,0,0.05)'},
+          title:{display:true,text:'Antal borgere',font:{family:'DM Sans',size:11},color:'#8A8A7E'}}
+      }
+    },
+    plugins:[jan2026Plugin]
+  });
+
+  // Byg klikbar legende
+  byggLegende(ALLE_GRUPPER.slice(1).map(g => ({label:g.label, farve:g.farve})));
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER — INDIVIDUEL ALDERSGRUPPE
+═══════════════════════════════════════════════════ */
+function renderIndividuel() {
+  document.getElementById('tblWrap').style.display = 'none';
+  document.getElementById('mainCanvas').style.display = 'block';
+
+  const g      = ALLE_GRUPPER.find(x => x.id === aktivGruppe);
+  const labels = ALL_LABELS.map(fmtLabel);
+  const actual = ALL_LABELS.map(tid => getGruppeVal(folkeData, g, tid));
+  const prog   = prognoseSerie(g);
+
+  document.getElementById('chartTitle').textContent = `${g.label} — faktisk vs. prognose 2026`;
+  document.getElementById('chartDesc').textContent  = `Faktisk folketal (${g.label}) sammenlignet med kommunens prognose · Grøn zone = over prognose · Rød zone = under prognose · 2025 som historisk kontekst`;
+
+  const datasets = [
+    {
+      label:'Prognose 2026',
+      data: prog,
+      borderColor: 'rgba(201,151,58,0.8)',
+      backgroundColor:'transparent',
+      borderDash:[7,4], borderWidth:2,
+      fill:false, tension:0.3, spanGaps:false,
+      pointRadius: ALL_LABELS.map(t => t.startsWith('2026') ? 3 : 0),
+      pointBackgroundColor:'#C9973A',
+      pointBorderColor:'#fff', pointBorderWidth:1.5,
+      pointHoverRadius:6,
+      order:1
+    },
+    {
+      label:`Faktisk — ${g.label}`,
+      data: actual,
+      borderColor: g.farve,
+      backgroundColor:'transparent',
+      borderWidth:2.5,
+      fill:{target:0, above:'rgba(46,125,84,0.12)', below:'rgba(192,57,43,0.12)'},
+      tension:0.35, spanGaps:false,
+      pointRadius:3, pointHoverRadius:6,
+      pointBackgroundColor: g.farve,
+      pointBorderColor:'#fff', pointBorderWidth:1.5,
+      segment:{
+        borderColor: ctx => {
+          const lbl = labels[ctx.p0DataIndex];
+          return lbl?.endsWith("'25") ? hexToRgba(g.farve, 0.38) : g.farve;
+        },
+        borderWidth: ctx => labels[ctx.p0DataIndex]?.endsWith("'25") ? 1.5 : 2.5
+      },
+      order:0
+    }
+  ];
+
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById('mainCanvas').getContext('2d'), {
+    type:'line',
+    data:{labels, datasets},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{label:c=>c.parsed.y===null?null:`  ${c.dataset.label}: ${Math.round(c.parsed.y).toLocaleString('da-DK')}`},
+          backgroundColor:'#1C1C1A',titleFont:{family:'DM Sans',size:13,weight:'600'},
+          bodyFont:{family:'DM Sans',size:12},padding:12,cornerRadius:6
+        }
+      },
+      scales:{
+        x:{ticks:{font:{family:'DM Sans',size:11},color:'#6A6A60',maxRotation:35},grid:{color:'rgba(0,0,0,0.04)'}},
+        y:{beginAtZero:false,
+          ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>v.toLocaleString('da-DK')},
+          grid:{color:'rgba(0,0,0,0.05)'},
+          title:{display:true,text:'Antal borgere',font:{family:'DM Sans',size:11},color:'#8A8A7E'}}
+      }
+    },
+    plugins:[jan2026Plugin]
+  });
+
+  byggLegende([
+    {label:`Faktisk — ${g.label}`, farve:g.farve, solid:true},
+    {label:'Prognose 2026',        farve:'#C9973A', dashed:true}
+  ]);
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER — TABEL
+═══════════════════════════════════════════════════ */
+function renderTabel() {
+  if (chart) { chart.destroy(); chart=null; }
+  document.getElementById('mainCanvas').style.display = 'none';
+  document.getElementById('tblWrap').style.display = 'block';
+
+  const g      = ALLE_GRUPPER.find(x => x.id === aktivGruppe) || ALLE_GRUPPER[0];
+  const isAlle = g.id === 'alle';
+  const head   = document.getElementById('tblHead');
+  const body   = document.getElementById('tblBody');
+
+  if (isAlle) {
+    head.innerHTML = `<tr><th>Måned</th>${ALLE_GRUPPER.slice(1).map(x=>`<th>${x.label}</th>`).join('')}<th>I alt</th></tr>`;
+    body.innerHTML = '';
+    ALL_LABELS.forEach(tid => {
+      const vals = ALLE_GRUPPER.slice(1).map(grp => getGruppeVal(folkeData, grp, tid));
+      const ialt = getGruppeVal(folkeData, ALLE_GRUPPER[0], tid);
+      if (vals.every(v=>v===null) && ialt===null) return;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${fmtLabel(tid)}</td>${vals.map(v=>
+        `<td class="${v>0?'hi':''}">${v!==null?Math.round(v).toLocaleString('da-DK'):'—'}</td>`
+      ).join('')}<td class="hi">${ialt!==null?Math.round(ialt).toLocaleString('da-DK'):'—'}</td>`;
+      body.appendChild(tr);
+    });
+  } else {
+    head.innerHTML = `<tr><th>Måned</th><th>Faktisk</th><th>Prognose</th><th>Afvigelse</th></tr>`;
+    body.innerHTML = '';
+    ALL_LABELS.forEach(tid => {
+      const faktisk = getGruppeVal(folkeData, g, tid);
+      if (faktisk === null) return;
+      const prog = progForTid(g, tid);
+      const afv  = prog ? faktisk - prog : null;
+      const tr   = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${fmtLabel(tid)}</td>
+        <td class="hi">${Math.round(faktisk).toLocaleString('da-DK')}</td>
+        <td>${prog ? Math.round(prog).toLocaleString('da-DK') : '—'}</td>
+        <td class="${afv===null?'':afv>=0?'pos':'neg'}">${afv!==null?(afv>=0?'+':'')+Math.round(afv).toLocaleString('da-DK'):'—'}</td>
+      `;
+      body.appendChild(tr);
+    });
+  }
+
+  document.getElementById('legend').innerHTML = '';
+}
+
+/* ═══════════════════════════════════════════════════
+   KLIKBAR LEGENDE
+═══════════════════════════════════════════════════ */
+function byggLegende(serier) {
+  const wrap = document.getElementById('legend');
+  wrap.innerHTML = '';
+  serier.forEach((s, i) => {
+    const el = document.createElement('div');
+    el.className = 'leg';
+    const stil = s.dashed
+      ? `background:repeating-linear-gradient(to right,${s.farve} 0,${s.farve} 6px,transparent 6px,transparent 10px)`
+      : `background:${s.farve}`;
+    el.innerHTML = `<div class="leg-ln" style="${stil}"></div>${s.label}`;
+    if (chart) el.onclick = () => {
+      const meta = chart.getDatasetMeta(i);
+      meta.hidden = !meta.hidden;
+      el.classList.toggle('skjult', meta.hidden);
+      chart.update();
+    };
+    wrap.appendChild(el);
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   HJÆLPERE
+═══════════════════════════════════════════════════ */
+function hexToRgba(hex, alpha) {
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function setStatus(type, msg) {
+  document.getElementById('dot').className = 'dot '+type;
+  document.getElementById('statusMsg').textContent = msg;
+}
+
+/* ═══════════════════════════════════════════════════
+   DOWNLOAD
+═══════════════════════════════════════════════════ */
+function downloadRapport() {
+  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'hvidovre-folketal-prognose-2026.html'; a.click();
+}
+
+/* ═══════════════════════════════════════════════════
+   STARTUP
+═══════════════════════════════════════════════════ */
+window.addEventListener('load', () => {
+  if (window.location.protocol === 'file:') {
+    document.getElementById('statusMsg').textContent = 'Åbn rapporten på GitHub Pages for at se live data (CORS-begrænsning ved lokal åbning)';
+  }
+  // Sæt display-knapper
+  document.getElementById('btnGraf').classList.toggle('grn', display==='graf');
+  document.getElementById('btnTabel').classList.toggle('grn', display==='tabel');
+  // Byg tabs
+  byggTabs();
+  // Hent data
+  loadData();
+});
+</script>
+</body>
+</html>
