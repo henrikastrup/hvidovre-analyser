@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hvidovre Folketal — Befolkningsprognose 2026</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap');
 
@@ -254,6 +255,23 @@ const ALLE_GRUPPER = [
 ];
 
 function range(a, b) { const o=[]; for(let i=a;i<b;i++) o.push(i); return o; }
+
+// Registrér datalabels plugin globalt (kun til faktisk-datasæt)
+Chart.register(ChartDataLabels);
+
+// Fælles datalabels-konfiguration for faktisk-datasættet
+function datalabelsCfg(farve) {
+  return {
+    display: ctx => ctx.parsed.y !== null,
+    anchor: 'end',
+    align: 'top',
+    offset: 4,
+    color: farve,
+    font: { family:'DM Mono', size:10.5, weight:'500' },
+    formatter: v => v === null ? null : Math.round(v).toLocaleString('da-DK'),
+    padding: { bottom: 2 }
+  };
+}
 
 /* ═══════════════════════════════════════════════════
    KONSTANTER
@@ -551,7 +569,8 @@ function renderAlle() {
       pointRadius: 3, pointHoverRadius: 6,
       pointBackgroundColor: '#C9973A',
       pointBorderColor: '#fff', pointBorderWidth: 1.5,
-      order: 1
+      order: 1,
+      datalabels: { display: false }
     },
     {
       label: 'Faktisk folketal',
@@ -564,7 +583,8 @@ function renderAlle() {
       pointRadius: 4, pointHoverRadius: 7,
       pointBackgroundColor: '#1A4D2E',
       pointBorderColor: '#fff', pointBorderWidth: 2,
-      order: 0
+      order: 0,
+      datalabels: datalabelsCfg('#1A4D2E')
     }
   ];
 
@@ -625,7 +645,8 @@ function renderIndividuel() {
       pointRadius: 3, pointHoverRadius: 6,
       pointBackgroundColor: '#C9973A',
       pointBorderColor: '#fff', pointBorderWidth: 1.5,
-      order: 1
+      order: 1,
+      datalabels: { display: false }
     },
     {
       label: `Faktisk — ${g.label}`,
@@ -638,7 +659,8 @@ function renderIndividuel() {
       pointRadius: 4, pointHoverRadius: 7,
       pointBackgroundColor: g.farve,
       pointBorderColor: '#fff', pointBorderWidth: 2,
-      order: 0
+      order: 0,
+      datalabels: datalabelsCfg(g.farve)
     }
   ];
 
@@ -690,15 +712,15 @@ function renderTabel() {
 
   ALL_LABELS.forEach(tid => {
     const faktisk = getGruppeVal(folkeData, g, tid);
-    if (faktisk === null) return;
-    const prog = progForTid(g, tid);
-    const afv  = prog !== null ? faktisk - prog : null;
-    const tr   = document.createElement('tr');
+    const prog    = progForTid(g, tid);
+    const afv     = (faktisk !== null && prog !== null) ? faktisk - prog : null;
+    const harData = faktisk !== null && faktisk > 0;
+    const tr      = document.createElement('tr');
     tr.innerHTML = `
       <td>${fmtLabel(tid)}</td>
-      <td class="hi">${Math.round(faktisk).toLocaleString('da-DK')}</td>
+      <td class="${harData?'hi':''}">${harData ? Math.round(faktisk).toLocaleString('da-DK') : '<span style="color:#C0BDB5">—</span>'}</td>
       <td>${prog !== null ? Math.round(prog).toLocaleString('da-DK') : '—'}</td>
-      <td class="${afv===null?'':afv>=0?'pos':'neg'}">${afv!==null?(afv>=0?'+':'')+Math.round(afv).toLocaleString('da-DK'):'—'}</td>
+      <td class="${afv===null?'':afv>=0?'pos':'neg'}">${afv!==null ? (afv>=0?'+':'')+Math.round(afv).toLocaleString('da-DK') : '<span style="color:#C0BDB5">—</span>'}</td>
     `;
     body.appendChild(tr);
   });
