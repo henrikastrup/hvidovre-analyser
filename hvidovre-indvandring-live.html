@@ -153,6 +153,17 @@
   .note { background:#FDF9F0; border:1px solid #EDD9A0; border-radius:8px; padding:10px 14px; font-size:12px; color:#7A6020; line-height:1.55; margin-top:12px; }
   .note strong { color:#5A4010; }
 
+  /* DATA TABLE */
+  #dataTable thead tr { background:var(--green); color:#fff; }
+  #dataTable thead th { padding:10px 14px; text-align:left; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; font-weight:500; }
+  #dataTable tbody tr:nth-child(even) { background:#F6F3ED; }
+  #dataTable tbody tr:hover { background:#EBF4EF; }
+  #dataTable tbody td { padding:9px 14px; border-bottom:1px solid var(--border); color:var(--mid); font-size:13px; }
+  #dataTable tbody td:first-child { font-family:'DM Mono',monospace; font-size:12px; color:var(--text); font-weight:500; }
+  #dataTable .pos { color:var(--green); font-weight:700; }
+  #dataTable .neg { color:var(--red);   font-weight:700; }
+  #dataTable .hi  { color:var(--green); font-weight:700; }
+
   .source { margin-top:24px; padding:11px 14px; background:#fff; border:1px solid var(--border); border-radius:8px; font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); line-height:1.7; }
   .source strong { color:var(--mid); }
 
@@ -212,6 +223,10 @@
         <button class="vtab active" id="tab1" onclick="skiftVisning('akkumuleret')">Akkumuleret 2025/26</button>
         <button class="vtab"        id="tab2" onclick="skiftVisning('historisk')">Historisk ind/ud/netto</button>
       </div>
+      <div class="view-toggle" style="margin-left:6px">
+        <button class="vtab active" id="tabGraf"  onclick="skiftDisplay('graf')">📈 Graf</button>
+        <button class="vtab"        id="tabTabel" onclick="skiftDisplay('tabel')">🗂 Tabel</button>
+      </div>
     </div>
 
     <div class="legend" id="legend">
@@ -226,6 +241,12 @@
         <div class="empty-icon">📭</div>
         <div class="empty-msg" id="emptyMsg">Ingen data fundet for det valgte statsborgerskab i Hvidovre.</div>
       </div>
+    </div>
+    <div id="tabelWrap" style="display:none;overflow-x:auto;margin-top:4px">
+      <table id="dataTable" style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead id="dataTableHead"></thead>
+        <tbody id="dataTableBody"></tbody>
+      </table>
     </div>
   </div>
 
@@ -257,6 +278,7 @@ const MND = ['Januar','Februar','Marts','April','Maj','Juni','Juli','August','Se
 
 let chart   = null;
 let visning = 'akkumuleret';
+let display = 'graf';   // 'graf' eller 'tabel'
 let data    = null;
 let aktivLand = {id:DEFAULT_ID, navn:'Nepal'};
 
@@ -346,7 +368,7 @@ function behandlUge(ds) {
     s25+=m25[i];c25.push(s25);
     if(m26[i]!==null){s26+=m26[i];c26.push(s26);}else c26.push(null);
   }
-  return {c25,c26,sisteUge,total25:s25,total26:s26};
+  return {c25,c26,m25,m26,sisteUge,total25:s25,total26:s26};
 }
 
 function behandlAar(ds) {
@@ -394,13 +416,23 @@ function cfgAkk(d) {
 function cfgHist(indv,udv) {
   const aar=[...new Set([...Object.keys(indv),...Object.keys(udv)])].sort();
   const dI=aar.map(y=>indv[y]??0),dU=aar.map(y=>udv[y]??0),dN=aar.map((_,i)=>dI[i]-dU[i]);
-  return {data:{labels:aar,datasets:[
-    {type:'bar',label:'Indvandring',data:dI,order:2,backgroundColor:'rgba(26,77,46,0.72)',borderColor:'#1A4D2E',borderWidth:1,borderRadius:3},
-    {type:'bar',label:'Udvandring',data:dU,order:2,backgroundColor:'rgba(192,57,43,0.65)',borderColor:'#C0392B',borderWidth:1,borderRadius:3},
-    {type:'line',label:'Nettomigration',data:dN,order:1,borderColor:'#1A4D2E',backgroundColor:'transparent',borderWidth:2.5,fill:false,tension:0.3,pointBackgroundColor:dN.map(v=>v>=0?'#1A4D2E':'#C0392B'),pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7}
+  return {type:'line',data:{labels:aar,datasets:[
+    {label:'Indvandring',data:dI,
+      borderColor:'#1A4D2E',backgroundColor:'rgba(26,77,46,0.09)',
+      borderWidth:2.5,fill:true,tension:0.35,spanGaps:false,
+      pointBackgroundColor:'#1A4D2E',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7},
+    {label:'Udvandring',data:dU,
+      borderColor:'#C0392B',backgroundColor:'rgba(192,57,43,0.07)',
+      borderWidth:2.5,fill:true,tension:0.35,spanGaps:false,
+      pointBackgroundColor:'#C0392B',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7},
+    {label:'Nettomigration',data:dN,
+      borderColor:'#C9973A',backgroundColor:'transparent',
+      borderDash:[6,4],borderWidth:2.5,fill:false,tension:0.35,spanGaps:false,
+      pointBackgroundColor:dN.map(v=>v>=0?'#C9973A':'#C0392B'),
+      pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7}
   ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
     plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`  ${c.dataset.label}: ${c.dataset.label==='Nettomigration'&&c.parsed.y>=0?'+':''}${c.parsed.y}`},backgroundColor:'#1C1C1A',titleFont:{family:'DM Sans',size:13,weight:'600'},bodyFont:{family:'DM Sans',size:13},padding:12,cornerRadius:6}},
-    scales:{x:{ticks:{font:{family:'DM Mono',size:11},color:'#6A6A60'},grid:{display:false}},y:{beginAtZero:true,ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',stepSize:2,callback:v=>Number.isInteger(v)?v:''},grid:{color:'rgba(0,0,0,0.05)'},title:{display:true,text:'Antal personer',font:{family:'DM Sans',size:12},color:'#8A8A7E'}}}}
+    scales:{x:{ticks:{font:{family:'DM Mono',size:11},color:'#6A6A60'},grid:{color:'rgba(0,0,0,0.04)'}},y:{beginAtZero:true,ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',stepSize:2,callback:v=>Number.isInteger(v)?v:''},grid:{color:'rgba(0,0,0,0.05)'},title:{display:true,text:'Antal personer',font:{family:'DM Sans',size:12},color:'#8A8A7E'}}}}
   };
 }
 
@@ -418,7 +450,7 @@ const META={
     title:n=>`Indvandring, udvandring og nettomigration — ${n}`,
     desc: n=>`${n} ind- og udvandret til/fra Hvidovre pr. år · Positive nettotal = befolkningstilvækst`,
     note:'<strong>Kilde:</strong> DST tabeller VAN1AAR (indvandringer) og VAN2AAR (udvandringer) · Årsvis opgørelse',
-    legend:`<div class="leg"><div class="leg-sq" style="background:rgba(26,77,46,0.72)"></div>Indvandring</div><div class="leg"><div class="leg-sq" style="background:rgba(192,57,43,0.65)"></div>Udvandring</div><div class="leg"><div class="leg-ln" style="background:var(--green);height:2.5px"></div>Netto (linje)</div>`
+    legend:`<div class="leg"><div class="leg-ln" style="background:var(--green)"></div>Indvandring</div><div class="leg"><div class="leg-ln" style="background:var(--red)"></div>Udvandring</div><div class="leg"><div class="leg-ln" style="background:repeating-linear-gradient(to right,var(--gold) 0,var(--gold) 6px,transparent 6px,transparent 10px)"></div>Nettomigration (stiplet)</div>`
   }
 };
 
@@ -436,17 +468,109 @@ function skiftVisning(v, ingenRedraw) {
 }
 
 /* ════════════════════════════════════════════
+   SKIFT DISPLAY (graf / tabel)
+════════════════════════════════════════════ */
+function skiftDisplay(d) {
+  display = d;
+  localStorage.setItem('hvidovre_display', d);
+  document.getElementById('tabGraf').classList.toggle('active',  d==='graf');
+  document.getElementById('tabTabel').classList.toggle('active', d==='tabel');
+  if (data) tegn();
+}
+
+/* ════════════════════════════════════════════
+   VIS TABEL
+════════════════════════════════════════════ */
+function visTabel() {
+  if (chart) { chart.destroy(); chart=null; }
+  document.getElementById('mainCanvas').style.display = 'none';
+  document.getElementById('tabelWrap').style.display  = 'block';
+  document.getElementById('emptyState').classList.remove('show');
+
+  const head = document.getElementById('dataTableHead');
+  const body = document.getElementById('dataTableBody');
+  head.innerHTML = '';
+  body.innerHTML = '';
+
+  if (visning === 'akkumuleret') {
+    // Header
+    head.innerHTML = `<tr>
+      <th>Måned</th>
+      <th>2025 — månedligt</th>
+      <th>2025 — akkumuleret</th>
+      <th>2026 — månedligt</th>
+      <th>2026 — akkumuleret</th>
+    </tr>`;
+    // Rows
+    const d = data.uge;
+    MND.forEach((mnd, i) => {
+      const v25 = d.m25?.[i] ?? (d.c25[i] - (d.c25[i-1]??0));
+      const c25 = d.c25[i];
+      const v26 = d.m26?.[i];
+      const c26 = v26 !== null && v26 !== undefined ? d.c26[i] : null;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${mnd}</td>
+        <td class="${v25>0?'hi':''}">${v25}</td>
+        <td><strong>${c25}</strong></td>
+        <td>${v26!==null&&v26!==undefined ? `<span class="${v26>0?'hi':''}">${v26}</span>` : '<span style="color:#C0BDB5">—</span>'}</td>
+        <td>${c26!==null ? `<strong>${c26}</strong>` : '<span style="color:#C0BDB5">—</span>'}</td>
+      `;
+      body.appendChild(tr);
+    });
+    // Total
+    const tot = document.createElement('tr');
+    tot.style.cssText = 'background:var(--green);';
+    tot.innerHTML = `
+      <td style="color:#fff;font-weight:700">Årssum</td>
+      <td style="color:#A8D8B4;font-weight:700">${data.uge.total25}</td>
+      <td style="color:#A8D8B4;font-weight:700">${data.uge.total25}</td>
+      <td style="color:#F5D78E;font-weight:700">${data.uge.total26} <span style="opacity:.7;font-size:10px">(foreløbig)</span></td>
+      <td style="color:#F5D78E;font-weight:700">${data.uge.total26}</td>
+    `;
+    body.appendChild(tot);
+
+  } else {
+    // Historisk
+    head.innerHTML = `<tr>
+      <th>År</th>
+      <th>Indvandring</th>
+      <th>Udvandring</th>
+      <th>Nettomigration</th>
+    </tr>`;
+    const aar = [...new Set([...Object.keys(data.indv),...Object.keys(data.udv)])].sort();
+    aar.forEach(y => {
+      const i = data.indv[y]??0, u = data.udv[y]??0, n = i-u;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${y}</td>
+        <td class="${i>0?'hi':''}">${i}</td>
+        <td class="${u>0?'neg':''}">${u}</td>
+        <td class="${n>0?'pos':n<0?'neg':''}">${n>0?'+':''}${n}</td>
+      `;
+      body.appendChild(tr);
+    });
+  }
+}
+
+/* ════════════════════════════════════════════
    TEGN
 ════════════════════════════════════════════ */
 function tegn() {
-  if(chart){chart.destroy();chart=null;}
+  document.getElementById('tabelWrap').style.display  = 'none';
+  document.getElementById('mainCanvas').style.display = 'block';
+  if (chart){chart.destroy();chart=null;}
   document.getElementById('emptyState').classList.remove('show');
+
   const ikkeTom=visning==='akkumuleret'?(data.uge.total25>0||data.uge.total26>0):(harData(data.indv)||harData(data.udv));
   if(!ikkeTom){
     document.getElementById('emptyMsg').textContent=`Ingen registrerede ind-/udvandringer fundet for ${aktivLand.navn} i Hvidovre.`;
     document.getElementById('emptyState').classList.add('show');
     return;
   }
+
+  if (display === 'tabel') { visTabel(); return; }
+
   const cfg=visning==='akkumuleret'?cfgAkk(data.uge):cfgHist(data.indv,data.udv);
   chart=new Chart(document.getElementById('mainCanvas').getContext('2d'),cfg);
 }
@@ -520,6 +644,14 @@ window.addEventListener('load', () => {
     visning = 'historisk';
     document.getElementById('tab1').classList.remove('active');
     document.getElementById('tab2').classList.add('active');
+  }
+
+  // Gendan gemt display (graf/tabel)
+  const gemtDisplay = localStorage.getItem('hvidovre_display');
+  if (gemtDisplay === 'tabel') {
+    display = 'tabel';
+    document.getElementById('tabGraf').classList.remove('active');
+    document.getElementById('tabTabel').classList.add('active');
   }
 
   // Gendan gemt land og sæt dropdown
