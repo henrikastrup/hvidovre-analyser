@@ -1,0 +1,15 @@
+{
+  "genereret": "2026-05-05",
+  "senestePeriode": "2026M03",
+  "senesteMåned": "Marts 2026",
+  "analyse": {
+    "alle": "Den samlede befolkning i Hvidovre Kommune viser en klar tendens til at ligge under den udarbejdede prognose for de første måneder af 2026. Afvigelsen er konsekvent negativ og er vokset markant fra -15 i januar til -151 i marts 2026. Dette indikerer et uventet fald i befolkningstallet, som accelererer i perioden.",
+    "g0_2": "Aldersgruppen 0-2 år har oplevet en stabil og voksende negativ afvigelse fra prognosen i de seneste tre måneder. Fra et mindre underskud på -1 i januar er afvigelsen steget til -26 i marts 2026. Det faktiske antal ligger konsekvent under det forventede, med en tydeligt nedadgående tendens i forhold til prognosen.",
+    "g3_5": "Efter at have ligget præcist på prognosen i januar, er aldersgruppen 3-5 år faldet til at ligge under prognosen i februar og marts. Afvigelsen stabiliserede sig dog på -7/-8 i de to seneste måneder. Dette indikerer en let, men vedvarende negativ afvigelse efter januar.",
+    "g6_17": "Denne aldersgruppe udviser en modsat tendens i forhold til den samlede befolkningsudvikling. Fra en let negativ afvigelse i januar på -6, er gruppen skiftet til at ligge over prognosen med +7 i februar og +8 i marts. Dette indikerer en stabil positiv afvigelse i de seneste måneder.",
+    "g18_24": "Aldersgruppen 18-24 år startede året præcist på prognosen i januar, men har siden da oplevet en voksende negativ afvigelse. Fra -7 i februar er afvigelsen øget til -17 i marts 2026. Dette viser en klar tendens til, at det faktiske antal ligger tiltagende under de udarbejdede forventninger.",
+    "g25_66": "Aldersgruppen 25-66 år er den primære drivkraft bag den samlede negative afvigelse i kommunen. Afvigelsen er konsekvent negativ og har vist en markant voksende tendens, fra -8 i januar til -104 i marts 2026. Dette indikerer et betydeligt og accelererende fald i denne demografiske gruppe i forhold til prognosen.",
+    "g67_79": "Denne gruppe lå præcist på prognosen i januar, men skiftede til en positiv afvigelse på +9 i februar. I marts faldt afvigelsen til +2, dog fortsat over prognosen. Dette indikerer en let positiv, men aftagende, afvigelse i de seneste to måneder.",
+    "g80p": "Aldersgruppen 80+ år udviste ingen afvigelse i januar og lå let over prognosen i februar med +1. I marts er gruppen dog faldet til at ligge under prognosen med en afvigelse på -6. Dette indikerer et mindre fald i antallet i den seneste måned i forhold til det forventede."
+  }
+}
