@@ -207,15 +207,7 @@
   }
   .ai-period { font-size:11.5px; color:var(--muted); font-family:'DM Mono',monospace; }
 
-  .ai-tabs-wrap { display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex-shrink:0; }
 
-  .ai-tab {
-    padding:5px 13px; border:1.5px solid var(--border); background:rgba(255,255,255,.8);
-    font-family:'DM Sans',sans-serif; font-size:12px; color:var(--mid);
-    cursor:pointer; border-radius:6px; transition:all .15s; white-space:nowrap;
-  }
-  .ai-tab:hover  { border-color:var(--gold); color:#8B6520; }
-  .ai-tab.active { background:var(--gold); border-color:var(--gold); color:#fff; font-weight:500; }
 
   .ai-body { font-size:14px; color:var(--mid); line-height:1.85; font-weight:300; }
   .ai-text { white-space:pre-wrap; }
@@ -245,7 +237,6 @@
     .ai-section { padding:20px 18px 18px; }
     .chart-section { padding:16px 18px 20px; }
     .ai-section-top { flex-direction:column; }
-    .ai-tabs-wrap { flex-direction:row; flex-wrap:wrap; align-items:flex-start; }
   }
 </style>
 </head>
@@ -299,7 +290,6 @@
           <h2 class="ai-heading" id="aiHeading">Befolkningsudviklingen i Hvidovre</h2>
           <div class="ai-period" id="aiMeta">Henter seneste analyse…</div>
         </div>
-        <div class="ai-tabs-wrap" id="aiTabsWrap"></div>
       </div>
       <div class="ai-body" id="aiBody">
         <div class="ai-loading"><div class="spin" style="width:18px;height:18px;border-width:2px"></div>Henter AI-analyse…</div>
@@ -346,19 +336,68 @@
 </main>
 
 <script>
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  HVIDOVRE FOLKEPULS — KONFIGURATION                         ║
+   ║  Her justerer du dashboardet for nyt år eller nye prognosetal║
+   ║  Du behøver ikke røre resten af koden.                      ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+const CONFIG = {
+
+  // ── KOMMUNEINDSTILLINGER ─────────────────────────────────────
+  kommuneKode: '167',           // DST kommunekode for Hvidovre
+  kommuneNavn: 'Hvidovre',      // Vises i overskrifter
+
+  // ── ANALYSEÅR ────────────────────────────────────────────────
+  // Skift dette til 2027, 2028 osv. for at opdatere dashboardet
+  visAar: 2026,
+
+  // ── PROGNOSEDATA ─────────────────────────────────────────────
+  // Prognosetallene for 1. januar i visAar og 1. januar året efter.
+  // Hentes fra kommunens 5-årige befolkningsprognose.
+  // Ret tallene når ny prognose foreligger.
+  prognose: {
+    alle:   { start: 54243, slut: 54740 },  // Samlet folketal
+    g0_2:   { start:  1627, slut:  1630 },  // 0–2 år
+    g3_5:   { start:  1924, slut:  1921 },  // 3–5 år
+    g6_17:  { start:  8265, slut:  8300 },  // 6–17 år
+    g18_24: { start:  4528, slut:  4611 },  // 18–24 år
+    g25_66: { start: 29183, slut: 29485 },  // 25–66 år
+    g67_79: { start:  5886, slut:  5831 },  // 67–79 år
+    g80p:   { start:  2830, slut:  2962 },  // 80+ år
+  },
+
+  // ── ALDERSGRÆNSER ────────────────────────────────────────────
+  // Ændres kun hvis kommunen omlægger sine aldersgrupper i prognosen
+  aldersgrupper: [
+    { id:'alle',   label:'Alle aldersgrupper', min:0,  max:125, farve:'#1A4D2E' },
+    { id:'g0_2',   label:'0–2 år',             min:0,  max:2,   farve:'#5DADE2' },
+    { id:'g3_5',   label:'3–5 år',             min:3,  max:5,   farve:'#48C9B0' },
+    { id:'g6_17',  label:'6–17 år',            min:6,  max:17,  farve:'#2E7D54' },
+    { id:'g18_24', label:'18–24 år',           min:18, max:24,  farve:'#C9973A' },
+    { id:'g25_66', label:'25–66 år',           min:25, max:66,  farve:'#C0392B' },
+    { id:'g67_79', label:'67–79 år',           min:67, max:79,  farve:'#8E44AD' },
+    { id:'g80p',   label:'80+ år',             min:80, max:125, farve:'#2980B9' },
+  ],
+
+  // ── DST-INDSTILLINGER ────────────────────────────────────────
+  dstTabel: 'FOLK1AM',          // DST-tabel med månedlig befolkning
+  analyseJsonUrl: 'https://raw.githubusercontent.com/henrikastrup/hvidovre-analyser/main/folketal-analyse.json',
+
+};
+/* ══════════════════════════════════════════════════════════════ */
+
 /* ═══════════════════════════════════════════════════
    PROGNOSEDATA — Hvidovre 5-årig prognose 2026
 ═══════════════════════════════════════════════════ */
-const ALLE_GRUPPER = [
-  {id:'alle',   label:'Alle aldersgrupper', aldre:null,                    prog26:54243, prog27:54740, farve:'#1A4D2E'},
-  {id:'g0_2',   label:'0–2 år',            aldre:range(0,3),              prog26:1627,  prog27:1630,  farve:'#5DADE2'},
-  {id:'g3_5',   label:'3–5 år',            aldre:range(3,6),              prog26:1924,  prog27:1921,  farve:'#48C9B0'},
-  {id:'g6_17',  label:'6–17 år',           aldre:range(6,18),             prog26:8265,  prog27:8300,  farve:'#2E7D54'},
-  {id:'g18_24', label:'18–24 år',          aldre:range(18,25),            prog26:4528,  prog27:4611,  farve:'#C9973A'},
-  {id:'g25_66', label:'25–66 år',          aldre:range(25,67),            prog26:29183, prog27:29485, farve:'#C0392B'},
-  {id:'g67_79', label:'67–79 år',          aldre:range(67,80),            prog26:5886,  prog27:5831,  farve:'#8E44AD'},
-  {id:'g80p',   label:'80+ år',            aldre:range(80,126),           prog26:2830,  prog27:2962,  farve:'#2980B9'},
-];
+// ALLE_GRUPPER bygges fra CONFIG — skift aldersgrupper og prognose i CONFIG-blokken øverst
+const ALLE_GRUPPER = CONFIG.aldersgrupper.map(g => ({
+  id:    g.id,
+  label: g.label,
+  aldre: g.id === 'alle' ? null : range(g.min, g.max + 1),
+  prog26: CONFIG.prognose[g.id]?.start ?? 0,
+  prog27: CONFIG.prognose[g.id]?.slut  ?? 0,
+  farve:  g.farve
+}));
 
 function range(a, b) { const o=[]; for(let i=a;i<b;i++) o.push(i); return o; }
 
@@ -433,18 +472,26 @@ const inlineLabelPlugin = {
 /* ═══════════════════════════════════════════════════
    KONSTANTER
 ═══════════════════════════════════════════════════ */
-const API     = 'https://api.statbank.dk/v1/data';
-const OMRD    = '167';
-const MND_DA  = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+const API  = 'https://api.statbank.dk/v1/data';
+const OMRD = CONFIG.kommuneKode;
+const MND_DA_KORT = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+const MND_DA_FULD = ['Januar','Februar','Marts','April','Maj','Juni','Juli','August','September','Oktober','November','December'];
 
-// Vi viser kun 2026-måneder
+// Vi viser kun månedsdata for CONFIG.visAar
 const ALL_LABELS = [];
 for (let m=1; m<=12; m++)
-  ALL_LABELS.push(`2026M${String(m).padStart(2,'0')}`);
+  ALL_LABELS.push(`${CONFIG.visAar}M${String(m).padStart(2,'0')}`);
 
+// Kortformat til grafakser: "Mar '26"
 function fmtLabel(tid) {
   const y=tid.slice(0,4), m=parseInt(tid.slice(5))-1;
-  return `${MND_DA[m]} '${y.slice(2)}`;
+  return `${MND_DA_KORT[m]} '${y.slice(2)}`;
+}
+
+// Langt format til overskrifter og tekster: "Marts 2026"
+function fmtMaaned(tid) {
+  const y=tid.slice(0,4), m=parseInt(tid.slice(5))-1;
+  return `${MND_DA_FULD[m]} ${y}`;
 }
 
 /* ═══════════════════════════════════════════════════
@@ -691,7 +738,7 @@ function skiftDisplay(d) {
 const jan2026Plugin = {
   id: 'jan2026',
   afterDraw(chart) {
-    const idx = chart.data.labels.indexOf(fmtLabel('2026M01'));
+    const idx = chart.data.labels.indexOf(fmtLabel(`${CONFIG.visAar}M01`));
     if (idx < 0) return;
     const x   = chart.scales.x.getPixelForValue(idx);
     const {top, bottom} = chart.chartArea;
@@ -933,7 +980,7 @@ function setStatus(type, msg) {
 /* ═══════════════════════════════════════════════════
    AI ANALYSE — hentes fra GitHub raw
 ═══════════════════════════════════════════════════ */
-const ANALYSE_URL = 'https://raw.githubusercontent.com/henrikastrup/hvidovre-analyser/main/folketal-analyse.json';
+const ANALYSE_URL = CONFIG.analyseJsonUrl;
 
 let analyseData = null;  // gemmer den hentede JSON
 let aktivAiTab  = 'alle';
@@ -971,26 +1018,6 @@ function visAnalyse() {
     badge.textContent = dage <= 35 ? 'Opdateret' : `${dage} dage siden`;
     badge.className   = 'ai-badge ' + (dage <= 35 ? 'ny' : 'gammel');
   }
-
-  // Byg tabs i ai-tabs-wrap (øverst til højre)
-  const tabWrap = document.getElementById('aiTabsWrap');
-  tabWrap.innerHTML = '';
-  const tabsDiv = document.createElement('div');
-  tabsDiv.style.cssText = 'display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;';
-  ALLE_GRUPPER.forEach(grp => {
-    const btn = document.createElement('button');
-    btn.className = 'ai-tab' + (grp.id === aktivAiTab ? ' active' : '');
-    btn.textContent = grp.label;
-    btn.onclick = () => {
-      aktivAiTab = grp.id;
-      opdaterOverskrift(grp.id);
-      document.querySelectorAll('.ai-tab').forEach(t => t.classList.remove('active'));
-      btn.classList.add('active');
-      visAnalyseTekst();
-    };
-    tabsDiv.appendChild(btn);
-  });
-  tabWrap.appendChild(tabsDiv);
 
   // Tekstcontainer
   const body = document.getElementById('aiBody');
@@ -1031,7 +1058,8 @@ function skiftGruppeOgAI(id) {
 function genererOverskrift(gruppeId) {
   if (analyseData?.overskrift?.[gruppeId]) return analyseData.overskrift[gruppeId];
 
-  const periode = document.getElementById('k1d').textContent || '';
+  const senesteTidRaw = document.getElementById('k1d').textContent || '';
+  const periode = senesteTidRaw;
   const faktisk = document.getElementById('k1').textContent  || '—';
   const afvEl   = document.getElementById('k3').textContent  || '';
   const afvNum  = parseInt(afvEl.replace(/\./g,'').replace('+','')) || 0;
