@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hvidovre Indvandringspuls — Ugentlig Monitor</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap');
+
+:root {
+  --green:     #1A4D2E;
+  --green-mid: #2E7D54;
+  --gold:      #C9973A;
+  --red:       #C0392B;
+  --bg:        #F9F6F0;
+  --card:      #FFFFFF;
+  --text:      #1C1C1A;
+  --mid:       #4A4A44;
+  --muted:     #8A8A7E;
+  --border:    #E2DDD4;
+  --shadow:    0 2px 20px rgba(26,77,46,0.07);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); }
+
+/* ── HEADER ── */
+.hdr {
+  background: var(--green); color: #fff;
+  padding: 32px 48px 26px; position: relative; overflow: hidden;
+}
+.hdr::before {
+  content: ''; position: absolute; right: -60px; bottom: -60px;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: rgba(255,255,255,.03); pointer-events: none;
+}
+.hdr::after {
+  content: ''; position: absolute; right: 120px; top: -80px;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: rgba(255,255,255,.02); pointer-events: none;
+}
+.hdr-eye {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.5); margin-bottom: 10px;
+}
+.hdr h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(20px, 2.5vw, 30px); font-weight: 400;
+  line-height: 1.2; margin-bottom: 8px;
+}
+.hdr h1 em { font-style: italic; color: #E8C06A; }
+.hdr p { font-size: 13px; color: rgba(255,255,255,.6); font-weight: 300; line-height: 1.65; max-width: 640px; }
+
+/* ── TOOLBAR ── */
+.toolbar {
+  background: #fff; border-bottom: 1px solid var(--border);
+  padding: 10px 48px; display: flex; align-items: center;
+  gap: 8px; flex-wrap: wrap;
+}
+.sep { width: 1px; height: 22px; background: var(--border); margin: 0 2px; }
+.btn {
+  padding: 7px 15px; border: 1.5px solid var(--border);
+  background: transparent; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: var(--mid); cursor: pointer;
+  border-radius: 6px; transition: all .15s; white-space: nowrap;
+}
+.btn:hover  { border-color: var(--green); color: var(--green); }
+.btn.active { background: var(--green); border-color: var(--green); color: #fff; }
+.btn.active:hover { background: #143d24; }
+#updateTime {
+  font-family: 'DM Mono', monospace; font-size: 10.5px;
+  color: var(--muted); margin-left: auto; white-space: nowrap;
+}
+
+/* ── STATUS ── */
+.statusbar {
+  background: #fff; border-bottom: 1px solid var(--border);
+  padding: 8px 48px; display: flex; align-items: center;
+  gap: 9px; min-height: 34px;
+}
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot.loading { background: var(--gold); animation: pulse .9s ease-in-out infinite; }
+.dot.ok      { background: var(--green-mid); }
+.dot.error   { background: var(--red); }
+#statusMsg { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* ── MAIN ── */
+main { padding: 26px 48px 40px; max-width: 1140px; }
+
+/* ── KPI ── */
+.kpi-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 11px; margin-bottom: 24px;
+}
+.kpi {
+  background: var(--card); border: 1px solid var(--border);
+  border-left: 4px solid var(--green);
+  border-radius: 10px; padding: 14px 17px;
+  box-shadow: var(--shadow);
+}
+.kpi.gld { border-left-color: var(--gold); }
+.kpi.mid { border-left-color: var(--green-mid); }
+.kpi.red { border-left-color: var(--red); }
+.kpi-lbl  { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+.kpi-val  { font-family: 'DM Serif Display', serif; font-size: 30px; line-height: 1; color: var(--text); margin-bottom: 3px; }
+.kpi-desc { font-size: 11.5px; color: var(--mid); line-height: 1.4; }
+
+/* ── CHART CARD ── */
+.chart-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px;
+  box-shadow: var(--shadow); margin-bottom: 24px;
+  position: relative;
+}
+.chart-header { margin-bottom: 20px; }
+.chart-title {
+  font-family: 'DM Serif Display', serif; font-size: 18px;
+  font-weight: 400; color: var(--text); margin-bottom: 4px;
+}
+.chart-desc { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+.canvas-wrap { position: relative; height: 420px; }
+
+/* ── TABLE ── */
+.data-tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-tbl th {
+  font-family: 'DM Mono', monospace; font-size: 10.5px;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+  padding: 9px 14px; text-align: left; border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+.data-tbl td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
+.data-tbl tr:last-child td { border-bottom: none; }
+.data-tbl tr:hover td { background: rgba(26,77,46,.025); }
+.data-tbl td.num  { font-family: 'DM Mono', monospace; font-weight: 500; font-size: 14px; }
+.data-tbl td.rank { color: var(--muted); font-family: 'DM Mono', monospace; width: 40px; }
+.data-tbl td.land { font-weight: 500; }
+
+/* ── OVERLAY ── */
+.ov {
+  position: absolute; inset: 0; background: rgba(249,246,240,.85);
+  border-radius: 12px; display: none; align-items: center;
+  justify-content: center; z-index: 10;
+}
+.ov.show { display: flex; }
+.spinner {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 3px solid var(--border); border-top-color: var(--green);
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── AI CARD ── */
+.ai-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px;
+  box-shadow: var(--shadow); margin-bottom: 24px;
+}
+.ai-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
+.ai-icon {
+  width: 36px; height: 36px; background: var(--green); color: #fff;
+  border-radius: 8px; display: flex; align-items: center;
+  justify-content: center; font-size: 16px; flex-shrink: 0;
+}
+.ai-title { font-weight: 600; font-size: 14px; color: var(--text); margin-bottom: 2px; }
+.ai-meta  { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+.ai-badge {
+  margin-left: auto; font-family: 'DM Mono', monospace; font-size: 10px;
+  padding: 3px 9px; border-radius: 20px; white-space: nowrap; flex-shrink: 0;
+}
+.ai-badge.ny     { background: rgba(46,125,84,.12);  color: var(--green-mid); }
+.ai-badge.gammel { background: rgba(201,151,58,.12); color: var(--gold); }
+
+.ai-tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.ai-tab {
+  padding: 5px 14px; border: 1.5px solid var(--border);
+  background: transparent; font-family: 'DM Sans', sans-serif;
+  font-size: 12px; color: var(--mid); cursor: pointer;
+  border-radius: 20px; transition: all .15s;
+}
+.ai-tab:hover  { border-color: var(--green); color: var(--green); }
+.ai-tab.active { background: var(--green); border-color: var(--green); color: #fff; }
+
+.ai-heading {
+  font-family: 'DM Serif Display', serif; font-size: 17px;
+  font-weight: 400; color: var(--text); margin-bottom: 12px; line-height: 1.35;
+}
+.ai-text  { font-size: 14px; line-height: 1.8; color: var(--mid); max-width: 760px; }
+.ai-empty { font-size: 13px; color: var(--muted); font-style: italic; }
+
+/* ── KILDE ── */
+.kilde {
+  font-family: 'DM Mono', monospace; font-size: 10.5px; color: var(--muted);
+  padding: 16px 48px 24px; display: flex; align-items: center;
+  gap: 16px; flex-wrap: wrap;
+}
+.dl-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 13px; background: transparent;
+  border: 1.5px solid var(--border); border-radius: 6px;
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  color: var(--mid); cursor: pointer; transition: all .15s;
+}
+.dl-btn:hover { border-color: var(--green); color: var(--green); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .hdr, .toolbar, .statusbar, main, .kilde { padding-left: 20px; padding-right: 20px; }
+  .kpi-row { grid-template-columns: 1fr 1fr; }
+  .canvas-wrap { height: 340px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ HEADER ════════════════════ -->
+<header class="hdr">
+  <div class="hdr-eye">Hvidovre Kommune · Center for Økonomi og Personale · Ugentlig statistik</div>
+  <h1>Hvidovre <em>Indvandringspuls</em></h1>
+  <p>Ugentlig monitor over indvandring til Hvidovre Kommune fordelt på herkomstland · Data: Danmarks Statistik VAN1UGE · Opdateres automatisk hver tirsdag via n8n</p>
+</header>
+
+<!-- ════════════════════ TOOLBAR ════════════════════ -->
+<div class="toolbar">
+  <button class="btn active" id="btnUge"   onclick="skiftView('uge')">Seneste uge</button>
+  <button class="btn"         id="btnYtd"   onclick="skiftView('ytd')">År til dato</button>
+  <button class="btn"         id="btnTrend" onclick="skiftView('trend')">Trend · 12 uger</button>
+  <div class="sep"></div>
+  <button class="btn active" id="btnGraf"  onclick="skiftDisplay('graf')">Diagram</button>
+  <button class="btn"         id="btnTabel" onclick="skiftDisplay('tabel')">Tabel</button>
+  <span id="updateTime"></span>
+</div>
+
+<!-- ════════════════════ STATUSBAR ════════════════════ -->
+<div class="statusbar">
+  <div class="dot loading" id="dot"></div>
+  <span id="statusMsg">Henter data fra GitHub...</span>
+</div>
+
+<!-- ════════════════════ MAIN ════════════════════ -->
+<main>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-lbl">Indvandret seneste uge</div>
+      <div class="kpi-val" id="k1">—</div>
+      <div class="kpi-desc" id="k1d">Alle lande</div>
+    </div>
+    <div class="kpi gld">
+      <div class="kpi-lbl">Indvandret år til dato</div>
+      <div class="kpi-val" id="k2">—</div>
+      <div class="kpi-desc" id="k2d">Alle lande</div>
+    </div>
+    <div class="kpi mid">
+      <div class="kpi-lbl">Aktive lande · uge</div>
+      <div class="kpi-val" id="k3">—</div>
+      <div class="kpi-desc">Med min. 1 person seneste uge</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">Aktive lande · ÅTD</div>
+      <div class="kpi-val" id="k4">—</div>
+      <div class="kpi-desc" id="k4d">Med min. 1 person i år</div>
+    </div>
+  </div>
+
+  <!-- CHART / TABLE CARD -->
+  <div class="chart-card">
+    <div class="ov" id="overlay"><div class="spinner"></div></div>
+    <div class="chart-header">
+      <div class="chart-title" id="chartTitle">Henter data...</div>
+      <div class="chart-desc"  id="chartDesc"></div>
+    </div>
+    <div id="grafArea">
+      <div class="canvas-wrap"><canvas id="mainCanvas"></canvas></div>
+    </div>
+    <div id="tabelArea" style="display:none">
+      <table class="data-tbl">
+        <thead id="tblHead"></thead>
+        <tbody id="tblBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- AI ANALYSE CARD -->
+  <div class="ai-card">
+    <div class="ai-header">
+      <div class="ai-icon">✦</div>
+      <div>
+        <div class="ai-title">AI-analyse</div>
+        <div class="ai-meta" id="aiMeta">Henter analyse...</div>
+      </div>
+      <div class="ai-badge" id="aiBadge"></div>
+    </div>
+    <div class="ai-tabs">
+      <button class="ai-tab active" onclick="skiftAiTab('uge')">Seneste uge</button>
+      <button class="ai-tab"        onclick="skiftAiTab('ytd')">År til dato</button>
+      <button class="ai-tab"        onclick="skiftAiTab('trend')">Trend</button>
+    </div>
+    <div class="ai-heading" id="aiHeading"></div>
+    <div id="aiBody"><div class="ai-empty">Henter AI-analyse...</div></div>
+  </div>
+
+</main>
+
+<!-- ════════════════════ KILDE ════════════════════ -->
+<div class="kilde">
+  <span>Kilde: Danmarks Statistik, VAN1UGE · Hvidovre Kommune (kode 167) · Opdateres ugentligt via n8n → GitHub Pages</span>
+  <button class="dl-btn" onclick="downloadRapport()">↓ Download rapport</button>
+</div>
+
+<!-- ════════════════════ SCRIPT ════════════════════ -->
+<script>
+/* ═══════════════════════════════════════════════════
+   CONFIG — ændr kun analyseJsonUrl hvis repo ændres
+═══════════════════════════════════════════════════ */
+const CONFIG = {
+  analyseJsonUrl: 'https://raw.githubusercontent.com/henrikastrup/hvidovre-analyser/main/indvandring-analyse.json'
+};
+
+/* ═══════════════════════════════════════════════════
+   FARVEPALETTE — 10 lande (Hvidovre brand + accenter)
+═══════════════════════════════════════════════════ */
+const FARVER = [
+  '#1A4D2E', // mørkegrøn — primær
+  '#C9973A', // guld
+  '#2E7D54', // medium grøn
+  '#8B6914', // mørk guld
+  '#4A9B7F', // lys grøn
+  '#5DADE2', // himmelblå
+  '#E67E22', // orange
+  '#8E44AD', // lilla
+  '#C0392B', // rød
+  '#2E86AB'  // stålblå
+];
+
+/* ═══════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════ */
+let data       = null;
+let chart      = null;
+let aktivView  = localStorage.getItem('hv_indv_view')    || 'uge';
+let display    = localStorage.getItem('hv_indv_display') || 'graf';
+let aktivAiTab = aktivView;
+
+/* ═══════════════════════════════════════════════════
+   HJÆLPEFUNKTIONER
+═══════════════════════════════════════════════════ */
+function setStatus(type, msg) {
+  document.getElementById('dot').className    = 'dot ' + type;
+  document.getElementById('statusMsg').textContent = msg;
+}
+
+function fmt(n) {
+  return typeof n === 'number' ? Math.round(n).toLocaleString('da-DK') : '—';
+}
+
+function showGraf()  {
+  document.getElementById('grafArea').style.display  = 'block';
+  document.getElementById('tabelArea').style.display = 'none';
+}
+
+function showTabel() {
+  document.getElementById('grafArea').style.display  = 'none';
+  document.getElementById('tabelArea').style.display = 'block';
+}
+
+/* ═══════════════════════════════════════════════════
+   DATA LOAD
+═══════════════════════════════════════════════════ */
+async function loadData() {
+  document.getElementById('overlay').classList.add('show');
+  setStatus('loading', 'Henter indvandringsdata fra GitHub...');
+
+  try {
+    const r = await fetch(CONFIG.analyseJsonUrl + '?t=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status + ' — kontrollér at n8n-flowet har kørt');
+    data = await r.json();
+
+    renderKPI();
+    initViewButtons();
+    render();
+    visAnalyse();
+
+    document.getElementById('updateTime').textContent = 'Genereret: ' + (data.genereret || '—');
+    setStatus('ok',
+      `Data for ${data.senesteUgeDisplay || '—'} · Genereret ${data.genereret || '—'} · DST VAN1UGE`);
+    document.getElementById('overlay').classList.remove('show');
+
+  } catch(e) {
+    setStatus('error', 'Fejl: ' + e.message);
+    document.getElementById('overlay').classList.remove('show');
+    document.getElementById('chartTitle').textContent = 'Data ikke tilgængeligt endnu';
+    document.getElementById('chartDesc').textContent  =
+      'Kør n8n-flowet manuelt for at generere indvandring-analyse.json i GitHub-repoen.';
+    document.getElementById('aiMeta').textContent  = 'Ingen analyse tilgængelig';
+    document.getElementById('aiBody').innerHTML    =
+      '<div class="ai-empty">AI-analysen genereres ugentligt via n8n og vises automatisk her, når den er klar.</div>';
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   KPI
+═══════════════════════════════════════════════════ */
+function renderKPI() {
+  if (!data?.kpi) return;
+  const k = data.kpi;
+  document.getElementById('k1').textContent = fmt(k.totalUge);
+  document.getElementById('k1d').textContent = `Alle lande · ${data.senesteUgeDisplay || ''}`;
+  document.getElementById('k2').textContent = fmt(k.totalYtd);
+  document.getElementById('k2d').textContent = `Alle lande · ${data.latestYear || ''}`;
+  document.getElementById('k3').textContent = fmt(k.antalLandeUge);
+  document.getElementById('k4').textContent = fmt(k.antalLandeYtd);
+}
+
+/* ═══════════════════════════════════════════════════
+   VIEW-KNAPPER INIT (gendanner gemt state)
+═══════════════════════════════════════════════════ */
+function initViewButtons() {
+  ['uge','ytd','trend'].forEach(v => {
+    const id = 'btn' + v.charAt(0).toUpperCase() + v.slice(1);
+    document.getElementById(id)?.classList.toggle('active', v === aktivView);
+  });
+  document.getElementById('btnGraf').classList.toggle('active',  display === 'graf');
+  document.getElementById('btnTabel').classList.toggle('active', display === 'tabel');
+  document.querySelectorAll('.ai-tab').forEach((t, i) => {
+    t.classList.toggle('active', ['uge','ytd','trend'][i] === aktivAiTab);
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   SKIFT VIEW
+═══════════════════════════════════════════════════ */
+function skiftView(v) {
+  aktivView  = v;
+  aktivAiTab = v;
+  localStorage.setItem('hv_indv_view', v);
+  ['uge','ytd','trend'].forEach(id => {
+    const btn = document.getElementById('btn' + id.charAt(0).toUpperCase() + id.slice(1));
+    btn?.classList.toggle('active', id === v);
+  });
+  document.querySelectorAll('.ai-tab').forEach((t, i) => {
+    t.classList.toggle('active', ['uge','ytd','trend'][i] === v);
+  });
+  render();
+  if (data?.analyse) visAnalyseTekst();
+}
+
+function skiftDisplay(d) {
+  display = d;
+  localStorage.setItem('hv_indv_display', d);
+  document.getElementById('btnGraf').classList.toggle('active',  d === 'graf');
+  document.getElementById('btnTabel').classList.toggle('active', d === 'tabel');
+  render();
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER DISPATCHER
+═══════════════════════════════════════════════════ */
+function render() {
+  if (!data) return;
+  if      (aktivView === 'uge')   renderUge();
+  else if (aktivView === 'ytd')   renderYtd();
+  else                            renderTrend();
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER — SENESTE UGE (vandret søjlediagram)
+═══════════════════════════════════════════════════ */
+function renderUge() {
+  if (!data?.top10Uge?.length) return;
+  document.getElementById('chartTitle').textContent =
+    `Top 10 herkomstlande · ${data.senesteUgeDisplay || ''}`;
+  document.getElementById('chartDesc').textContent  =
+    'Antal indvandrede per herkomstland · Seneste tilgængelige DST-uge · Sorteret efter antal';
+
+  if (display === 'tabel') {
+    renderTabelView(
+      ['#', 'Land', 'Antal'],
+      data.top10Uge.map((d, i) => [i + 1, d.land, d.antal])
+    );
+  } else {
+    const labels = [...data.top10Uge.map(d => d.land)].reverse();
+    const values = [...data.top10Uge.map(d => d.antal)].reverse();
+    const farver  = labels.map((_, i) => FARVER[labels.length - 1 - i] ?? '#8A8A7E');
+    renderHBar(labels, values, farver, `Indvandrede ${data.senesteUgeDisplay}`, 420);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER — ÅTD (vandret søjlediagram)
+═══════════════════════════════════════════════════ */
+function renderYtd() {
+  if (!data?.top10Ytd?.length) return;
+  document.getElementById('chartTitle').textContent =
+    `Top 10 herkomstlande · År til dato · ${data.latestYear || ''}`;
+  document.getElementById('chartDesc').textContent  =
+    'Akkumuleret indvandring siden 1. januar · Alle uger i indeværende år · Sorteret efter total';
+
+  if (display === 'tabel') {
+    renderTabelView(
+      ['#', 'Land', 'Antal (ÅTD)'],
+      data.top10Ytd.map((d, i) => [i + 1, d.land, d.antal])
+    );
+  } else {
+    const labels = [...data.top10Ytd.map(d => d.land)].reverse();
+    const values = [...data.top10Ytd.map(d => d.antal)].reverse();
+    const farver  = labels.map((_, i) => FARVER[labels.length - 1 - i] ?? '#8A8A7E');
+    renderHBar(labels, values, farver, `Indvandrede ÅTD ${data.latestYear}`, 420);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER — TREND (linjediagram, 12 uger)
+═══════════════════════════════════════════════════ */
+function renderTrend() {
+  if (!data?.trend) return;
+  const t = data.trend;
+  const n  = 12;
+  const startIdx  = Math.max(0, t.uger.length - n);
+  const ugerLabel = t.ugerDisplay.slice(startIdx);
+
+  document.getElementById('chartTitle').textContent =
+    `Trendudvikling · Top 10 lande · Seneste ${ugerLabel.length} uger`;
+  document.getElementById('chartDesc').textContent  =
+    'Ugentlig indvandring per herkomstland · Top 10 lande baseret på ÅTD-total';
+
+  if (display === 'tabel') {
+    const vis = Math.min(6, ugerLabel.length);
+    const headers = ['Land', ...t.ugerDisplay.slice(-vis)];
+    const rows = t.lande.map(land => {
+      const vals = (t.data[land] || []).slice(-vis);
+      return [land, ...vals.map(v => v.toLocaleString('da-DK'))];
+    });
+    renderTabelView(headers, rows);
+  } else {
+    renderLinje(ugerLabel, t.lande, t.data, startIdx, t.uger.length);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   CHART — VANDRET SØJLEDIAGRAM
+═══════════════════════════════════════════════════ */
+function renderHBar(labels, values, farver, dataLabel, height) {
+  showGraf();
+  if (chart) chart.destroy();
+  document.querySelector('.canvas-wrap').style.height = height + 'px';
+
+  chart = new Chart(
+    document.getElementById('mainCanvas').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: dataLabel,
+        data: values,
+        backgroundColor: farver,
+        borderRadius: 5,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: c => `  ${c.parsed.x.toLocaleString('da-DK')} personer`
+          },
+          backgroundColor: '#1C1C1A',
+          titleFont: { family: 'DM Sans', size: 13, weight: '600' },
+          bodyFont:  { family: 'DM Sans', size: 12 },
+          padding: 11, cornerRadius: 6
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          ticks: {
+            font: { family: 'DM Mono', size: 11 }, color: '#8A8A7E',
+            callback: v => v.toLocaleString('da-DK')
+          },
+          grid: { color: 'rgba(0,0,0,0.04)' }
+        },
+        y: {
+          ticks: {
+            font: { family: 'DM Sans', size: 13, weight: '500' },
+            color: '#1C1C1A'
+          },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   CHART — LINJEDIAGRAM
+═══════════════════════════════════════════════════ */
+function renderLinje(labels, lande, trendData, startIdx, totalLen) {
+  showGraf();
+  if (chart) chart.destroy();
+  document.querySelector('.canvas-wrap').style.height = '420px';
+
+  const datasets = lande.map((land, i) => ({
+    label: land,
+    data:  (trendData[land] || []).slice(startIdx, startIdx + labels.length),
+    borderColor:       FARVER[i] ?? '#8A8A7E',
+    backgroundColor:   'transparent',
+    borderWidth:       2,
+    tension:           0.3,
+    pointRadius:       3,
+    pointHoverRadius:  6,
+    pointBackgroundColor: FARVER[i] ?? '#8A8A7E',
+    pointBorderColor:  '#fff',
+    pointBorderWidth:  1.5
+  }));
+
+  chart = new Chart(
+    document.getElementById('mainCanvas').getContext('2d'), {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'bottom',
+          labels: {
+            font: { family: 'DM Sans', size: 11 },
+            boxWidth: 14, padding: 14,
+            filter: item => true
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: c => c.parsed.y > 0
+              ? `  ${c.dataset.label}: ${c.parsed.y.toLocaleString('da-DK')}`
+              : null
+          },
+          backgroundColor: '#1C1C1A',
+          titleFont: { family: 'DM Sans', size: 13, weight: '600' },
+          bodyFont:  { family: 'DM Sans', size: 12 },
+          padding: 11, cornerRadius: 6
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            font: { family: 'DM Sans', size: 11 },
+            color: '#6A6A60', maxRotation: 35
+          },
+          grid: { color: 'rgba(0,0,0,0.04)' }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            font: { family: 'DM Mono', size: 11 }, color: '#8A8A7E',
+            callback: v => v.toLocaleString('da-DK')
+          },
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          title: {
+            display: true, text: 'Antal indvandrede',
+            font: { family: 'DM Sans', size: 11 }, color: '#8A8A7E'
+          }
+        }
+      }
+    }
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER TABEL
+═══════════════════════════════════════════════════ */
+function renderTabelView(headers, rows) {
+  showTabel();
+  document.getElementById('tblHead').innerHTML =
+    '<tr>' + headers.map(h => `<th>${h}</th>`).join('') + '</tr>';
+  document.getElementById('tblBody').innerHTML = rows.map(row =>
+    '<tr>' + row.map((cell, ci) => {
+      const isRank = ci === 0 && typeof cell === 'number';
+      const isNum  = ci > 0   && typeof cell === 'number';
+      const cls    = isRank ? 'rank' : (isNum ? 'num' : (ci === 1 ? 'land' : ''));
+      return `<td class="${cls}">${
+        typeof cell === 'number' ? cell.toLocaleString('da-DK') : cell
+      }</td>`;
+    }).join('') + '</tr>'
+  ).join('');
+}
+
+/* ═══════════════════════════════════════════════════
+   AI ANALYSE
+═══════════════════════════════════════════════════ */
+function visAnalyse() {
+  if (!data?.analyse) {
+    document.getElementById('aiMeta').textContent = 'Ingen analyse tilgængelig';
+    document.getElementById('aiBody').innerHTML   =
+      '<div class="ai-empty">AI-analysen genereres ugentligt via n8n og vises automatisk her, når den er klar.</div>';
+    return;
+  }
+  const a = data.analyse;
+  document.getElementById('aiMeta').textContent =
+    `Baseret på ${data.senesteUgeDisplay} · Genereret ${data.genereret}`;
+
+  const dage  = Math.floor((Date.now() - new Date(data.genereret + 'T00:00:00')) / 864e5);
+  const badge = document.getElementById('aiBadge');
+  badge.textContent = dage <= 7 ? 'Opdateret' : `${dage} dage siden`;
+  badge.className   = 'ai-badge ' + (dage <= 7 ? 'ny' : 'gammel');
+
+  document.getElementById('aiHeading').textContent = a.overskrift || '';
+  visAnalyseTekst();
+}
+
+function skiftAiTab(tab) {
+  aktivAiTab = tab;
+  document.querySelectorAll('.ai-tab').forEach((t, i) => {
+    t.classList.toggle('active', ['uge','ytd','trend'][i] === tab);
+  });
+  visAnalyseTekst();
+}
+
+function visAnalyseTekst() {
+  if (!data?.analyse) return;
+  const a     = data.analyse;
+  const tekst = aktivAiTab === 'uge'   ? a.ugeAnalyse
+              : aktivAiTab === 'ytd'   ? a.ytdAnalyse
+              :                          a.trendAnalyse;
+  document.getElementById('aiBody').innerHTML =
+    `<div class="ai-text">${tekst ?? 'Ingen analyse for denne periode.'}</div>`;
+}
+
+/* ═══════════════════════════════════════════════════
+   DOWNLOAD
+═══════════════════════════════════════════════════ */
+function downloadRapport() {
+  const blob = new Blob([document.documentElement.outerHTML],
+    { type: 'text/html;charset=utf-8' });
+  const a   = document.createElement('a');
+  a.href    = URL.createObjectURL(blob);
+  a.download = 'hvidovre-indvandring-ugentlig.html';
+  a.click();
+}
+
+/* ═══════════════════════════════════════════════════
+   STARTUP
+═══════════════════════════════════════════════════ */
+window.addEventListener('load', () => {
+  if (window.location.protocol === 'file:') {
+    setStatus('error',
+      'Åbn rapporten på GitHub Pages for live data (CORS-begrænsning ved lokal åbning fra disk)');
+    document.getElementById('overlay').classList.remove('show');
+    return;
+  }
+  loadData();
+});
+</script>
+
+</body>
+</html>
