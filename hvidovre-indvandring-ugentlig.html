@@ -299,10 +299,10 @@ function renderPeriode(){
     renderTabelView(['#','Land','Seneste 4 uger','Forrige 4 uger','Ændring'],
       data.top10_4u.map((d,i)=>{const d2=fmtDelta(d.delta,'');return[i+1,d.land,d.antal,d.forrige,{val:d2.txt,cls:d2.cls}];}));
   }else{
-    const labels=[...data.top10_4u.map(d=>d.land)].reverse();
-    const values=[...data.top10_4u.map(d=>d.antal)].reverse();
-    const forrige=[...data.top10_4u.map(d=>d.forrige)].reverse();
-    renderHBar(labels,values,labels.map((_,i)=>FARVER[labels.length-1-i]??'#8A8A7E'),forrige,`Indvandrede ${data.periodeDisplay}`,420);
+    const labels=data.top10_4u.map(d=>d.land);
+    const values=data.top10_4u.map(d=>d.antal);
+    const forrige=data.top10_4u.map(d=>d.forrige);
+    renderHBar(labels,values,labels.map((_,i)=>FARVER[i]??'#8A8A7E'),forrige,`Indvandrede ${data.periodeDisplay}`,420);
   }
 }
 
@@ -325,9 +325,9 @@ function renderYtd(){
     if(display==='tabel'){
       renderTabelView(['#','Land','Antal (ÅTD)'],data.top10Ytd.map((d,i)=>[i+1,d.land,d.antal]));
     }else{
-      const labels=[...data.top10Ytd.map(d=>d.land)].reverse();
-      const values=[...data.top10Ytd.map(d=>d.antal)].reverse();
-      renderHBar(labels,values,labels.map((_,i)=>FARVER[labels.length-1-i]??'#8A8A7E'),null,`Indvandrede ÅTD ${data.latestYear}`,420);
+      const labels=data.top10Ytd.map(d=>d.land);
+      const values=data.top10Ytd.map(d=>d.antal);
+      renderHBar(labels,values,labels.map((_,i)=>FARVER[i]??'#8A8A7E'),null,`Indvandrede ÅTD ${data.latestYear}`,420);
     }
   }
 }
@@ -376,7 +376,7 @@ function renderHBar(labels,values,farver,forrigeData,lbl,height){
 function renderGrupperetHBar(lande,current,previous,curYear,prevYear){
   showGraf();if(chart)chart.destroy();
   document.querySelector('.canvas-wrap').style.height='460px';
-  const labels=[...lande].reverse(),curR=[...current].reverse(),prevR=[...previous].reverse();
+  const labels=lande,curR=current,prevR=previous;
   chart=new Chart(document.getElementById('mainCanvas').getContext('2d'),{
     type:'bar',
     data:{labels,datasets:[
