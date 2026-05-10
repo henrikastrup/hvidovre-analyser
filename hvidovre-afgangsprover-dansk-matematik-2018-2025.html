@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-<script>
-(function(){if(window.self===window.top)return;
-var n=document.querySelector('.ap-navbar');
-if(n){n.style.setProperty('display','none','important');
-n.style.setProperty('height','0','important');
-n.style.setProperty('overflow','hidden','important');}
-})();
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Afgangskarakterer Dansk &amp; Matematik · Hvidovre Kommune 2018–2025</title>
@@ -133,5 +125,397 @@ main{padding:26px 48px 40px;max-width:1160px;}
     <span class="ap-brand">analyse.astrup.org</span>
   </a>
   <div class="ap-sep"></div>
+  <span class="ap-domain"><span class="ap-dot"></span>Analyseportal</span>
+</div>
+
+<header class="hdr">
+  <div class="hdr-eye">Henrik Astrup · analyse.astrup.org</div>
+  <h1>Dansk &amp; Matematik — Afgangskarakterer <em>Alle skoler, 2018–2025</em></h1>
+  <p>Elevgennemsnit (uden vægtning) · Samlet af alle fagdiscipliner · Sorteret efter skolestørrelse (største øverst) · Kilde: Børne- og Undervisningsministeriets uddannelsesstatistik API</p>
+</header>
+
+<div class="fag-bar">
+  <span class="fag-lbl">Vis fag:</span>
+  <button class="fag-btn mat active" id="btnMat" onclick="skiftFag('mat')">
+    <span class="fag-indicator"></span>Matematik
+  </button>
+  <button class="fag-btn dansk" id="btnDansk" onclick="skiftFag('dansk')">
+    <span class="fag-indicator"></span>Dansk
+  </button>
+  <button class="dl-btn" onclick="downloadRapport()">↓ Download rapport</button>
+</div>
+
+<div class="toolbar">
+  <span class="toolbar-lbl">Visning:</span>
+  <button class="btn active" id="vBar" onclick="skiftView('bar')">Seneste år (søjle)</button>
+  <button class="btn" id="vLine" onclick="skiftView('line')">Udvikling over tid (linje)</button>
+  <button class="btn" id="vTabel" onclick="skiftView('tabel')">Tabel</button>
+  <div class="sep"></div>
+  <span class="toolbar-lbl">Inkl. specialinst.:</span>
+  <button class="btn active" id="inclSpec" onclick="skiftSpecial(true)">Ja</button>
+  <button class="btn" id="exclSpec" onclick="skiftSpecial(false)">Nej</button>
+</div>
+
+<main>
+
+<div class="kpi-row" id="kpiRow"></div>
+
+<div class="section-label" id="grafLabel">Seneste skoleår (2024/2025) — sorteret efter skolestørrelse</div>
+
+<div class="chart-card">
+  <div class="chart-top">
+    <div>
+      <div class="chart-title" id="chartTitle">Matematikgennemsnit per skole — 2024/2025</div>
+      <div class="chart-desc" id="chartDesc">Samlet gennemsnit af alle fagdiscipliner · Sorteret efter antal elever (størst øverst)</div>
+    </div>
+    <div class="chart-btns">
+      <button class="cbtn active" id="cBtnGraf" onclick="skiftGrafTabel('graf')">Diagram</button>
+      <button class="cbtn" id="cBtnTabel" onclick="skiftGrafTabel('tabel')">Tabel</button>
+    </div>
+  </div>
+  <div id="grafOmraade">
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="cvBar"></canvas>
+      <canvas id="cvLine" style="display:none;"></canvas>
+    </div>
+  </div>
+  <div class="tbl-wrap" id="tblOmraade">
+    <table class="data-tbl">
+      <thead id="tblHead"></thead>
+      <tbody id="tblBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section-label">Analytisk vurdering</div>
+<div class="analyse-card">
+  <div class="analyse-title">Afgangskarakterer i matematik og dansk — Hvidovre Kommunes skoler 2018–2025</div>
+  <div class="analyse-meta">Baseret på elevgennemsnit (uden vægtning) · Matematik: med hjælpemidler, uden hjælpemidler, mundtlig · Dansk: læsning, mundtlig, retskrivning, skriftlig · Skoler sorteret efter størrelse</div>
+  <div class="analyse-body">
+
+    <h3>Overordnet billede: faldende niveau fra 2021/22, svag vending i 2024/25</h3>
+    <p>På tværs af Hvidovre Kommunes folkeskoler tegner sig et mønster, der svarer til den nationale udvikling: karaktererne nåede et lokalt toppunkt i skoleårene 2020/21–2021/22 og faldt derefter frem mod 2023/24. I 2024/25 viser de fleste skoler en svag til moderat stigning — men er endnu ikke tilbage på niveauet fra toppunktet. Mønsteret er tydeligere i matematik end i dansk, og spredningen mellem skolerne er markant og vedvarende.</p>
+
+    <h3>Størrelse og fagligt niveau: svag positiv sammenhæng, men med vigtige undtagelser</h3>
+    <p>I Hvidovre er der en svagt positiv tendens, hvor de to mellemstore folkeskoler — Risbjergskolen og Dansborgskolen — præsterer over gennemsnittet. Men sammenhængen er langt fra entydig:</p>
+    <ul>
+      <li><strong>Langhøjskolen</strong> (161 elever, kommunens største folkeskole) ender i 2024/25 med sit svageste matematikresultat i perioden (5,87) — et fald fra 6,87 i 2018/19. Danskresultatet er mere stabilt, men også faldende. Skolen er et eksempel på, at størrelse ikke oversættes til faglig styrke.</li>
+      <li><strong>Risbjergskolen</strong> (154 elever) er kommunens suverænt bedst præsterende folkeskole i begge fag og den eneste, der i 2024/25 slutter <em>højere</em> end i 2018/19 — 7,57 i matematik og 7,22 i dansk. Skolen havde et markant dyk i 2022/23–2023/24, men har rettet sig stærkt op.</li>
+      <li><strong>Dansborgskolen</strong> (138 elever) er relativt stabil og præsterer konsistent over kommunegennemsnittet i begge fag, med beskedne udsving over perioden.</li>
+      <li><strong>Holmegårdsskolen</strong> (104 elever) begyndte perioden stærkt (7,17 i matematik i 2018/19) men er faldet støt og endte i 2024/25 på 6,17 — en nedgang på 1,0 point over syv år.</li>
+    </ul>
+
+    <h3>Frydenhøjskolen og Gungehusskolen: vedvarende fagligt pres</h3>
+    <p><strong>Frydenhøjskolen</strong> (134 elever) har kommunens laveste matematikresultat blandt folkeskoler i 2024/25 (4,83) og har været i en næsten ubrudt nedgang siden 2021/22. Hverken i matematik eller dansk har skolen nogen år i perioden nået kommunegennemsnittet. <strong>Gungehusskolen</strong> (98 elever) ligger tilsvarende lavt og stabilt — matematikgennemsnittet har ligget i intervallet 4,67–5,90 i alle syv år. For begge skolers vedkommende bør resultaterne kobles med elevsammensætning og socioøkonomiske indikatorer for at kvalificere tolkningen.</p>
+
+    <h3>Avedøre Skole: stor volatilitet som advarselssignal</h3>
+    <p><strong>Avedøre Skole</strong> (115 elever) har det mest svingende forløb i kommunen: matematikgennemsnittet faldt fra 6,87 i 2021/22 til 4,87 i 2022/23 — et énårigt fald på 2,0 karakterpoint. Det er et meget markant udsving, der ikke kan tilskrives statistisk støj alene ved denne skolestørrelse. I 2024/25 er skolen delvist rettet op til 5,83. Danskkarakteren følger et lignende, men mere dæmpet mønster.</p>
+
+    <h3>Privatskoler: vedvarende og markant forskel</h3>
+    <p>Både <strong>Hvidovre Privatskole</strong> (82 elever) og <strong>Esajasskolen</strong> (66 elever) topper konsekvent og med stor margin. Esajasskolen når i 2024/25 8,33 i matematik og 8,07 i dansk — ca. 2–3 karakterpoint over de svageste folkeskoler. Hvidovre Privatskole er faldet svagt i matematik siden 2020/21, men stiger markant i dansk til 7,80 i 2024/25. Privatskoleresultaterne afspejler en anden elevsammensætning og bør ikke bruges direkte som benchmark for folkeskolerne.</p>
+
+    <h3>Specialinstitutioner</h3>
+    <p><strong>Hvidovre Ungdomsskole</strong> afholder afgangsprøver for elever, der ikke er indskrevet på en folkeskole, og gennemsnittet afspejler denne særlige elevgruppe (3,1–4,9 over perioden). <strong>Sputnik 8</strong> og <strong>Sønderkærskolen</strong> er specialinstitutioner og bør ikke sammenlignes med ordinære skoler. Det bemærkes, at Sønderkærskolen viser en opadgående tendens i begge fag de seneste to år, om end fra et lavt niveau og med meget begrænset elevtal.</p>
+
+    <h3>Opmærksomhedspunkter til videre opfølgning</h3>
+    <ul>
+      <li>Frydenhøjskolen og Gungehusskolens vedvarende lave resultater bør kobles med trivselsmålinger, fraværsdata og socioøkonomiske elevprofiler</li>
+      <li>Langhøjskolens faldende matematikresultater er bekymrende for kommunens største folkeskole og bør undersøges nærmere</li>
+      <li>Avedøre Skoles store énårige dyk i 2022/23 bør belyses — fx i relation til personaleforhold eller elevfravær det pågældende år</li>
+      <li>Risbjergskolen er interessant som positiv outlier og case for erfaringsdeling: hvad forklarer skolens høje og stabile niveau — og genopretningstendensen i 2024/25?</li>
+      <li>En sammenligning med benchmark-kommunerne (Brøndby, Rødovre, Ballerup, Gladsaxe, Herlev) vil styrke den samlede vurdering af Hvidovres position</li>
+    </ul>
+  </div>
+</div>
+
+</main>
+<div class="kilde">
+  Kilde: Børne- og Undervisningsministeriets uddannelsesstatistik API · Underemne: KARAFF · Skoleår 2018/19–2024/25 · Hentet maj 2025
+</div>
+
+<script>
+const SKOLEAAR = ["2018/2019","2019/2020","2020/2021","2021/2022","2022/2023","2023/2024","2024/2025"];
+
+const SKOLER = [
+  { navn:"Langhøjskolen",     kort:"Langhøjskolen",      type:"folke",   str:161,
+    mat:[6.87,6.40,6.97,6.53,6.77,6.40,5.87], dansk:[6.45,6.30,7.15,6.38,6.72,6.17,6.25] },
+  { navn:"Risbjergskolen",    kort:"Risbjergskolen",      type:"folke",   str:154,
+    mat:[7.43,7.80,7.27,6.50,6.40,6.43,7.57], dansk:[7.15,7.53,7.83,7.45,6.45,6.53,7.22] },
+  { navn:"Dansborgskolen",    kort:"Dansborgskolen",      type:"folke",   str:138,
+    mat:[7.10,6.97,6.63,7.33,6.90,6.60,6.87], dansk:[6.85,7.03,6.72,7.33,6.50,6.47,6.85] },
+  { navn:"Frydenhøjskolen",   kort:"Frydenhøjskolen",    type:"folke",   str:134,
+    mat:[5.73,5.47,5.33,5.67,4.87,5.13,4.83], dansk:[5.80,6.15,6.17,6.33,5.35,6.33,5.62] },
+  { navn:"Engstrandskolen",   kort:"Engstrandskolen",     type:"folke",   str:125,
+    mat:[6.10,6.33,6.40,6.67,6.50,5.60,6.00], dansk:[6.10,6.25,6.62,7.17,6.58,6.20,6.53] },
+  { navn:"Avedøre Skole",     kort:"Avedøre Skole",       type:"folke",   str:115,
+    mat:[5.87,6.03,6.33,6.87,4.87,5.23,5.83], dansk:[6.15,6.30,6.65,6.55,5.88,5.78,6.00] },
+  { navn:"Hvidovre Ungdomsskole", kort:"Hvidovre Ungdomsskole", type:"special", str:107,
+    mat:[3.27,3.17,3.70,4.27,3.40,3.40,3.13], dansk:[3.58,2.65,4.92,4.67,4.30,4.45,4.30] },
+  { navn:"Holmegårdsskolen",  kort:"Holmegårdsskolen",   type:"folke",   str:104,
+    mat:[7.17,7.07,7.07,6.70,5.97,6.17,6.17], dansk:[6.72,6.80,6.45,6.55,6.07,5.80,6.28] },
+  { navn:"Gungehusskolen",    kort:"Gungehusskolen",      type:"folke",   str:98,
+    mat:[5.90,5.07,4.67,4.70,4.73,4.80,4.70], dansk:[6.00,5.30,5.00,5.08,4.55,5.15,5.20] },
+  { navn:"Præstemoseskolen",  kort:"Præstemoseskolen",   type:"folke",   str:93,
+    mat:[6.07,6.17,6.47,5.93,6.10,6.37,6.00], dansk:[5.88,6.35,6.90,6.33,6.23,5.92,6.17] },
+  { navn:"Hvidovre Privatskole", kort:"Hvidovre Privatskole", type:"privat", str:82,
+    mat:[6.83,6.77,7.37,7.03,6.53,6.93,7.10], dansk:[7.17,7.35,7.72,7.58,6.95,6.92,7.80] },
+  { navn:"Esajasskolen",      kort:"Esajasskolen",        type:"privat",  str:66,
+    mat:[7.93,8.27,8.23,8.07,9.27,9.00,8.33], dansk:[7.25,7.00,7.67,8.75,7.53,7.82,8.07] },
+  { navn:"Den Specialpædagogiske Dagbehandlingsinstitution Sputnik 8 ApS",
+    kort:"Sputnik 8",         type:"special", str:24,
+    mat:[null,null,2.47,3.83,2.07,3.20,3.67], dansk:[null,null,3.27,3.67,3.12,1.95,3.50] },
+  { navn:"Sønderkærskolen",   kort:"Sønderkærskolen",    type:"special", str:13,
+    mat:[2.63,null,0.50,2.20,2.50,3.40,3.97], dansk:[2.40,null,0.62,3.10,3.17,3.48,4.42] },
+];
+
+const FARVER = [
+  '#1A4D2E','#C9973A','#2E7D54','#8B6914','#4A9B7F',
+  '#5DADE2','#E67E22','#8E44AD','#C0392B','#2E86AB',
+  '#C9973A','#6B5B0F','#9CA3AF','#D1D5DB'
+];
+
+let aktivFag    = 'mat';
+let aktivView   = 'bar';
+let inclSpecial = true;
+let visGraf     = true;
+let chartBar    = null;
+let chartLine   = null;
+
+function getSkoler() {
+  return inclSpecial ? SKOLER : SKOLER.filter(s => s.type !== 'special');
+}
+function getFagLabel() { return aktivFag === 'mat' ? 'Matematik' : 'Dansk'; }
+function getFagVals(s)  { return aktivFag === 'mat' ? s.mat : s.dansk; }
+function getFagColor()  { return aktivFag === 'mat' ? '#1A4D2E' : '#5DADE2'; }
+
+function renderKPI() {
+  const folkeskoler = getSkoler().filter(s => s.type === 'folke');
+  const vals24 = folkeskoler.map(s => getFagVals(s)[6]).filter(v => v !== null);
+  const vals18 = folkeskoler.map(s => getFagVals(s)[0]).filter(v => v !== null);
+  const kom24  = vals24.length ? vals24.reduce((a,b)=>a+b,0)/vals24.length : null;
+  const kom18  = vals18.length ? vals18.reduce((a,b)=>a+b,0)/vals18.length : null;
+  const sorted = [...folkeskoler].filter(s => getFagVals(s)[6]!==null).sort((a,b)=>getFagVals(b)[6]-getFagVals(a)[6]);
+  const top = sorted[0], bund = sorted[sorted.length-1];
+  const delta = (kom24 && kom18) ? kom24-kom18 : null;
+  const deltaCls = !delta ? 'neu' : delta>0 ? 'pos' : 'neg';
+  const deltaTxt = !delta ? '—' : (delta>0?'▲ +':'▼ ') + Math.abs(delta).toFixed(1).replace('.',',') + ' vs. 2018/19';
+
+  document.getElementById('kpiRow').innerHTML = `
+    <div class="kpi ${aktivFag==='dansk'?'blue':''}">
+      <div class="kpi-lbl">Kommunegennemsnit 2024/25</div>
+      <div class="kpi-val">${kom24 ? kom24.toFixed(1).replace('.',',') : '—'}</div>
+      <div class="kpi-delta ${deltaCls}">${deltaTxt}</div>
+      <div class="kpi-desc">${getFagLabel()}, folkeskoler</div>
+    </div>
+    <div class="kpi gld">
+      <div class="kpi-lbl">Bedste folkeskole 2024/25</div>
+      <div class="kpi-val">${top ? getFagVals(top)[6].toFixed(1).replace('.',',') : '—'}</div>
+      <div class="kpi-desc">${top?.kort ?? '—'}</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-lbl">Laveste folkeskole 2024/25</div>
+      <div class="kpi-val">${bund ? getFagVals(bund)[6].toFixed(1).replace('.',',') : '—'}</div>
+      <div class="kpi-desc">${bund?.kort ?? '—'}</div>
+    </div>
+    <div class="kpi mid-c">
+      <div class="kpi-lbl">Spredning top–bund</div>
+      <div class="kpi-val">${(top && bund) ? (getFagVals(top)[6]-getFagVals(bund)[6]).toFixed(1).replace('.',',') : '—'}</div>
+      <div class="kpi-desc">Karakterpoint, folkeskoler 2024/25</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">Antal skoler</div>
+      <div class="kpi-val">${getSkoler().length}</div>
+      <div class="kpi-desc">Inkl. ${getSkoler().filter(s=>s.type==='special').length} specialinst.</div>
+    </div>`;
+}
+
+function renderBar() {
+  if (chartBar) chartBar.destroy();
+  const skoler = getSkoler();
+  const labels = skoler.map(s => s.kort);
+  const vals   = skoler.map(s => getFagVals(s)[6]);
+  const colors = skoler.map(s =>
+    s.type==='special' ? '#D1D5DB88' :
+    s.type==='privat'  ? '#C9973AFF' :
+    getFagColor()+'FF'
+  );
+  const canvas = document.getElementById('cvBar');
+  const h = Math.max(380, skoler.length * 44 + 60);
+  canvas.parentElement.style.height = h + 'px';
+  canvas.style.display = 'block';
+  document.getElementById('cvLine').style.display = 'none';
+
+  chartBar = new Chart(canvas.getContext('2d'), {
+    type: 'bar',
+    data: { labels, datasets:[{ data:vals, backgroundColor:colors, borderRadius:4, borderSkipped:false }] },
+    options: {
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#1C1C1A',
+          titleFont:{family:'DM Sans',size:13,weight:'600'},
+          bodyFont:{family:'DM Sans',size:12}, padding:11, cornerRadius:6,
+          callbacks:{
+            label: c => {
+              const s = skoler[c.dataIndex];
+              const v = c.parsed.x;
+              return [
+                `  ${getFagLabel()}: ${v!==null ? v.toFixed(1).replace('.',',') : '—'}`,
+                `  Elever: ~${s.str}`,
+                `  Type: ${s.type==='folke'?'Folkeskole':s.type==='privat'?'Privatskole':'Specialinst.'}`
+              ];
+            }
+          }
+        }
+      },
+      scales:{
+        x:{ min:0, max:10, ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>v.toFixed(0)}, grid:{color:'rgba(0,0,0,0.04)'} },
+        y:{ ticks:{font:{family:'DM Sans',size:12,weight:'500'},color:'#1C1C1A'}, grid:{display:false} }
+      }
+    }
+  });
+}
+
+function renderLine() {
+  if (chartLine) chartLine.destroy();
+  const skoler = getSkoler();
+  const canvas = document.getElementById('cvLine');
+  canvas.parentElement.style.height = '540px';
+  canvas.style.display = 'block';
+  document.getElementById('cvBar').style.display = 'none';
+
+  const datasets = skoler.map((s,i) => {
+    const erSpecial = s.type === 'special';
+    const erPrivat  = s.type === 'privat';
+    const farve = erSpecial ? '#9CA3AF' : erPrivat ? '#C9973A' : FARVER[i % FARVER.length];
+    return {
+      label: s.kort, data: getFagVals(s),
+      borderColor: farve, backgroundColor:'transparent',
+      borderWidth: erSpecial ? 1 : erPrivat ? 2.5 : 2,
+      borderDash: erSpecial ? [4,3] : [],
+      tension:0.3, pointRadius: erSpecial ? 2 : 4, pointHoverRadius:6,
+      pointBackgroundColor:farve, pointBorderColor:'#fff', pointBorderWidth:1.5,
+      spanGaps:true
+    };
+  });
+
+  chartLine = new Chart(canvas.getContext('2d'), {
+    type:'line', data:{labels:SKOLEAAR, datasets},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:true,position:'bottom',labels:{font:{family:'DM Sans',size:11},boxWidth:14,padding:10}},
+        tooltip:{
+          backgroundColor:'#1C1C1A', titleFont:{family:'DM Sans',size:13,weight:'600'},
+          bodyFont:{family:'DM Sans',size:12}, padding:11, cornerRadius:6,
+          callbacks:{label: c => `  ${c.dataset.label}: ${c.parsed.y!==null ? c.parsed.y.toFixed(1).replace('.',',') : '—'}`}
+        }
+      },
+      scales:{
+        x:{ticks:{font:{family:'DM Sans',size:11},color:'#6A6A60'}, grid:{color:'rgba(0,0,0,0.03)'}},
+        y:{min:0, max:10, ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>v.toFixed(1).replace('.',',')}, grid:{color:'rgba(0,0,0,0.05)'}}
+      }
+    }
+  });
+}
+
+function renderTabel() {
+  const skoler = getSkoler();
+  const maxStr = Math.max(...skoler.map(s=>s.str));
+  document.getElementById('tblHead').innerHTML =
+    `<tr><th>Skole</th><th>Type</th><th class="num">Elever</th>` +
+    SKOLEAAR.map(a=>`<th class="num">${a.slice(2,4)}/${a.slice(7,9)}</th>`).join('') +
+    `<th class="num">Ændring</th></tr>`;
+  document.getElementById('tblBody').innerHTML = skoler.map(s => {
+    const vals = getFagVals(s);
+    const cells = vals.map(v=>`<td class="num">${v!==null?v.toFixed(1).replace('.',','):'—'}</td>`).join('');
+    const first = vals.find(v=>v!==null), last = [...vals].reverse().find(v=>v!==null);
+    const delta = (first!==undefined&&last!==undefined) ? last-first : null;
+    const dCls = delta===null?'':delta>0.05?'pos':delta<-0.05?'neg':'';
+    const dTxt = delta===null?'—':(delta>0?'+':'')+delta.toFixed(1).replace('.',',');
+    const typeTxt = s.type==='folke'?'Folkeskole':s.type==='privat'?'Privatskole':'Specialinst.';
+    const bw = Math.round((s.str/maxStr)*80);
+    return `<tr>
+      <td class="skole">${s.kort}</td>
+      <td><span class="type-badge">${typeTxt}</span></td>
+      <td class="num"><span class="str-badge">${s.str}</span><span class="bar-mini" style="width:${bw}px;background:${s.type==='folke'?getFagColor():'#D1D5DB'};opacity:.45;"></span></td>
+      ${cells}<td class="num ${dCls}">${dTxt}</td></tr>`;
+  }).join('');
+}
+
+function skiftFag(f) {
+  aktivFag = f;
+  document.getElementById('btnMat').classList.toggle('active', f==='mat');
+  document.getElementById('btnDansk').classList.toggle('active', f==='dansk');
+  opdater();
+}
+
+function skiftView(v) {
+  aktivView = v;
+  ['bar','line','tabel'].forEach(x =>
+    document.getElementById('v'+x.charAt(0).toUpperCase()+x.slice(1)).classList.toggle('active', x===v));
+  opdater();
+}
+
+function skiftSpecial(v) {
+  inclSpecial = v;
+  document.getElementById('inclSpec').classList.toggle('active', v);
+  document.getElementById('exclSpec').classList.toggle('active', !v);
+  opdater();
+}
+
+function skiftGrafTabel(gt) {
+  visGraf = gt === 'graf';
+  document.getElementById('cBtnGraf').classList.toggle('active', visGraf);
+  document.getElementById('cBtnTabel').classList.toggle('active', !visGraf);
+  document.getElementById('grafOmraade').style.display = visGraf ? 'block' : 'none';
+  document.getElementById('tblOmraade').style.display  = visGraf ? 'none' : 'block';
+  if (!visGraf) renderTabel(); else opdaterGraf();
+}
+
+function opdaterGraf() {
+  if (aktivView === 'bar') renderBar();
+  else if (aktivView === 'line') renderLine();
+}
+
+function opdater() {
+  const fl = getFagLabel();
+  document.getElementById('chartTitle').textContent =
+    aktivView==='bar' ? `${fl}gennemsnit per skole — 2024/2025`
+    : `${fl}gennemsnit — udvikling 2018–2025`;
+  document.getElementById('chartDesc').textContent =
+    aktivView==='bar'
+      ? 'Samlet gennemsnit af alle fagdiscipliner · Sorteret efter antal elever (størst øverst)'
+      : 'Samlet gennemsnit af alle fagdiscipliner · Én linje per skole · Rækkefølge i legend efter størrelse';
+  document.getElementById('grafLabel').textContent =
+    aktivView==='bar' ? 'Seneste skoleår (2024/2025) — sorteret efter skolestørrelse'
+    : aktivView==='line' ? 'Udvikling over 7 skoleår (2018/19–2024/25)'
+    : 'Datatabel — alle skoler';
+  renderKPI();
+  if (visGraf) opdaterGraf(); else renderTabel();
+}
+
+function downloadRapport() {
+  const blob = new Blob([document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'hvidovre-afgangsprøver-dansk-matematik-2018-2025.html';
+  a.click();
+}
+
+renderKPI();
+renderBar();
+</script>
+
+<script>
+/* Skjul ap-navbar når siden vises i portal-iframe */
+document.addEventListener("DOMContentLoaded",function(){
+  if(window.self===window.top)return;
+  var n=document.querySelector(".ap-navbar");
+  if(n)n.style.setProperty("display","none","important");
+});
+</script>
 </body>
 </html>
