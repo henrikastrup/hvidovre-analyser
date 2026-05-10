@@ -96,6 +96,25 @@ main{padding:26px 48px 40px;max-width:1140px;}
 </style>
 </head>
 <body>
+<style>
+.ap-navbar{all:unset;display:flex!important;align-items:center;gap:0;background:#0E1612;border-bottom:1px solid rgba(255,255,255,0.08);padding:0 28px;height:40px;font-family:'DM Mono',monospace,sans-serif;position:relative;z-index:9999;box-sizing:border-box;width:100%;}
+.ap-back{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.55);font-size:11.5px;letter-spacing:0.04em;text-decoration:none;transition:color 0.18s;cursor:pointer;}
+.ap-back:hover{color:#E8C06A;}
+.ap-back svg{flex-shrink:0;transition:transform 0.18s;}
+.ap-back:hover svg{transform:translateX(-3px);}
+.ap-brand{font-size:11.5px;letter-spacing:0.08em;color:#E8C06A;margin-left:4px;}
+.ap-sep{width:1px;height:18px;background:rgba(255,255,255,0.1);margin:0 16px;}
+.ap-domain{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.25);}
+.ap-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:rgba(201,151,58,0.6);margin-right:8px;vertical-align:middle;}
+</style>
+<div class="ap-navbar">
+  <a class="ap-back" href="https://analyse.astrup.org">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    <span class="ap-brand">analyse.astrup.org</span>
+  </a>
+  <div class="ap-sep"></div>
+  <span class="ap-domain"><span class="ap-dot"></span>Analyseportal</span>
+</div>
 
 <header class="hdr">
   <div class="hdr-eye">Hvidovre Kommune · Center for Økonomi og Personale · Ugentlig statistik</div>
