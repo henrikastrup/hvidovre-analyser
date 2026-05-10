@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Afgangskarakterer Dansk &amp; Matematik · Greve Kommune 2018–2025</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#1A4D2E; --green-mid:#2E7D54; --gold:#C9973A;
+  --red:#C0392B; --bg:#F9F6F0; --card:#FFFFFF;
+  --text:#1C1C1A; --mid:#4A4A44; --muted:#8A8A7E;
+  --border:#E2DDD4; --shadow:0 2px 20px rgba(26,77,46,0.07);
+  --dansk:#5DADE2; --mat:#1A4D2E;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);}
+
+/* HEADER */
+.hdr{background:var(--green);color:#fff;padding:32px 48px 26px;position:relative;overflow:hidden;}
+.hdr::before{content:'';position:absolute;right:-60px;bottom:-60px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.03);pointer-events:none;}
+.hdr-eye{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px;}
+.hdr h1{font-family:'DM Serif Display',serif;font-size:clamp(20px,2.5vw,30px);font-weight:400;line-height:1.2;margin-bottom:8px;}
+.hdr h1 em{font-style:italic;color:#E8C06A;}
+.hdr p{font-size:13px;color:rgba(255,255,255,.6);font-weight:300;line-height:1.65;max-width:700px;}
+
+/* FAG-TOGGLE (fremtrædende) */
+.fag-bar{background:#fff;border-bottom:2px solid var(--border);padding:14px 48px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.fag-lbl{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.fag-btn{padding:9px 22px;border:2px solid var(--border);background:transparent;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--mid);cursor:pointer;border-radius:8px;transition:all .2s;}
+.fag-btn:hover{border-color:var(--green);color:var(--green);}
+.fag-btn.mat.active{background:var(--mat);border-color:var(--mat);color:#fff;}
+.fag-btn.dansk.active{background:var(--dansk);border-color:var(--dansk);color:#fff;}
+.fag-indicator{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;}
+.fag-btn.mat .fag-indicator{background:var(--mat);}
+.fag-btn.dansk .fag-indicator{background:var(--dansk);}
+.fag-btn.mat.active .fag-indicator,.fag-btn.dansk.active .fag-indicator{background:rgba(255,255,255,.8);}
+.dl-btn{margin-left:auto;padding:8px 16px;border:1.5px solid var(--border);background:transparent;font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);cursor:pointer;border-radius:6px;transition:all .15s;}
+.dl-btn:hover{border-color:var(--green);color:var(--green);}
+
+/* TOOLBAR (sekundær) */
+.toolbar{background:#fafafa;border-bottom:1px solid var(--border);padding:8px 48px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.btn{padding:6px 13px;border:1.5px solid var(--border);background:transparent;font-family:'DM Sans',sans-serif;font-size:12.5px;color:var(--mid);cursor:pointer;border-radius:6px;transition:all .15s;white-space:nowrap;}
+.btn:hover{border-color:var(--green);color:var(--green);}
+.btn.active{background:var(--green);border-color:var(--green);color:#fff;}
+.sep{width:1px;height:20px;background:var(--border);margin:0 2px;}
+.toolbar-lbl{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+
+main{padding:26px 48px 40px;max-width:1160px;}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:11px;margin-bottom:28px;}
+.kpi{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--green);border-radius:10px;padding:14px 17px;box-shadow:var(--shadow);}
+.kpi.gld{border-left-color:var(--gold);}
+.kpi.mid-c{border-left-color:var(--green-mid);}
+.kpi.red{border-left-color:var(--red);}
+.kpi.blue{border-left-color:var(--dansk);}
+.kpi-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.kpi-val{font-family:'DM Serif Display',serif;font-size:28px;line-height:1;color:var(--text);margin-bottom:3px;}
+.kpi-delta{font-family:'DM Mono',monospace;font-size:11px;margin-bottom:2px;}
+.kpi-delta.pos{color:var(--green-mid);}
+.kpi-delta.neg{color:var(--red);}
+.kpi-delta.neu{color:var(--muted);}
+.kpi-desc{font-size:11.5px;color:var(--mid);line-height:1.4;}
+
+/* SECTION LABEL */
+.section-label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;margin-top:4px;display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* CHART CARD */
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;box-shadow:var(--shadow);margin-bottom:28px;}
+.chart-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.chart-title{font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;color:var(--text);margin-bottom:4px;}
+.chart-desc{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;}
+.chart-btns{display:flex;gap:6px;flex-shrink:0;}
+.cbtn{padding:5px 12px;border:1.5px solid var(--border);background:transparent;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--mid);cursor:pointer;border-radius:6px;transition:all .15s;}
+.cbtn:hover{border-color:var(--green);color:var(--green);}
+.cbtn.active{background:var(--green);border-color:var(--green);color:#fff;}
+
+/* CANVAS */
+.canvas-wrap{position:relative;}
+#cvBar{display:block;}
+#cvLine{display:none;}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;display:none;}
+.data-tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.data-tbl th{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:9px 10px;text-align:left;border-bottom:2px solid var(--border);white-space:nowrap;}
+.data-tbl th.num{text-align:right;}
+.data-tbl td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.data-tbl tr:last-child td{border-bottom:none;}
+.data-tbl tr:hover td{background:rgba(26,77,46,.025);}
+.data-tbl td.num{font-family:'DM Mono',monospace;font-size:13px;text-align:right;}
+.data-tbl td.skole{font-weight:500;}
+.data-tbl td.pos{color:var(--green-mid);}
+.data-tbl td.neg{color:var(--red);}
+.data-tbl td.tag{display:inline-block;}
+.type-badge{font-size:9.5px;font-family:'DM Mono',monospace;color:var(--muted);background:rgba(0,0,0,.05);padding:1px 6px;border-radius:4px;margin-left:5px;vertical-align:middle;}
+.str-badge{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);}
+.bar-mini{display:inline-block;height:6px;background:var(--border);border-radius:3px;vertical-align:middle;margin-left:4px;}
+
+/* ANALYSE */
+.analyse-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px 32px;box-shadow:var(--shadow);margin-bottom:28px;}
+.analyse-title{font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text);margin-bottom:6px;}
+.analyse-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:24px;}
+.analyse-body h3{font-family:'DM Serif Display',serif;font-size:16px;font-weight:400;color:var(--green);margin:20px 0 8px;}
+.analyse-body h3:first-child{margin-top:0;}
+.analyse-body p{font-size:14px;line-height:1.85;color:var(--mid);margin-bottom:12px;}
+.analyse-body ul{padding-left:18px;margin-bottom:12px;}
+.analyse-body li{font-size:14px;line-height:1.8;color:var(--mid);margin-bottom:4px;}
+.analyse-body strong{color:var(--text);}
+.hl-grøn{color:var(--green-mid);font-weight:600;}
+.hl-rød{color:var(--red);font-weight:600;}
+.hl-guld{color:#8B6914;font-weight:600;}
+
+.kilde{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--muted);padding:16px 48px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+
+@media(max-width:700px){
+  .hdr,.fag-bar,.toolbar,main,.kilde{padding-left:20px;padding-right:20px;}
+  .kpi-row{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-eye">Greve Kommune · Uddannelsesstatistik · Afgangsprøver 9. klasse</div>
+  <h1>Dansk &amp; Matematik — Afgangskarakterer <em>Alle skoler, 2018–2025</em></h1>
+  <p>Elevgennemsnit (uden vægtning) · Samlet af alle fagdiscipliner · Sorteret efter skolestørrelse (største øverst) · Kilde: Børne- og Undervisningsministeriets uddannelsesstatistik API</p>
+</header>
+
+<!-- FAG-TOGGLE -->
+<div class="fag-bar">
+  <span class="fag-lbl">Vis fag:</span>
+  <button class="fag-btn mat active" id="btnMat" onclick="skiftFag('mat')">
+    <span class="fag-indicator"></span>Matematik
+  </button>
+  <button class="fag-btn dansk" id="btnDansk" onclick="skiftFag('dansk')">
+    <span class="fag-indicator"></span>Dansk
+  </button>
+  <button class="dl-btn" onclick="downloadRapport()">↓ Download rapport</button>
+</div>
+
+<!-- VISNINGS-TOOLBAR -->
+<div class="toolbar">
+  <span class="toolbar-lbl">Visning:</span>
+  <button class="btn active" id="vBar" onclick="skiftView('bar')">Seneste år (søjle)</button>
+  <button class="btn" id="vLine" onclick="skiftView('line')">Udvikling over tid (linje)</button>
+  <button class="btn" id="vTabel" onclick="skiftView('tabel')">Tabel</button>
+  <div class="sep"></div>
+  <span class="toolbar-lbl" style="margin-left:4px;">Inkl. specialinst.:</span>
+  <button class="btn active" id="inclSpec" onclick="skiftSpecial(true)">Ja</button>
+  <button class="btn" id="exclSpec" onclick="skiftSpecial(false)">Nej</button>
+</div>
+
+<main>
+
+<!-- KPI -->
+<div class="kpi-row" id="kpiRow"></div>
+
+<div class="section-label" id="grafLabel">Seneste skoleår (2024/2025) — sorteret efter skolestørrelse</div>
+
+<!-- CHART CARD -->
+<div class="chart-card">
+  <div class="chart-top">
+    <div>
+      <div class="chart-title" id="chartTitle">Matematikgennemsnit per skole — 2024/2025</div>
+      <div class="chart-desc" id="chartDesc">Samlet gennemsnit af: med hjælpemidler, uden hjælpemidler, mundtlig · Sorteret efter antal elever (størst øverst)</div>
+    </div>
+    <div class="chart-btns">
+      <button class="cbtn active" id="cBtnGraf" onclick="skiftGrafTabel('graf')">Diagram</button>
+      <button class="cbtn" id="cBtnTabel" onclick="skiftGrafTabel('tabel')">Tabel</button>
+    </div>
+  </div>
+
+  <div id="grafOmraade">
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="cvBar"></canvas>
+      <canvas id="cvLine"></canvas>
+    </div>
+  </div>
+  <div class="tbl-wrap" id="tblOmraade">
+    <table class="data-tbl">
+      <thead id="tblHead"></thead>
+      <tbody id="tblBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ANALYSE -->
+<div class="section-label">Analytisk vurdering</div>
+<div class="analyse-card">
+  <div class="analyse-title" id="analyseTitle">Afgangskarakterer i matematik og dansk — Greve Kommunes skoler 2018–2025</div>
+  <div class="analyse-meta">Baseret på elevgennemsnit (uden vægtning) · Fagdiscipliner: matematik (med hjælpemidler, uden hjælpemidler, mundtlig) · dansk (læsning, mundtlig, retskrivning, skriftlig)</div>
+  <div class="analyse-body">
+
+    <h3>Overordnet tendens: fald fra 2021/22 til 2023/24, svag vending i 2024/25</h3>
+    <p>På tværs af samtlige skoler i Greve Kommune ses en tydelig nedgang i matematikgennemsnittet fra toppunktet i skoleårene 2020/21–2021/22, efterfulgt af de laveste niveauer i 2022/23–2023/24. I 2024/25 viser de fleste skoler en svag til moderat stigning. Mønsteret er identisk for dansk, dog med en noget større volatilitet fra skole til skole. Tendensen er landsdækkende og afspejler ikke isolerede problemer i Greve.</p>
+
+    <h3>Størrelse og fagligt niveau: ingen entydig sammenhæng</h3>
+    <p>Når skolerne sorteres efter størrelse, afsløres et komplekst billede. Der er <strong>ingen simpel lineær sammenhæng</strong> mellem skolestørrelse og karakterniveau — hverken positivt eller negativt:</p>
+    <ul>
+      <li><strong>Hedelyskolen</strong> (168 elever, største folkeskole) ligger i den nedre halvdel af folkeskolerne med et faldende niveau de seneste tre år. Skolen er dermed et eksempel på, at størrelse ikke er en garanti for faglig kvalitet.</li>
+      <li><strong>Holmeagerskolen</strong> (148 elever) er den bedst præsterende store folkeskole med konsekvent høje karakterer i begge fag og en opadgående trend i 2024/25 til 7,47 i matematik og 7,08 i dansk.</li>
+      <li><strong>Mosedeskolen</strong> (133 elever) har historisk ligget i top og er fortsat en stærk performer, men har haft et svagt fald de seneste to år.</li>
+      <li><strong>Damagerskolen</strong> (157 elever), næststørste folkeskole, er under markant fagligt pres — særligt i dansk, der er faldet til 5,0 i 2024/25 fra 6,87 i 2021/22. Det er det næststørste fald i kommunen.</li>
+    </ul>
+
+    <h3>Greve Privatskole: konsekvent outlier</h3>
+    <p><strong>Greve Privatskole</strong> (126 elever) topper konsekvent alle syv år med et matematikgennemsnit på 7,43–8,73 og danskgennemsnit på 7,08–8,55. Privatskolen ligger 1,5–2,5 karakterpoint over kommunegennemsnittet for folkeskolerne, hvilket er en markant og vedvarende forskel. Denne forskel afspejler sandsynligvis en kombination af elevsammensætning, socioøkonomiske forhold og institutionstype.</p>
+
+    <h3>Strandskolen: stærk historik, bekymrende fald</h3>
+    <p><strong>Strandskolen</strong> (113 elever) var i 2020/21 kommunens bedst præsterende folkeskole med et matematikgennemsnit på 8,30 og et danskgennemsnit på 7,33. Siden er matematik faldet til 6,90 i 2024/25 — et fald på 1,40 point over fire år. Det er det absolutt største fald blandt folkeskolerne og fortjener opmærksomhed.</p>
+
+    <h3>Mindre skoler: høj volatilitet, men positive undtagelser</h3>
+    <p><strong>Hundige Lille Skole</strong> (46 elever) er et interessant tilfælde: til trods for sin lille størrelse — og dermed store statistisk usikkerhed per år — leverer skolen konsekvent over kommunegennemsnittet i begge fag. Det illustrerer, at lille størrelse ikke nødvendigvis er en svaghed, men at år-til-år udsving bør fortolkes med forsigtighed ved færre end 50 elever.</p>
+    <p>Specialinstitutionerne (<strong>Sputnik SP5</strong>, <strong>Kirkemosegaard</strong>, <strong>Karlslunde Dagskole</strong>) henvender sig til elever med særlige behov og bør ikke indgå i en faglig sammenligning med folkeskolerne.</p>
+
+    <h3>Anbefalinger til videre analyse</h3>
+    <ul>
+      <li>Damagerskolen og Hedelyskolens dalende dansk- og matematikkarakterer bør undersøges nærmere — herunder elevsammensætning og eventuelle organisatoriske ændringer</li>
+      <li>Strandskolens markante fald siden 2020/21 er den mest bekymrende enkeltudvikling og bør kobles med trivselsmålinger og fraværsdata</li>
+      <li>Holmeagerskolen og Mosedeskolens relative stabilitet og høje niveau er interessante cases for erfaringsdeling på tværs af skoler</li>
+      <li>Sammenligning med landsplan og nabokommuner (fx Køge, Solrød) vil styrke analysen yderligere</li>
+    </ul>
+  </div>
+</div>
+
+</main>
+<div class="kilde">
+  Kilde: Børne- og Undervisningsministeriets uddannelsesstatistik API · Underemne: KARAFF · Skoleår 2018/19–2024/25 · Hentet maj 2025
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const SKOLEAAR = ["2018/2019","2019/2020","2020/2021","2021/2022","2022/2023","2023/2024","2024/2025"];
+
+const SKOLER = [
+  { navn:"Hedelyskolen",      kort:"Hedelyskolen",      type:"folke",   str:168,
+    mat:[6.13,6.47,6.77,6.33,5.50,5.57,5.47], dansk:[6.30,6.07,6.42,6.53,5.20,5.25,5.75] },
+  { navn:"Damagerskolen",     kort:"Damagerskolen",      type:"folke",   str:157,
+    mat:[5.83,5.57,6.53,6.47,6.03,5.53,5.43], dansk:[5.55,6.27,6.47,6.67,6.35,5.32,5.00] },
+  { navn:"Holmeagerskolen",   kort:"Holmeagerskolen",    type:"folke",   str:148,
+    mat:[6.70,7.00,6.77,7.03,6.33,6.37,7.47], dansk:[6.70,6.90,7.25,7.40,6.70,6.92,7.08] },
+  { navn:"Krogårdskolen",     kort:"Krogårdskolen",      type:"folke",   str:139,
+    mat:[5.93,6.40,6.67,7.00,5.53,5.83,5.67], dansk:[6.33,6.85,7.10,6.85,6.10,5.85,5.95] },
+  { navn:"Mosedeskolen",      kort:"Mosedeskolen",       type:"folke",   str:133,
+    mat:[7.53,7.43,7.77,7.33,6.60,7.20,6.77], dansk:[7.00,7.03,7.22,7.10,6.92,6.55,6.70] },
+  { navn:"Greve Privatskole", kort:"Greve Privatskole",  type:"privat",  str:126,
+    mat:[8.33,8.53,8.57,8.73,7.70,7.43,8.07], dansk:[8.55,8.50,8.18,8.43,7.50,7.08,7.65] },
+  { navn:"Tune Skole",        kort:"Tune Skole",         type:"folke",   str:124,
+    mat:[6.00,6.33,6.40,6.47,6.03,5.70,5.90], dansk:[6.10,6.53,6.42,6.25,6.15,5.70,5.70] },
+  { navn:"Strandskolen",      kort:"Strandskolen",       type:"folke",   str:113,
+    mat:[7.60,7.73,8.30,8.00,7.40,6.93,6.90], dansk:[7.47,7.42,7.33,7.85,6.75,6.88,6.62] },
+  { navn:"Karlslunde Skole",  kort:"Karlslunde Skole",   type:"folke",   str:90,
+    mat:[6.03,6.30,6.63,6.53,5.90,5.70,6.27], dansk:[6.00,5.85,6.72,6.72,5.80,5.45,5.60] },
+  { navn:"Arenaskolen",       kort:"Arenaskolen",        type:"folke",   str:84,
+    mat:[4.83,5.30,5.20,5.63,4.63,5.37,5.23], dansk:[5.10,6.20,4.78,5.35,5.42,6.03,5.65] },
+  { navn:"Hundige Lille Skole",kort:"Hundige Lille Skole",type:"folke",  str:46,
+    mat:[7.10,7.47,7.27,6.93,6.30,6.53,6.13], dansk:[6.70,7.10,6.97,7.60,6.33,7.20,6.22] },
+  { navn:"Den Specialpædagogiske Dagbehandlingsinstitution Sputnik SP 5 ApS",
+    kort:"Sputnik SP5",        type:"special", str:26,
+    mat:[null,null,3.77,3.90,3.07,3.00,2.67], dansk:[null,null,4.28,3.70,4.12,3.40,3.23] },
+  { navn:"Karlslunde Dagskole",kort:"Karlslunde Dagskole",type:"special",str:15,
+    mat:[3.67,3.63,4.57,null,3.77,null,null],  dansk:[4.47,3.15,4.45,null,3.88,null,null] },
+  { navn:"Kirkemosegaard",    kort:"Kirkemosegaard",     type:"special", str:10,
+    mat:[2.33,3.07,2.60,4.20,2.73,1.83,2.23], dansk:[3.50,4.10,2.90,3.90,3.50,2.15,2.98] },
+];
+
+// Farver per skole (stabil)
+const FARVER = [
+  '#1A4D2E','#C9973A','#2E7D54','#8B6914','#4A9B7F',
+  '#C9973A','#5DADE2','#E67E22','#8E44AD','#C0392B',
+  '#2E86AB','#6B7280','#9CA3AF','#D1D5DB'
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let aktivFag     = 'mat';
+let aktivView    = 'bar';
+let inclSpecial  = true;
+let visGraf      = true;
+let chartBar     = null;
+let chartLine    = null;
+
+function getSkoler() {
+  return inclSpecial ? SKOLER : SKOLER.filter(s => s.type !== 'special');
+}
+function getFagLabel() { return aktivFag === 'mat' ? 'Matematik' : 'Dansk'; }
+function getFagVals(s) { return aktivFag === 'mat' ? s.mat : s.dansk; }
+function getFagColor() { return aktivFag === 'mat' ? '#1A4D2E' : '#5DADE2'; }
+
+// ── KPI ───────────────────────────────────────────────────────────────────────
+function renderKPI() {
+  const skoler = getSkoler().filter(s => s.type !== 'special');
+  const vals24 = skoler.map(s => getFagVals(s)[6]).filter(v=>v!==null);
+  const vals18 = skoler.map(s => getFagVals(s)[0]).filter(v=>v!==null);
+  const kom24  = vals24.length ? (vals24.reduce((a,b)=>a+b,0)/vals24.length) : null;
+  const kom18  = vals18.length ? (vals18.reduce((a,b)=>a+b,0)/vals18.length) : null;
+  const sorted = [...skoler].filter(s=>getFagVals(s)[6]!==null).sort((a,b)=>getFagVals(b)[6]-getFagVals(a)[6]);
+  const top = sorted[0], bund = sorted[sorted.length-1];
+  const delta = kom24 && kom18 ? kom24-kom18 : null;
+  const deltaCls = !delta ? 'neu' : delta>0 ? 'pos' : 'neg';
+  const deltaTxt = !delta ? '—' : (delta>0?'▲ +':'▼ ') + Math.abs(delta).toFixed(1).replace('.',',') + ' vs. 2018/19';
+
+  document.getElementById('kpiRow').innerHTML = `
+    <div class="kpi ${aktivFag==='dansk'?'blue':''}">
+      <div class="kpi-lbl">Kommunegennemsnit 2024/25</div>
+      <div class="kpi-val">${kom24 ? kom24.toFixed(1).replace('.',',') : '—'}</div>
+      <div class="kpi-delta ${deltaCls}">${deltaTxt}</div>
+      <div class="kpi-desc">${getFagLabel()}, folkeskoler</div>
+    </div>
+    <div class="kpi gld">
+      <div class="kpi-lbl">Bedste folkeskole 2024/25</div>
+      <div class="kpi-val">${top ? getFagVals(top)[6].toFixed(1).replace('.',',') : '—'}</div>
+      <div class="kpi-desc">${top?.kort ?? '—'}</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-lbl">Laveste folkeskole 2024/25</div>
+      <div class="kpi-val">${bund ? getFagVals(bund)[6].toFixed(1).replace('.',',') : '—'}</div>
+      <div class="kpi-desc">${bund?.kort ?? '—'}</div>
+    </div>
+    <div class="kpi mid-c">
+      <div class="kpi-lbl">Spredning top–bund</div>
+      <div class="kpi-val">${top && bund ? (getFagVals(top)[6]-getFagVals(bund)[6]).toFixed(1).replace('.',',') : '—'}</div>
+      <div class="kpi-desc">Karakterpoint, folkeskoler 2024/25</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">Antal skoler</div>
+      <div class="kpi-val">${getSkoler().length}</div>
+      <div class="kpi-desc">Inkl. ${getSkoler().filter(s=>s.type==='special').length} specialinst.</div>
+    </div>
+  `;
+}
+
+// ── SØJLEDIAGRAM (seneste år) ─────────────────────────────────────────────────
+function renderBar() {
+  if (chartBar) chartBar.destroy();
+  const skoler = getSkoler(); // sorteret efter str allerede
+  const labels = skoler.map(s => s.kort);
+  const vals   = skoler.map(s => getFagVals(s)[6]);
+  const colors = skoler.map(s => {
+    if (s.type==='special') return '#D1D5DB';
+    if (s.type==='privat')  return '#C9973A';
+    return getFagColor();
+  });
+  const alphas = skoler.map(s => s.type==='special' ? 0.5 : 1.0);
+
+  const canvas = document.getElementById('cvBar');
+  const h = Math.max(380, skoler.length * 44 + 60);
+  canvas.parentElement.style.height = h + 'px';
+  canvas.style.display = 'block';
+  document.getElementById('cvLine').style.display = 'none';
+
+  const ctx = canvas.getContext('2d');
+  chartBar = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: vals,
+        backgroundColor: colors.map((c,i) => c + (alphas[i]<1 ? '88':'FF')),
+        borderRadius: 4,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {display:false},
+        tooltip: {
+          backgroundColor:'#1C1C1A',
+          titleFont:{family:'DM Sans',size:13,weight:'600'},
+          bodyFont:{family:'DM Sans',size:12},
+          padding:11, cornerRadius:6,
+          callbacks: {
+            label: c => {
+              const s = skoler[c.dataIndex];
+              const v = c.parsed.x;
+              return [
+                `  ${getFagLabel()}: ${v!==null ? v.toFixed(1).replace('.',',') : '—'}`,
+                `  Elever: ~${s.str}`,
+                `  Type: ${s.type==='folke'?'Folkeskole':s.type==='privat'?'Privatskole':'Specialinst.'}`
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          min:0, max:10,
+          ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>v.toFixed(0)},
+          grid:{color:'rgba(0,0,0,0.04)'}
+        },
+        y: {
+          ticks:{font:{family:'DM Sans',size:12,weight:'500'},color:'#1C1C1A'},
+          grid:{display:false}
+        }
+      }
+    }
+  });
+}
+
+// ── LINJEGRAF (udvikling over tid) ────────────────────────────────────────────
+function renderLine() {
+  if (chartLine) chartLine.destroy();
+  const skoler = getSkoler();
+  const canvas = document.getElementById('cvLine');
+  canvas.parentElement.style.height = '520px';
+  canvas.style.display = 'block';
+  document.getElementById('cvBar').style.display = 'none';
+
+  const datasets = skoler.map((s,i) => {
+    const erSpecial = s.type === 'special';
+    const erPrivat  = s.type === 'privat';
+    const farve = erSpecial ? '#9CA3AF' : erPrivat ? '#C9973A' : FARVER[i % FARVER.length];
+    return {
+      label: s.kort,
+      data: getFagVals(s),
+      borderColor: farve,
+      backgroundColor: 'transparent',
+      borderWidth: erSpecial ? 1 : erPrivat ? 2.5 : 2,
+      borderDash: erSpecial ? [4,3] : [],
+      tension: 0.3,
+      pointRadius: erSpecial ? 2 : 4,
+      pointHoverRadius: 6,
+      pointBackgroundColor: farve,
+      pointBorderColor: '#fff',
+      pointBorderWidth: 1.5,
+      spanGaps: true
+    };
+  });
+
+  const ctx = canvas.getContext('2d');
+  chartLine = new Chart(ctx, {
+    type: 'line',
+    data: {labels: SKOLEAAR, datasets},
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction:{mode:'index',intersect:false},
+      plugins: {
+        legend:{
+          display:true, position:'bottom',
+          labels:{font:{family:'DM Sans',size:11},boxWidth:14,padding:10}
+        },
+        tooltip:{
+          backgroundColor:'#1C1C1A',
+          titleFont:{family:'DM Sans',size:13,weight:'600'},
+          bodyFont:{family:'DM Sans',size:12},
+          padding:11, cornerRadius:6,
+          callbacks:{
+            label: c => `  ${c.dataset.label}: ${c.parsed.y!==null ? c.parsed.y.toFixed(1).replace('.',',') : '—'}`
+          }
+        }
+      },
+      scales:{
+        x:{ticks:{font:{family:'DM Sans',size:11},color:'#6A6A60'},grid:{color:'rgba(0,0,0,0.03)'}},
+        y:{
+          min:1.5, max:9.5,
+          ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>v.toFixed(1).replace('.',',')},
+          grid:{color:'rgba(0,0,0,0.05)'}
+        }
+      }
+    }
+  });
+}
+
+// ── TABEL ─────────────────────────────────────────────────────────────────────
+function renderTabel() {
+  const skoler = getSkoler();
+  document.getElementById('tblHead').innerHTML =
+    `<tr><th>Skole</th><th>Type</th><th class="num">Elever</th>` +
+    SKOLEAAR.map(a=>`<th class="num">${a.slice(0,4)}/…</th>`).join('') +
+    `<th class="num">Ændring</th></tr>`;
+
+  const maxStr = Math.max(...skoler.map(s=>s.str));
+  document.getElementById('tblBody').innerHTML = skoler.map(s => {
+    const vals = getFagVals(s);
+    const cells = vals.map(v => `<td class="num">${v!==null ? v.toFixed(1).replace('.',',') : '—'}</td>`).join('');
+    const first = vals.find(v=>v!==null), last = [...vals].reverse().find(v=>v!==null);
+    const delta = (first!==undefined && last!==undefined) ? last-first : null;
+    const dCls = delta===null ? '' : delta>0.05 ? 'pos' : delta<-0.05 ? 'neg' : '';
+    const dTxt = delta===null ? '—' : (delta>0?'+':'')+delta.toFixed(1).replace('.',',');
+    const typeTxt = s.type==='folke'?'Folkeskole':s.type==='privat'?'Privatskole':'Specialinst.';
+    const barW = Math.round((s.str/maxStr)*80);
+    return `<tr>
+      <td class="skole">${s.kort}</td>
+      <td><span class="type-badge">${typeTxt}</span></td>
+      <td class="num"><span class="str-badge">${s.str}</span> <span class="bar-mini" style="width:${barW}px;background:${s.type==='folke'?getFagColor():'#D1D5DB'};opacity:.5;"></span></td>
+      ${cells}
+      <td class="num ${dCls}">${dTxt}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── SKIFT-FUNKTIONER ──────────────────────────────────────────────────────────
+function skiftFag(f) {
+  aktivFag = f;
+  document.getElementById('btnMat').classList.toggle('active', f==='mat');
+  document.getElementById('btnDansk').classList.toggle('active', f==='dansk');
+  opdater();
+}
+
+function skiftView(v) {
+  aktivView = v;
+  ['bar','line','tabel'].forEach(x => document.getElementById('v'+x.charAt(0).toUpperCase()+x.slice(1)).classList.toggle('active', x===v));
+  opdater();
+}
+
+function skiftSpecial(v) {
+  inclSpecial = v;
+  document.getElementById('inclSpec').classList.toggle('active', v);
+  document.getElementById('exclSpec').classList.toggle('active', !v);
+  opdater();
+}
+
+function skiftGrafTabel(gt) {
+  visGraf = gt === 'graf';
+  document.getElementById('cBtnGraf').classList.toggle('active', visGraf);
+  document.getElementById('cBtnTabel').classList.toggle('active', !visGraf);
+  document.getElementById('grafOmraade').style.display = visGraf ? 'block' : 'none';
+  document.getElementById('tblOmraade').style.display  = visGraf ? 'none' : 'block';
+  if (!visGraf) renderTabel();
+  else opdaterGraf();
+}
+
+function opdaterGraf() {
+  if (aktivView === 'bar') renderBar();
+  else if (aktivView === 'line') renderLine();
+}
+
+function opdater() {
+  // Opdater labels
+  const fagLbl = getFagLabel();
+  document.getElementById('chartTitle').textContent =
+    aktivView === 'bar' ? `${fagLbl}gennemsnit per skole — 2024/2025` : `${fagLbl}gennemsnit — udvikling 2018–2025`;
+  document.getElementById('chartDesc').textContent =
+    aktivView === 'bar'
+      ? `Samlet gennemsnit af alle fagdiscipliner · Sorteret efter antal elever (størst øverst)`
+      : `Samlet gennemsnit af alle fagdiscipliner · En linje per skole · Sorteret efter størrelse i legend`;
+  document.getElementById('grafLabel').textContent =
+    aktivView === 'bar' ? `Seneste skoleår (2024/2025) — sorteret efter skolestørrelse`
+    : aktivView === 'line' ? `Udvikling over 7 skoleår (2018/19–2024/25)`
+    : `Datatabel — alle skoler`;
+
+  renderKPI();
+  if (visGraf) opdaterGraf();
+  else renderTabel();
+}
+
+function downloadRapport() {
+  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'greve-afgangskararakterer-dansk-matematik-2018-2025.html';
+  a.click();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+renderKPI();
+renderBar();
+</script>
+</body>
+</html>
