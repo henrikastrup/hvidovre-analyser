@@ -15,7 +15,6 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;}
 
-/* NAVBAR */
 .ap-navbar{all:unset;display:flex!important;align-items:center;background:#0E1612;
   border-bottom:1px solid rgba(255,255,255,0.08);padding:0 28px;height:40px;
   font-family:'DM Mono',monospace;position:relative;z-index:9999;box-sizing:border-box;width:100%;}
@@ -27,10 +26,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;}
 .ap-brand{font-size:11.5px;letter-spacing:0.08em;color:#E8C06A;margin-left:4px;}
 .ap-sep{width:1px;height:18px;background:rgba(255,255,255,0.1);margin:0 16px;}
 .ap-domain{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.25);}
-.ap-dot{display:inline-block;width:5px;height:5px;border-radius:50%;
-  background:rgba(201,151,58,0.6);margin-right:8px;vertical-align:middle;}
+.ap-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:rgba(201,151,58,0.6);margin-right:8px;vertical-align:middle;}
 
-/* HEADER */
 .hdr{background:var(--green);color:#fff;padding:32px 48px 26px;position:relative;overflow:hidden;}
 .hdr::before{content:'';position:absolute;right:-60px;bottom:-60px;width:280px;height:280px;
   border-radius:50%;background:rgba(255,255,255,.03);pointer-events:none;}
@@ -41,7 +38,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;}
 .hdr h1 em{font-style:italic;color:#E8C06A;}
 .hdr p{font-size:13px;color:rgba(255,255,255,.6);font-weight:300;line-height:1.65;max-width:700px;}
 
-/* SECTION TABS */
 .sec-tabs{display:flex;background:#fff;border-bottom:2px solid var(--border);padding:0 48px;}
 .sec-tab{padding:14px 20px;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:500;
   color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;
@@ -49,50 +45,82 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;}
 .sec-tab:hover{color:var(--text);}
 .sec-tab.active{color:var(--green);border-bottom-color:var(--green);}
 
-/* MAIN */
 main{padding:26px 48px 40px;max-width:1120px;}
 .section{display:none;}
 .section.active{display:block;}
 
-/* KPI ROW */
+/* KPI */
 .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:24px;}
 .kpi{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--green);
   border-radius:10px;padding:13px 16px;box-shadow:var(--shadow);}
-.kpi.gld{border-left-color:var(--gold);}
-.kpi.red{border-left-color:var(--red);}
-.kpi.mid{border-left-color:var(--green-mid);}
-.kpi-lbl{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
-.kpi-val{font-family:'DM Serif Display',serif;font-size:24px;line-height:1;
-  color:var(--text);margin-bottom:2px;}
+.kpi.gld{border-left-color:var(--gold);} .kpi.red{border-left-color:var(--red);} .kpi.mid{border-left-color:var(--green-mid);}
+.kpi-lbl{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.kpi-val{font-family:'DM Serif Display',serif;font-size:24px;line-height:1;color:var(--text);margin-bottom:2px;}
 .kpi-delta{font-family:'DM Mono',monospace;font-size:11px;}
-.kpi-delta.pos{color:var(--green-mid);}
-.kpi-delta.neg{color:var(--red);}
-.kpi-delta.neu{color:var(--muted);}
+.kpi-delta.pos{color:var(--green-mid);} .kpi-delta.neg{color:var(--red);} .kpi-delta.neu{color:var(--muted);}
 
 /* CHART CARD */
 .chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;
   padding:24px;box-shadow:var(--shadow);margin-bottom:20px;}
 .chart-header{margin-bottom:14px;}
-.chart-title{font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;
-  color:var(--text);margin-bottom:4px;}
+.chart-title{font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;color:var(--text);margin-bottom:4px;}
 .chart-desc{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;}
-.canvas-wrap{position:relative;height:400px;}
+.canvas-wrap{position:relative;height:360px;}
 
-/* TOOLBAR */
-.card-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-  margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}
-.tlbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;
-  letter-spacing:.1em;color:var(--muted);white-space:nowrap;}
+/* YDELSE SELECTOR */
+.selector-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.sel-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--muted);white-space:nowrap;margin-right:2px;}
 .btn-group{display:flex;gap:4px;}
-.btn{padding:6px 13px;border:1.5px solid var(--border);background:transparent;
-  font-family:'DM Sans',sans-serif;font-size:12.5px;color:var(--mid);
+.sbtn{padding:5px 12px;border:1.5px solid var(--border);background:transparent;
+  font-family:'DM Sans',sans-serif;font-size:12px;color:var(--mid);
   cursor:pointer;border-radius:6px;transition:all .15s;white-space:nowrap;}
-.btn:hover{border-color:var(--green);color:var(--green);}
-.btn.active{background:var(--green);border-color:var(--green);color:#fff;}
-.tsep{width:1px;height:22px;background:var(--border);margin:0 4px;flex-shrink:0;}
+.sbtn:hover{border-color:var(--green);color:var(--green);}
+.sbtn.active{background:var(--green);border-color:var(--green);color:#fff;}
+.sbtn.ghost{border-color:var(--border);color:var(--muted);}
+.sbtn.ghost:hover{border-color:var(--red);color:var(--red);}
+.tsep{width:1px;height:20px;background:var(--border);margin:0 4px;flex-shrink:0;}
 
-/* ANALYSE KORT */
+/* YDELSE KORT GRID */
+.ydelse-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(185px,1fr));
+  gap:8px;
+  margin-bottom:20px;
+}
+.ydelse-kort{
+  display:flex;align-items:stretch;
+  border:1.5px solid var(--border);border-radius:8px;
+  background:var(--card);cursor:pointer;
+  transition:all .18s;overflow:hidden;
+  position:relative;
+  user-select:none;
+}
+.ydelse-kort:hover{border-color:var(--hover-color, #1A4D2E);box-shadow:0 2px 12px rgba(0,0,0,0.08);}
+.ydelse-kort.aktiv{
+  border-color:var(--kort-color);
+  background:linear-gradient(135deg,rgba(255,255,255,1) 60%,var(--kort-bg) 100%);
+  box-shadow:0 2px 14px rgba(0,0,0,0.10);
+}
+.ydelse-kort.aktiv .kort-name{color:var(--kort-color);}
+.kort-swatch{width:5px;flex-shrink:0;border-radius:0;}
+.kort-body{padding:10px 12px;flex:1;min-width:0;}
+.kort-name{font-size:12px;font-weight:600;color:var(--mid);margin-bottom:3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .15s;}
+.kort-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--text);}
+.kort-delta{font-family:'DM Mono',monospace;font-size:10.5px;margin-top:1px;}
+.kort-delta.pos{color:var(--green-mid);} .kort-delta.neg{color:var(--red);} .kort-delta.neu{color:var(--muted);}
+.kort-check{position:absolute;top:6px;right:7px;font-size:13px;opacity:0;transition:opacity .15s;}
+.ydelse-kort.aktiv .kort-check{opacity:1;}
+
+/* TOM GRAF STATE */
+.tom-state{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;pointer-events:none;}
+.tom-state svg{opacity:.2;}
+.tom-state p{font-size:14px;color:var(--muted);font-family:'DM Sans',sans-serif;}
+
+/* AI KORT */
 .ai-card{background:var(--card);border:1px solid var(--border);border-radius:12px;
   padding:24px;box-shadow:var(--shadow);margin-bottom:20px;}
 .ai-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;}
@@ -105,10 +133,6 @@ main{padding:26px 48px 40px;max-width:1120px;}
 .ai-body{display:flex;flex-direction:column;gap:14px;}
 .ai-afsnit h4{font-size:13px;font-weight:600;color:var(--text);margin-bottom:5px;}
 .ai-afsnit p{font-size:13.5px;line-height:1.8;color:var(--mid);}
-.ai-loading{font-size:13px;color:var(--muted);font-style:italic;padding:20px 0;}
-.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);
-  border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;margin-right:8px;vertical-align:middle;}
-@keyframes spin{to{transform:rotate(360deg);}}
 
 /* TABEL */
 .tbl-wrap{overflow-x:auto;}
@@ -122,31 +146,19 @@ main{padding:26px 48px 40px;max-width:1120px;}
 .data-tbl td:first-child{text-align:left;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;}
 .data-tbl tr:last-child td{border-bottom:none;}
 .data-tbl tr:hover td{background:rgba(26,77,46,.03);}
-.data-tbl td.pos{color:var(--green-mid);}
-.data-tbl td.neg{color:var(--red);}
-.data-tbl tr.total-row td{background:#f5f2eb;font-weight:600;border-top:2px solid var(--border);}
+.data-tbl td.pos{color:var(--green-mid);} .data-tbl td.neg{color:var(--red);}
+.data-tbl tr.total-row td{background:#f5f2eb!important;font-weight:600;border-top:2px solid var(--border);}
 
-/* FOOTER */
 .kilde{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--muted);
   padding:4px 48px 28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
 .dl-btn{padding:6px 13px;background:transparent;border:1.5px solid var(--border);
-  border-radius:6px;font-family:'DM Mono',monospace;font-size:11px;
-  color:var(--mid);cursor:pointer;transition:all .15s;}
+  border-radius:6px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);cursor:pointer;transition:all .15s;}
 .dl-btn:hover{border-color:var(--green);color:var(--green);}
-
-/* LEGEND */
-.legend-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);}
-.chip{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--mid);cursor:pointer;
-  padding:4px 8px;border-radius:4px;transition:background .1s;}
-.chip:hover{background:rgba(0,0,0,.04);}
-.chip-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.chip.muted .chip-dot{opacity:.3;}
-.chip.muted span{opacity:.45;}
 
 @media(max-width:700px){
   .hdr,main,.kilde,.sec-tabs{padding-left:20px;padding-right:20px;}
-  .canvas-wrap{height:300px;}
-  .kpi-row{grid-template-columns:1fr 1fr;}
+  .canvas-wrap{height:280px;}
+  .ydelse-grid{grid-template-columns:repeat(2,1fr);}
 }
 </style>
 </head>
@@ -164,48 +176,54 @@ main{padding:26px 48px 40px;max-width:1120px;}
 <div class="hdr">
   <div class="hdr-eye">Hvidovre Kommune · Center for Økonomi og Personale · Arbejdsmarked</div>
   <h1>Ydelsesoverblik <em>apr. 2025 – mar. 2026</em></h1>
-  <p>12 ydelsestyper opgjort i fuldtidspersoner (helårspersoner). Del 1 viser Hvidovres absolutte udvikling med analyse af sammenhænge mellem ydelser. Del 2 sammenligner Hvidovres relative udvikling med landsgennemsnittet. Kilde: Jobindsats.dk (STAR)</p>
+  <p>12 ydelsestyper opgjort i fuldtidspersoner (helårspersoner). Vælg de ydelsestyper du vil sammenligne ved at klikke på kortene nedenfor. Kilde: Jobindsats.dk (STAR)</p>
 </div>
 
 <div class="sec-tabs">
-  <button class="sec-tab active" onclick="skiftSektion('hv')">Del 1 — Hvidovre</button>
-  <button class="sec-tab"        onclick="skiftSektion('land')">Del 2 — Hvidovre vs. Landsplan</button>
+  <button class="sec-tab active" onclick="skiftSektion('hv',event)">Del 1 — Hvidovre</button>
+  <button class="sec-tab" onclick="skiftSektion('land',event)">Del 2 — Hvidovre vs. Landsplan</button>
 </div>
 
 <main>
 
-<!-- ══════════════════════════════════════════════════ DEL 1 ══ -->
+<!-- ══ DEL 1 ══════════════════════════════════════════════════════════ -->
 <div class="section active" id="sec-hv">
 
   <div class="kpi-row" id="kpiRow"></div>
 
   <div class="chart-card">
     <div class="chart-header">
-      <div class="chart-title">Alle ydelsestyper — fuldtidspersoner, Hvidovre</div>
-      <div class="chart-desc">Klik på en ydelse i forklaringen for at fremhæve/skjule den</div>
+      <div class="chart-title">Fuldtidspersoner pr. ydelsestype — Hvidovre</div>
+      <div class="chart-desc">Klik på kortene herunder for at tilføje eller fjerne ydelsestyper fra grafen</div>
     </div>
-    <div class="card-toolbar">
-      <span class="tlbl">Gruppe</span>
+
+    <!-- SELECTOR -->
+    <div class="selector-bar">
+      <span class="sel-lbl">Gruppe</span>
       <div class="btn-group">
-        <button class="btn active" id="grp-alle" onclick="filterGruppe('alle')">Alle</button>
-        <button class="btn" id="grp-penge" onclick="filterGruppe('penge')">Forsørgelse</button>
-        <button class="btn" id="grp-flex" onclick="filterGruppe('flex')">Fleksibilitet</button>
-        <button class="btn" id="grp-pension" onclick="filterGruppe('pension')">Pensioner</button>
-        <button class="btn" id="grp-andet" onclick="filterGruppe('andet')">Øvrige</button>
+        <button class="sbtn" id="sg-penge" onclick="vælgGruppe('penge')">Forsørgelse</button>
+        <button class="sbtn" id="sg-flex" onclick="vælgGruppe('flex')">Fleksibilitet</button>
+        <button class="sbtn" id="sg-pension" onclick="vælgGruppe('pension')">Pensioner</button>
+        <button class="sbtn" id="sg-alle" onclick="vælgGruppe('alle')">Alle</button>
       </div>
       <div class="tsep"></div>
-      <span class="tlbl">Visning</span>
-      <div class="btn-group">
-        <button class="btn active" id="fmt-graf" onclick="skiftFmt('graf')">Diagram</button>
-        <button class="btn"        id="fmt-tbl"  onclick="skiftFmt('tabel')">Tabel</button>
-      </div>
+      <button class="sbtn ghost" onclick="nulstil()">✕ Ryd</button>
     </div>
-    <div id="hvGrafArea"><div class="canvas-wrap"><canvas id="hvChart"></canvas></div></div>
-    <div id="hvTblArea" style="display:none">
-      <div class="tbl-wrap"><table class="data-tbl"><thead id="hvTblHead"></thead><tbody id="hvTblBody"></tbody></table></div>
+
+    <!-- YDELSE KORT -->
+    <div class="ydelse-grid" id="hvGrid"></div>
+
+    <!-- GRAF -->
+    <div class="canvas-wrap" style="position:relative">
+      <canvas id="hvChart"></canvas>
+      <div class="tom-state" id="hvTom">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8A8A7E" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <p>Klik på en ydelsestype herover for at vise den i grafen</p>
+      </div>
     </div>
   </div>
 
+  <!-- ANALYSE -->
   <div class="ai-card">
     <div class="ai-header">
       <div class="ai-icon">✦</div>
@@ -217,28 +235,38 @@ main{padding:26px 48px 40px;max-width:1120px;}
     <div class="ai-heading" id="hvAiHeading"></div>
     <div class="ai-body" id="hvAiBody"></div>
   </div>
-
 </div>
 
-<!-- ══════════════════════════════════════════════════ DEL 2 ══ -->
+<!-- ══ DEL 2 ══════════════════════════════════════════════════════════ -->
 <div class="section" id="sec-land">
 
   <div class="chart-card">
     <div class="chart-header">
       <div class="chart-title">Indekseret udvikling — Hvidovre vs. Landsplan (apr. 2025 = 100)</div>
-      <div class="chart-desc">Hel streg = Hvidovre · Stiplet streg = Landsplan · Klik ydelse i forklaring for at fremhæve</div>
+      <div class="chart-desc">Hel streg = Hvidovre · Stiplet streg = Landsplan · Vælg ydelsestyper herunder</div>
     </div>
-    <div class="card-toolbar">
-      <span class="tlbl">Ydelse</span>
-      <div class="btn-group" id="landGrpBtns">
-        <button class="btn active" id="lg-alle" onclick="filterLand('alle')">Alle</button>
-        <button class="btn" id="lg-penge" onclick="filterLand('penge')">Forsørgelse</button>
-        <button class="btn" id="lg-flex" onclick="filterLand('flex')">Fleksibilitet</button>
-        <button class="btn" id="lg-pension" onclick="filterLand('pension')">Pensioner</button>
-        <button class="btn" id="lg-andet" onclick="filterLand('andet')">Øvrige</button>
+
+    <div class="selector-bar">
+      <span class="sel-lbl">Gruppe</span>
+      <div class="btn-group">
+        <button class="sbtn" id="lg-penge" onclick="vælgLandGruppe('penge')">Forsørgelse</button>
+        <button class="sbtn" id="lg-flex" onclick="vælgLandGruppe('flex')">Fleksibilitet</button>
+        <button class="sbtn" id="lg-pension" onclick="vælgLandGruppe('pension')">Pensioner</button>
+        <button class="sbtn" id="lg-alle" onclick="vælgLandGruppe('alle')">Alle</button>
+      </div>
+      <div class="tsep"></div>
+      <button class="sbtn ghost" onclick="nulstilLand()">✕ Ryd</button>
+    </div>
+
+    <div class="ydelse-grid" id="landGrid"></div>
+
+    <div class="canvas-wrap" style="position:relative">
+      <canvas id="landChart"></canvas>
+      <div class="tom-state" id="landTom">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8A8A7E" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <p>Klik på en ydelsestype herover for at vise den i grafen</p>
       </div>
     </div>
-    <div class="canvas-wrap"><canvas id="landChart"></canvas></div>
   </div>
 
   <div class="ai-card">
@@ -252,281 +280,315 @@ main{padding:26px 48px 40px;max-width:1120px;}
     <div class="ai-heading" id="landAiHeading"></div>
     <div class="ai-body" id="landAiBody"></div>
   </div>
-
 </div>
 </main>
 
 <div class="kilde">
-  Kilde: Jobindsats.dk, STAR · Fuldtidspersoner (helårspersoner) · apr. 2025 – mar. 2026 · Sygedagpenge (y07a02): apr 2025 – feb 2026 (mar 2026 og landsplan ikke tilgængeligt via API)
+  Kilde: Jobindsats.dk, STAR · Fuldtidspersoner · apr. 2025 – mar. 2026 · Sygedagpenge: apr 25–feb 26 (landstal ikke tilgængeligt)
   <button class="dl-btn" onclick="download()">↓ Download</button>
 </div>
 
 <script>
-// ── DATA ─────────────────────────────────────────────────────────────────────
-const LABELS = ["2025M04","2025M05","2025M06","2025M07","2025M08","2025M09","2025M10","2025M11","2025M12","2026M01","2026M02","2026M03"];
-const LABELS_DK = ["Apr 25","Maj 25","Jun 25","Jul 25","Aug 25","Sep 25","Okt 25","Nov 25","Dec 25","Jan 26","Feb 26","Mar 26"];
+// ── DATA ──────────────────────────────────────────────────────────────
+const LABELS = ["Apr 25","Maj 25","Jun 25","Jul 25","Aug 25","Sep 25","Okt 25","Nov 25","Dec 25","Jan 26","Feb 26","Mar 26"];
 
-const HV = {"A-dagpenge":[715,693,699,716,700,687,675,639,607,726,756,748],"Kontanthjælp":[723,698,669,653,635,637,648,666,674,665,684,698],"Ressourceforløb":[190,201,199,195,201,193,197,202,198,197,186,180],"Ledighedsydelse":[74,73,67,63,58,62,59,67,67,63,60,67],"Fleksjob":[708,711,716,716,717,719,720,721,723,729,737,739],"Jobafklaringsforløb":[221,218,227,221,227,221,226,225,224,210,192,188],"Førtidspension":[2149,2175,2184,2212,2199,2217,2227,2247,2252,2269,2284,2294],"Tidlig pension":[108,102,100,91,88,89,88,82,81,76,76,72],"Seniorpension":[275,274,273,269,268,267,259,260,258,256,250,241],"Barselsdagpenge":[415,451,462,454,432,440,446,477,479,465,463,458],"Efterløn":[126,122,121,116,118,120,115,112,114,115,116,115],"Sygedagpenge":[811,767,752,729,710,723,762,756,771,787,768,null],"Offentligt forsørgede i alt":[6122,6055,6027,5999,5940,5954,5996,5995,5986,6110,6127,null]};
-const LAND = {"A-dagpenge":[74908,71062,71949,75852,76863,72146,71352,70819,67820,83855,88321,80281],"Kontanthjælp":[86069,85197,84550,82699,81390,81414,82443,84341,85050,85566,86979,86498],"Ressourceforløb":[14864,14897,14867,14884,14805,14807,14815,14889,14996,15111,15111,14614],"Ledighedsydelse":[15752,15655,15664,16264,15918,15790,15829,15828,16005,16298,16257,16197],"Fleksjob":[98517,98814,99082,98870,99029,99487,99735,99969,100042,99719,99947,100162],"Jobafklaringsforløb":[25131,25303,25452,25115,25444,25457,25639,25723,25678,25512,24495,22864],"Førtidspension":[253508,253866,254338,255117,255351,255631,256428,257048,257650,259040,259271,259648],"Tidlig pension":[11721,11567,11369,11233,11130,11002,10859,10716,10550,10260,10204,10010],"Seniorpension":[29945,29923,30011,29976,29913,29938,30025,30027,29976,30355,30253,30146],"Barselsdagpenge":[50794,54557,55292,54706,53838,54552,54355,55887,54655,55652,55659,54100],"Efterløn":[22053,21485,21067,20771,20481,20282,19920,19425,19056,18961,18753,18429],"Sygedagpenge":[null,null,null,null,null,null,null,null,null,null,null,null],"Offentligt forsørgede i alt":[722072,716147,715473,712779,711567,709227,713437,717551,716139,736057,739370,null]};
-
-// Grupper
-const GRUPPER = {
-  penge:   ["A-dagpenge","Kontanthjælp","Barselsdagpenge"],
-  flex:    ["Ledighedsydelse","Fleksjob","Ressourceforløb","Jobafklaringsforløb"],
-  pension: ["Førtidspension","Tidlig pension","Seniorpension","Efterløn"],
-  andet:   ["Offentligt forsørgede i alt"]
+const HV = {
+  "A-dagpenge":           [715,693,699,716,700,687,675,639,607,726,756,748],
+  "Kontanthjælp":         [723,698,669,653,635,637,648,666,674,665,684,698],
+  "Sygedagpenge":         [811,767,752,729,710,723,762,756,771,787,768,null],
+  "Ressourceforløb":      [190,201,199,195,201,193,197,202,198,197,186,180],
+  "Ledighedsydelse":      [74,73,67,63,58,62,59,67,67,63,60,67],
+  "Fleksjob":             [708,711,716,716,717,719,720,721,723,729,737,739],
+  "Jobafklaringsforløb":  [221,218,227,221,227,221,226,225,224,210,192,188],
+  "Førtidspension":       [2149,2175,2184,2212,2199,2217,2227,2247,2252,2269,2284,2294],
+  "Tidlig pension":       [108,102,100,91,88,89,88,82,81,76,76,72],
+  "Seniorpension":        [275,274,273,269,268,267,259,260,258,256,250,241],
+  "Barselsdagpenge":      [415,451,462,454,432,440,446,477,479,465,463,458],
+  "Efterløn":             [126,122,121,116,118,120,115,112,114,115,116,115],
+};
+const LAND = {
+  "A-dagpenge":           [74908,71062,71949,75852,76863,72146,71352,70819,67820,83855,88321,80281],
+  "Kontanthjælp":         [86069,85197,84550,82699,81390,81414,82443,84341,85050,85566,86979,86498],
+  "Sygedagpenge":         [null,null,null,null,null,null,null,null,null,null,null,null],
+  "Ressourceforløb":      [14864,14897,14867,14884,14805,14807,14815,14889,14996,15111,15111,14614],
+  "Ledighedsydelse":      [15752,15655,15664,16264,15918,15790,15829,15828,16005,16298,16257,16197],
+  "Fleksjob":             [98517,98814,99082,98870,99029,99487,99735,99969,100042,99719,99947,100162],
+  "Jobafklaringsforløb":  [25131,25303,25452,25115,25444,25457,25639,25723,25678,25512,24495,22864],
+  "Førtidspension":       [253508,253866,254338,255117,255351,255631,256428,257048,257650,259040,259271,259648],
+  "Tidlig pension":       [11721,11567,11369,11233,11130,11002,10859,10716,10550,10260,10204,10010],
+  "Seniorpension":        [29945,29923,30011,29976,29913,29938,30025,30027,29976,30355,30253,30146],
+  "Barselsdagpenge":      [50794,54557,55292,54706,53838,54552,54355,55887,54655,55652,55659,54100],
+  "Efterløn":             [22053,21485,21067,20771,20481,20282,19920,19425,19056,18961,18753,18429],
 };
 
 const FARVER = {
-  "A-dagpenge":                "#1A4D2E",
-  "Kontanthjælp":              "#C9973A",
-  "Ressourceforløb":           "#5DADE2",
-  "Ledighedsydelse":           "#E67E22",
-  "Fleksjob":                  "#2E7D54",
-  "Jobafklaringsforløb":       "#8E44AD",
-  "Førtidspension":            "#C0392B",
-  "Tidlig pension":            "#6EB9A0",
-  "Seniorpension":             "#4A9B7F",
-  "Barselsdagpenge":           "#85C1E9",
-  "Sygedagpenge":              "#E74C3C","Efterløn":                  "#C18A3E",
-  "Offentligt forsørgede i alt":"#1C1C1A"
+  "A-dagpenge":          "#1A4D2E",
+  "Kontanthjælp":        "#C9973A",
+  "Sygedagpenge":        "#E74C3C",
+  "Ressourceforløb":     "#5DADE2",
+  "Ledighedsydelse":     "#E67E22",
+  "Fleksjob":            "#2E7D54",
+  "Jobafklaringsforløb": "#8E44AD",
+  "Førtidspension":      "#C0392B",
+  "Tidlig pension":      "#6EB9A0",
+  "Seniorpension":       "#4A9B7F",
+  "Barselsdagpenge":     "#85C1E9",
+  "Efterløn":            "#C18A3E",
+};
+const GRUPPER = {
+  penge:   ["A-dagpenge","Kontanthjælp","Sygedagpenge","Barselsdagpenge"],
+  flex:    ["Ledighedsydelse","Fleksjob","Ressourceforløb","Jobafklaringsforløb"],
+  pension: ["Førtidspension","Tidlig pension","Seniorpension","Efterløn"],
+};
+const YDELSER = Object.keys(HV);
+
+// ── HJÆLPERE ───────────────────────────────────────────────────────────
+const idx = arr => {
+  const b = arr.find(v => v != null);
+  return arr.map(v => v == null ? null : Math.round(v / b * 1000) / 10);
+};
+const delta = arr => {
+  const f = arr.find(v => v != null);
+  const l = [...arr].reverse().find(v => v != null);
+  if (!f || !l) return {d:0,pct:0};
+  return {d: l-f, pct: Math.round((l-f)/f*1000)/10};
+};
+const dfmt = v => v == null ? '—' : v.toLocaleString('da-DK');
+const hex2rgba = (hex, a) => {
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
 };
 
-const YDELSER = Object.keys(HV).filter(k => k !== "Offentligt forsørgede i alt");
+// ── TILSTAND ───────────────────────────────────────────────────────────
+let hvAktive   = new Set();
+let landAktive = new Set();
+let hvChart    = null;
+let landChart  = null;
 
-// ── HJÆLPERE ─────────────────────────────────────────────────────────────────
-const idx = arr => { const b=arr.find(v=>v!=null); return arr.map(v=>v==null?null:Math.round(v/b*1000)/10); };
-const dfmt = v => v==null ? '—' : v.toLocaleString('da-DK');
-const delta = (arr) => {
-  const f=arr.find(v=>v!=null), l=[...arr].reverse().find(v=>v!=null);
-  if(f==null||l==null) return {d:0,pct:0};
-  return {d:l-f, pct:Math.round((l-f)/f*1000)/10};
-};
-
-// ── KPI ROW ──────────────────────────────────────────────────────────────────
+// ── KPI ────────────────────────────────────────────────────────────────
 function byggKPI() {
-  const row = document.getElementById('kpiRow');
-  const total_hv = HV["Offentligt forsørgede i alt"];
-  const dt = delta(total_hv);
-  const ndt = delta(HV["A-dagpenge"]);
-  const fdt = delta(HV["Fleksjob"]);
-  const fptdt = delta(HV["Førtidspension"]);
-
-  const kpis = [
-    {lbl:"Offentligt forsørgede i alt", val: dfmt(total_hv[total_hv.length-2])+" ftp", d:dt.d, pct:dt.pct, desc:"Alle ydelser samlet (feb 26)", cls:""},
-    {lbl:"A-dagpenge",      val: dfmt(HV["A-dagpenge"][11])+" ftp", d:ndt.d, pct:ndt.pct, desc:"Apr 25 → Mar 26", cls:"gld"},
-    {lbl:"Fleksjob",        val: dfmt(HV["Fleksjob"][11])+" ftp",   d:fdt.d, pct:fdt.pct, desc:"Støt stigende trend", cls:"mid"},
-    {lbl:"Førtidspension",  val: dfmt(HV["Førtidspension"][11])+" ftp", d:fptdt.d, pct:fptdt.pct, desc:"Størst enkeltydelse", cls:"red"},
+  const items = [
+    {k:"Førtidspension",  lbl:"Førtidspension",  desc:"Størst enkeltydelse", cls:"red"},
+    {k:"A-dagpenge",      lbl:"A-dagpenge",       desc:"Inkl. jan-spids",     cls:""},
+    {k:"Fleksjob",        lbl:"Fleksjob",         desc:"Støt stigende",       cls:"mid"},
+    {k:"Kontanthjælp",    lbl:"Kontanthjælp",     desc:"Faldende trend",      cls:"gld"},
   ];
-
-  row.innerHTML = kpis.map(k => {
-    const cls = k.d<0?'neg':k.d>0?'pos':'neu';
-    const pfx = k.d>0?'▲ +':'▼ ';
-    const dtxt = k.d===0 ? '±0' : `${pfx}${Math.abs(k.d).toLocaleString('da-DK')} (${k.pct>0?'+':''}${k.pct} %)`;
-    return `<div class="kpi ${k.cls}">
-      <div class="kpi-lbl">${k.lbl}</div>
-      <div class="kpi-val">${k.val}</div>
-      <div class="kpi-delta ${cls}">${dtxt}</div>
-      <div class="kpi-lbl" style="margin-top:2px">${k.desc}</div>
+  document.getElementById('kpiRow').innerHTML = items.map(({k,lbl,desc,cls}) => {
+    const arr = HV[k];
+    const dt  = delta(arr);
+    const lv  = [...arr].reverse().find(v=>v!=null);
+    const dcls = dt.d < 0 ? 'pos' : dt.d > 0 ? 'neg' : 'neu';
+    const pfx  = dt.d > 0 ? '▲ +' : '▼ ';
+    return `<div class="kpi ${cls}">
+      <div class="kpi-lbl">${lbl}</div>
+      <div class="kpi-val">${dfmt(lv)}</div>
+      <div class="kpi-delta ${dcls}">${dt.d===0?'±0':pfx+Math.abs(dt.d).toLocaleString('da-DK')+' ('+dt.pct+'%)'}</div>
+      <div class="kpi-lbl" style="margin-top:2px">${desc}</div>
     </div>`;
   }).join('');
 }
 
-// ── CHART 1 — HVIDOVRE ───────────────────────────────────────────────────────
-let hvChart = null;
-let aktivGruppe = 'alle';
-let hvFmt = 'graf';
-
-function datasetsHV(gruppe) {
-  const vis = gruppe === 'alle' ? YDELSER : (GRUPPER[gruppe] || YDELSER).filter(k => k !== "Offentligt forsørgede i alt");
-  return vis.map(k => ({
-    label: k,
-    data: HV[k],
-    borderColor: FARVER[k],
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    tension: 0.35,
-    pointRadius: 3,
-    pointHoverRadius: 7,
-    pointBackgroundColor: FARVER[k],
-    pointBorderColor: '#fff',
-    pointBorderWidth: 1.5,
-  }));
+// ── YDELSE KORT ────────────────────────────────────────────────────────
+function byggKort(kontainer, ydelser, aktiveSet, onToggle) {
+  const el = document.getElementById(kontainer);
+  el.innerHTML = ydelser.map(k => {
+    const arr = HV[k];
+    const lv  = [...arr].reverse().find(v=>v!=null);
+    const dt  = delta(arr);
+    const farve = FARVER[k];
+    const dcls  = dt.d < 0 ? 'pos' : dt.d > 0 ? 'neg' : 'neu';
+    const dtxt  = dt.d === 0 ? '±0%'
+      : (dt.d > 0 ? '▲ +' : '▼ ') + Math.abs(dt.pct) + '%';
+    return `<div class="ydelse-kort" id="kort-${kontainer}-${k.replace(/[^a-z]/gi,'')}"
+        style="--kort-color:${farve};--kort-bg:${hex2rgba(farve,0.06)};--hover-color:${farve}"
+        onclick="${onToggle}('${k}')">
+      <div class="kort-swatch" style="background:${farve}"></div>
+      <div class="kort-body">
+        <div class="kort-name">${k}</div>
+        <div class="kort-val">${dfmt(lv)} ftp</div>
+        <div class="kort-delta ${dcls}">${dtxt}</div>
+      </div>
+      <div class="kort-check" style="color:${farve}">✓</div>
+    </div>`;
+  }).join('');
 }
 
-function byggHVChart(gruppe) {
-  if(hvChart) hvChart.destroy();
+function opdaterKort(kontainer, aktiveSet) {
+  YDELSER.forEach(k => {
+    const el = document.getElementById('kort-'+kontainer+'-'+k.replace(/[^a-z]/gi,''));
+    if (el) el.classList.toggle('aktiv', aktiveSet.has(k));
+  });
+}
+
+// ── CHART HV ──────────────────────────────────────────────────────────
+function opdaterHVChart() {
+  const vis = YDELSER.filter(k => hvAktive.has(k));
+  document.getElementById('hvTom').style.display = vis.length ? 'none' : 'flex';
+
+  const datasets = vis.map(k => ({
+    label: k, data: HV[k],
+    borderColor: FARVER[k], backgroundColor: hex2rgba(FARVER[k], 0.06),
+    fill: vis.length === 1,
+    borderWidth: 2.2, tension: 0.35,
+    pointRadius: 3.5, pointHoverRadius: 7,
+    pointBackgroundColor: FARVER[k], pointBorderColor: '#fff', pointBorderWidth: 1.5,
+    spanGaps: true,
+  }));
+
+  if (hvChart) {
+    hvChart.data.datasets = datasets;
+    hvChart.update('active');
+    return;
+  }
   hvChart = new Chart(document.getElementById('hvChart'), {
     type: 'line',
-    data: { labels: LABELS_DK, datasets: datasetsHV(gruppe) },
+    data: { labels: LABELS, datasets },
     options: {
       responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: {
-          display: true, position: 'bottom',
-          labels: { font: {family:'DM Sans',size:11}, boxWidth:12, padding:14, usePointStyle:true, pointStyle:'circle' }
-        },
+        legend: { display: false },
         tooltip: {
-          backgroundColor:'#1C1C1A', titleFont:{family:'DM Sans',size:13,weight:'600'},
-          bodyFont:{family:'DM Sans',size:12}, padding:12, cornerRadius:6,
+          backgroundColor: '#1C1C1A', titleFont: { family: 'DM Sans', size: 13, weight: '600' },
+          bodyFont: { family: 'DM Sans', size: 12 }, padding: 12, cornerRadius: 6,
           callbacks: { label: c => `  ${c.dataset.label}: ${c.parsed.y?.toLocaleString('da-DK')} ftp` }
         }
       },
       scales: {
-        x: { ticks:{font:{family:'DM Sans',size:11},color:'#6A6A60',maxRotation:35}, grid:{color:'rgba(0,0,0,0.04)'} },
-        y: {
-          beginAtZero: false,
-          ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>v.toLocaleString('da-DK')},
-          grid:{color:'rgba(0,0,0,0.05)'}
-        }
+        x: { ticks: { font: { family: 'DM Sans', size: 11 }, color: '#6A6A60', maxRotation: 35 }, grid: { color: 'rgba(0,0,0,0.04)' } },
+        y: { beginAtZero: false,
+          ticks: { font: { family: 'DM Mono', size: 11 }, color: '#8A8A7E', callback: v => v.toLocaleString('da-DK') },
+          grid: { color: 'rgba(0,0,0,0.05)' } }
       }
     }
   });
 }
 
-function byggHVTabel(gruppe) {
-  const vis = gruppe==='alle' ? Object.keys(HV) : (GRUPPER[gruppe]||Object.keys(HV));
-  const thead = document.getElementById('hvTblHead');
-  const tbody = document.getElementById('hvTblBody');
-  thead.innerHTML = '<tr><th>Ydelse</th>' + LABELS_DK.map(l=>`<th>${l}</th>`).join('') + '<th>Ændring</th></tr>';
-  tbody.innerHTML = vis.map(k => {
-    const dt = delta(HV[k]);
-    const cls = dt.d<0?'pos':dt.d>0?'neg':'';
-    const isTot = k==='Offentligt forsørgede i alt';
-    return `<tr class="${isTot?'total-row':''}">
-      <td style="color:${FARVER[k]||'var(--text)'}">${k}</td>
-      ${HV[k].map(v=>`<td>${dfmt(v)}</td>`).join('')}
-      <td class="${cls}">${dt.d>0?'+':''}${dfmt(dt.d)} (${dt.pct>0?'+':''}${dt.pct} %)</td>
-    </tr>`;
-  }).join('');
-}
+// ── CHART LAND ────────────────────────────────────────────────────────
+function opdaterLandChart() {
+  const vis = YDELSER.filter(k => landAktive.has(k));
+  document.getElementById('landTom').style.display = vis.length ? 'none' : 'flex';
 
-function filterGruppe(g) {
-  aktivGruppe = g;
-  ['alle','penge','flex','pension','andet'].forEach(x => {
-    document.getElementById('grp-'+x).classList.toggle('active', x===g);
-  });
-  if(hvFmt==='graf') byggHVChart(g); else byggHVTabel(g);
-}
-
-function skiftFmt(f) {
-  hvFmt = f;
-  document.getElementById('fmt-graf').classList.toggle('active', f==='graf');
-  document.getElementById('fmt-tbl').classList.toggle('active', f==='tabel');
-  document.getElementById('hvGrafArea').style.display = f==='graf'?'':'none';
-  document.getElementById('hvTblArea').style.display = f==='tabel'?'':'none';
-  if(f==='graf') byggHVChart(aktivGruppe); else byggHVTabel(aktivGruppe);
-}
-
-// ── CHART 2 — LANDSPLAN ───────────────────────────────────────────────────────
-let landChart = null;
-let aktivLandGruppe = 'alle';
-
-function datasetsLand(gruppe) {
-  const vis = gruppe==='alle' ? YDELSER : (GRUPPER[gruppe]||YDELSER).filter(k=>k!=="Offentligt forsørgede i alt");
-  const ds = [];
+  const datasets = [];
   vis.forEach(k => {
-    ds.push({
-      label: k + ' (HV)',
-      data: idx(HV[k]),
-      borderColor: FARVER[k],
-      backgroundColor: 'transparent',
-      borderWidth: 2.5,
-      tension: 0.35,
-      pointRadius: 3,
-      pointHoverRadius: 6,
-      pointBackgroundColor: FARVER[k],
-      pointBorderColor: '#fff',
-      pointBorderWidth: 1.5,
+    const hvData   = idx(HV[k]);
+    const landData = idx(LAND[k]);
+    const harLand  = LAND[k].some(v => v != null);
+    datasets.push({
+      label: k + ' (HV)', data: hvData,
+      borderColor: FARVER[k], backgroundColor: 'transparent',
+      borderWidth: 2.5, tension: 0.35,
+      pointRadius: 3, pointHoverRadius: 6,
+      pointBackgroundColor: FARVER[k], pointBorderColor: '#fff', pointBorderWidth: 1.5,
+      spanGaps: true,
     });
-    ds.push({
-      label: k + ' (DK)',
-      data: idx(LAND[k]),
-      borderColor: FARVER[k],
-      backgroundColor: 'transparent',
-      borderWidth: 1.5,
-      borderDash: [5,4],
-      tension: 0.35,
-      pointRadius: 2,
-      pointHoverRadius: 5,
-      pointBackgroundColor: FARVER[k],
-      pointBorderColor: '#fff',
-      pointBorderWidth: 1,
-    });
+    if (harLand) {
+      datasets.push({
+        label: k + ' (DK)', data: landData,
+        borderColor: FARVER[k], backgroundColor: 'transparent',
+        borderWidth: 1.5, borderDash: [5, 4], tension: 0.35,
+        pointRadius: 2, pointHoverRadius: 5,
+        pointBackgroundColor: FARVER[k], pointBorderColor: '#fff', pointBorderWidth: 1,
+        spanGaps: true,
+      });
+    }
   });
-  return ds;
-}
 
-function byggLandChart(gruppe) {
-  if(landChart) landChart.destroy();
+  if (landChart) {
+    landChart.data.datasets = datasets;
+    landChart.update('active');
+    return;
+  }
   landChart = new Chart(document.getElementById('landChart'), {
     type: 'line',
-    data: { labels: LABELS_DK, datasets: datasetsLand(gruppe) },
+    data: { labels: LABELS, datasets },
     options: {
       responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: {
-          display: true, position: 'bottom',
-          labels: {
-            font:{family:'DM Sans',size:10}, boxWidth:10, padding:10,
-            usePointStyle:true, pointStyle:'circle',
-            filter: item => !item.text.endsWith('(DK)') // Kun HV i legend
-          }
+        legend: { display: true, position: 'bottom',
+          labels: { font: { family: 'DM Sans', size: 11 }, boxWidth: 12, padding: 12,
+            usePointStyle: true, pointStyle: 'circle',
+            filter: item => item.text.endsWith('(HV)') }
         },
         tooltip: {
-          backgroundColor:'#1C1C1A', titleFont:{family:'DM Sans',size:12,weight:'600'},
-          bodyFont:{family:'DM Sans',size:11}, padding:10, cornerRadius:6,
+          backgroundColor: '#1C1C1A', titleFont: { family: 'DM Sans', size: 12, weight: '600' },
+          bodyFont: { family: 'DM Sans', size: 11 }, padding: 10, cornerRadius: 6,
           callbacks: {
             label: c => {
-              const lbl = c.dataset.label;
-              const type = lbl.endsWith('(DK)') ? 'DK' : 'HV';
-              const navn = lbl.replace(' (HV)','').replace(' (DK)','');
-              return `  ${navn} ${type}: ${c.parsed.y?.toFixed(1)}`;
+              const isHV = c.dataset.label.endsWith('(HV)');
+              const naam = c.dataset.label.replace(' (HV)', '').replace(' (DK)', '');
+              return `  ${naam} ${isHV ? 'HV' : 'DK'}: ${c.parsed.y?.toFixed(1)}`;
             }
           }
         }
       },
       scales: {
-        x: { ticks:{font:{family:'DM Sans',size:11},color:'#6A6A60',maxRotation:35}, grid:{color:'rgba(0,0,0,0.04)'} },
-        y: {
-          beginAtZero: false,
-          ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>v.toFixed(0)},
-          grid:{color:'rgba(0,0,0,0.05)'},
-          title:{display:true,text:'Indeks (apr. 2025 = 100)',font:{family:'DM Sans',size:11},color:'#8A8A7E'}
+        x: { ticks: { font: { family: 'DM Sans', size: 11 }, color: '#6A6A60', maxRotation: 35 }, grid: { color: 'rgba(0,0,0,0.04)' } },
+        y: { beginAtZero: false,
+          ticks: { font: { family: 'DM Mono', size: 11 }, color: '#8A8A7E', callback: v => v.toFixed(0) },
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          title: { display: true, text: 'Indeks (apr. 2025 = 100)', font: { family: 'DM Sans', size: 11 }, color: '#8A8A7E' }
         }
       }
     }
   });
 }
 
-function filterLand(g) {
-  aktivLandGruppe = g;
-  ['alle','penge','flex','pension','andet'].forEach(x => {
-    document.getElementById('lg-'+x).classList.toggle('active', x===g);
-  });
-  byggLandChart(g);
+// ── TOGGLE FUNKTIONER ─────────────────────────────────────────────────
+function toggleHV(k) {
+  if (hvAktive.has(k)) hvAktive.delete(k); else hvAktive.add(k);
+  opdaterKort('hvGrid', hvAktive);
+  opdaterHVChart();
+}
+function toggleLand(k) {
+  if (landAktive.has(k)) landAktive.delete(k); else landAktive.add(k);
+  opdaterKort('landGrid', landAktive);
+  opdaterLandChart();
 }
 
-// ── SEKTION TOGGLE ────────────────────────────────────────────────────────────
-function skiftSektion(s) {
+function vælgGruppe(g) {
+  const ydelser = g === 'alle' ? YDELSER : (GRUPPER[g] || []);
+  const alleAktive = ydelser.every(k => hvAktive.has(k));
+  // Hvis alle i gruppen allerede er aktive → fjern dem; ellers → tilføj dem
+  ydelser.forEach(k => alleAktive ? hvAktive.delete(k) : hvAktive.add(k));
+  opdaterKort('hvGrid', hvAktive);
+  opdaterHVChart();
+  // Opdater knap
+  ['penge','flex','pension','alle'].forEach(x => {
+    const btn = document.getElementById('sg-'+x);
+    if (btn) btn.classList.toggle('active',
+      x === g && ydelser.some(k => hvAktive.has(k)));
+  });
+}
+function vælgLandGruppe(g) {
+  const ydelser = g === 'alle' ? YDELSER : (GRUPPER[g] || []);
+  const alleAktive = ydelser.every(k => landAktive.has(k));
+  ydelser.forEach(k => alleAktive ? landAktive.delete(k) : landAktive.add(k));
+  opdaterKort('landGrid', landAktive);
+  opdaterLandChart();
+}
+function nulstil()     { hvAktive.clear();   opdaterKort('hvGrid', hvAktive);   opdaterHVChart(); }
+function nulstilLand() { landAktive.clear(); opdaterKort('landGrid', landAktive); opdaterLandChart(); }
+
+// ── SEKTION ───────────────────────────────────────────────────────────
+function skiftSektion(s, e) {
   document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.sec-tab').forEach(el => el.classList.remove('active'));
   document.getElementById('sec-'+s).classList.add('active');
-  event.target.classList.add('active');
+  e.target.classList.add('active');
 }
 
-// ── CLAUDE API ANALYSE ────────────────────────────────────────────────────────
+// ── ANALYSETEKSTER ────────────────────────────────────────────────────
 function visAnalyse(type) {
   const ANALYSER = {
     hv: {
       overskrift: "Hvidovres forsørgelsesprofil: fald i aktive ydelser, pres fra førtidspension",
-      afsnit: [{"titel": "Positive tendenser: aktiveringsvejen virker", "tekst": "Perioden viser en overordnet positiv bevægelse på de ydelsestyper, der er tættest knyttet til aktiv beskæftigelsesindsats. Jobafklaringsforløb falder markant fra 221 til 188 fuldtidspersoner (-14,9 %), og ressourceforløb er reduceret fra 190 til 180 (-5,3 %). Det indikerer, at borgere i komplekse sager i stigende grad afslutter deres forløb og bevæger sig videre — enten til fleksjob, pension eller ordinær beskæftigelse. Sygedagpenge er ligeledes reduceret fra 811 til 768 fuldtidspersoner (-5,3 %) over de elleve tilgængelige måneder, med det laveste niveau i august (710 ftp), hvad der svarer til et normalt sæsondip. Kontanthjælp falder fra 723 til 698 ftp (-3,5 %) og understøtter det generelt positive billede."}, {"titel": "Sammenhænge mellem ydelser: overgangsflows er tydelige", "tekst": "Data viser tydeligt de forventede overgangsflows mellem ydelseskategorier. Ledighedsydelse falder fra 74 til 67 fuldtidspersoner (-9,5 %) i samme periode som fleksjob stiger fra 708 til 739 (+4,4 %). Dette klassiske flow — fra venteydelse til støttet beskæftigelse — er en positiv indikator for, at visitationsprocessen fungerer. På pensionssiden ses et parallelt fald i alle tre overgangsydelser: tidlig pension (-33,3 %, fra 108 til 72 ftp), seniorpension (-12,4 %, fra 275 til 241 ftp) og efterløn (-8,7 %, fra 126 til 115 ftp). Disse fald hænger strukturelt sammen og afspejler, at de midlertidige og aldersbetingede pensionsordninger gradvist reduceres i omfang i takt med ændrede regler og demografi."}, {"titel": "Bekymringspunkt: førtidspension stiger støt", "tekst": "Den eneste ydelsestype med en klar og ubrudt stigning er førtidspension, der vokser fra 2.149 til 2.294 fuldtidspersoner (+6,7 %) over tolv måneder. Førtidspension er med sine ca. 2.300 ftp langt den største enkeltydelse i kommunen — mere end tre gange kontanthjælp og tre gange fleksjob. Den konstante vækst på ca. 12-15 fuldtidspersoner pr. måned kræver opmærksomhed, da udgifterne er permanente og stigende. A-dagpenge viser sæsonbetinget spids i januar-februar 2026 (757 og 756 ftp) efter et lavpunkt i december 2025 (607 ftp), men det samlede niveau for perioden er på linje med april 2025 (+4,6 %)."}, {"titel": "Samlet vurdering: stabilt med strukturelt pres", "tekst": "Det samlede antal offentligt forsørgede i Hvidovre er relativt stabilt på ca. 6.000–6.130 fuldtidspersoner through perioden, med et let fald hen over sommeren 2025 og en normalisering op mod 2026. Sammensætningen bevæger sig i en hensigtsmæssig retning: de kortere, aktiverende ydelser (jobafklaringsforløb, ressourceforløb, sygedagpenge, kontanthjælp) falder, mens fleksjob stiger. Det primære strukturelle pres kommer fra den vedvarende vækst i førtidspension, som på sigt vil bidrage til stigende forsørgelsesudgifter. Barselsdagpenge stiger fra 415 til 458 ftp (+10,4 %), hvilket er et positivt demografisk signal om en yngre og reproduktionsaktiv befolkning."}]
+      afsnit: [{"titel":"Positive tendenser: aktiveringsvejen virker","tekst":"Perioden viser en overordnet positiv bevægelse på de ydelsestyper, der er tættest knyttet til aktiv beskæftigelsesindsats. Jobafklaringsforløb falder markant fra 221 til 188 fuldtidspersoner (-14,9 %), og ressourceforløb er reduceret fra 190 til 180 (-5,3 %). Det indikerer, at borgere i komplekse sager i stigende grad afslutter deres forløb og bevæger sig videre — enten til fleksjob, pension eller ordinær beskæftigelse. Sygedagpenge er ligeledes reduceret fra 811 til 768 fuldtidspersoner (-5,3 %) over de elleve tilgængelige måneder, med det laveste niveau i august (710 ftp), hvad der svarer til et normalt sæsondip. Kontanthjælp falder fra 723 til 698 ftp (-3,5 %) og understøtter det generelt positive billede."},{"titel":"Sammenhænge mellem ydelser: overgangsflows er tydelige","tekst":"Data viser tydeligt de forventede overgangsflows mellem ydelseskategorier. Ledighedsydelse falder fra 74 til 67 fuldtidspersoner (-9,5 %) i samme periode som fleksjob stiger fra 708 til 739 (+4,4 %). Dette klassiske flow — fra venteydelse til støttet beskæftigelse — er en positiv indikator for, at visitationsprocessen fungerer. På pensionssiden ses et parallelt fald i alle tre overgangsydelser: tidlig pension (-33,3 %, fra 108 til 72 ftp), seniorpension (-12,4 %, fra 275 til 241 ftp) og efterløn (-8,7 %, fra 126 til 115 ftp). Disse fald hænger strukturelt sammen og afspejler, at de midlertidige og aldersbetingede pensionsordninger gradvist reduceres i omfang i takt med ændrede regler og demografi."},{"titel":"Bekymringspunkt: førtidspension stiger støt","tekst":"Den eneste ydelsestype med en klar og ubrudt stigning er førtidspension, der vokser fra 2.149 til 2.294 fuldtidspersoner (+6,7 %) over tolv måneder. Førtidspension er med sine ca. 2.300 ftp langt den største enkeltydelse i kommunen — mere end tre gange kontanthjælp og tre gange fleksjob. Den konstante vækst på ca. 12-15 fuldtidspersoner pr. måned kræver opmærksomhed, da udgifterne er permanente og stigende. A-dagpenge viser sæsonbetinget spids i januar-februar 2026 (757 og 756 ftp) efter et lavpunkt i december 2025 (607 ftp), men det samlede niveau for perioden er på linje med april 2025 (+4,6 %)."},{"titel":"Samlet vurdering: stabilt med strukturelt pres","tekst":"Det samlede antal offentligt forsørgede i Hvidovre er relativt stabilt på ca. 6.000–6.130 fuldtidspersoner through perioden, med et let fald hen over sommeren 2025 og en normalisering op mod 2026. Sammensætningen bevæger sig i en hensigtsmæssig retning: de kortere, aktiverende ydelser (jobafklaringsforløb, ressourceforløb, sygedagpenge, kontanthjælp) falder, mens fleksjob stiger. Det primære strukturelle pres kommer fra den vedvarende vækst i førtidspension, som på sigt vil bidrage til stigende forsørgelsesudgifter. Barselsdagpenge stiger fra 415 til 458 ftp (+10,4 %), hvilket er et positivt demografisk signal om en yngre og reproduktionsaktiv befolkning."}]
     },
     land: {
       overskrift: "Hvidovre afviger positivt fra landstendensen på næsten alle forsørgelsesydelser",
-      afsnit: [{"titel": "Stærk relativ forbedring: Hvidovre klarer sig markant bedre end landet", "tekst": "Sammenlignes den indekserede udvikling (april 2025 = 100), skiller Hvidovre sig tydeligt positivt ud på de centrale aktive ydelser. A-dagpenge falder i Hvidovre med 4,6 %, mens det nationalt stiger 7,2 % — en forskel på knap 12 procentpoint. Ledighedsydelse falder 9,5 % i Hvidovre mod en national stigning på 2,8 %. Kontanthjælp reduceres med 3,5 % lokalt mod en national stigning på 0,5 %. Jobafklaringsforløb falder 14,9 % i Hvidovre mod 9,0 % nationalt. På alle disse parametre performer Hvidovre væsentligt stærkere end landsgennemsnittet, hvilket indikerer en effektiv lokal beskæftigelsesindsats."}, {"titel": "På linje med landet: fleksjob og ressourceforløb", "tekst": "Fleksjob vokser 4,4 % i Hvidovre mod 1,7 % nationalt — Hvidovre er altså en anelse stærkere end landet, men begge steder i positiv retning. Ressourceforløb falder 5,3 % lokalt mod 1,7 % nationalt; begge steder et fald, men Hvidovres er lidt mere udpræget. Barselsdagpenge stiger 10,4 % lokalt mod 6,6 % nationalt — begge steder en vækst, og Hvidovres er lidt højere, formentlig drevet af en demografisk yngre kernefamilieprofil. Disse ydelsestyper understøtter det samlede billede af en kommune, der følger eller overgår landets positive tendenser."}, {"titel": "Bekymringspunkt: førtidspension vokser hurtigere end landet", "tekst": "Hvidovres førtidspension stiger 6,7 % i perioden, mens den nationale stigning er 2,4 %. Det er det eneste område hvor Hvidovre afviger negativt fra landstrenden, og forskellen er markant. Hvidovre tilgang til førtidspension er formentlig delvist koblet til den relativt store andel borgere i jobafklaringsforløb og ressourceforløb, der afslutter disse forløb ved tilkendelse af pension. Den hurtige vækst i kommunens førtidspensionsbestand bør følges tæt, da udgifterne er varige og budgetterne dermed vokser strukturelt."}, {"titel": "Samlet profil: Hvidovres forsørgelsesprofil er bedre end landsgennemsnittet", "tekst": "På tværs af de tolv ydelsestyper klarer Hvidovre sig bedre end landet på ni af elleve sammenlignelige indikatorer. Den samlede forsørgelsesudvikling er enten neutral eller positiv, mens landsudviklingen på a-dagpenge, kontanthjælp og ledighedsydelse er negativ. En mulig forklaring er Hvidovres relative velstand og beskæftigelsesstruktur i Storkøbenhavn, kombineret med en aktiv lokal indsats. Undtagelsen er førtidspension, som kræver fortsat bevågenhed. Parallellen mellem den lokale og nationale udvikling er i øvrigt tydelig på barselsdagpenge og fleksjob, hvor begge niveauer bevæger sig i samme retning — blot hurtigere i Hvidovre."}]
+      afsnit: [{"titel":"Stærk relativ forbedring: Hvidovre klarer sig markant bedre end landet","tekst":"Sammenlignes den indekserede udvikling (april 2025 = 100), skiller Hvidovre sig tydeligt positivt ud på de centrale aktive ydelser. A-dagpenge falder i Hvidovre med 4,6 %, mens det nationalt stiger 7,2 % — en forskel på knap 12 procentpoint. Ledighedsydelse falder 9,5 % i Hvidovre mod en national stigning på 2,8 %. Kontanthjælp reduceres med 3,5 % lokalt mod en national stigning på 0,5 %. Jobafklaringsforløb falder 14,9 % i Hvidovre mod 9,0 % nationalt. På alle disse parametre performer Hvidovre væsentligt stærkere end landsgennemsnittet, hvilket indikerer en effektiv lokal beskæftigelsesindsats."},{"titel":"På linje med landet: fleksjob og ressourceforløb","tekst":"Fleksjob vokser 4,4 % i Hvidovre mod 1,7 % nationalt — Hvidovre er altså en anelse stærkere end landet, men begge steder i positiv retning. Ressourceforløb falder 5,3 % lokalt mod 1,7 % nationalt; begge steder et fald, men Hvidovres er lidt mere udpræget. Barselsdagpenge stiger 10,4 % lokalt mod 6,6 % nationalt — begge steder en vækst, og Hvidovres er lidt højere, formentlig drevet af en demografisk yngre kernefamilieprofil. Disse ydelsestyper understøtter det samlede billede af en kommune, der følger eller overgår landets positive tendenser."},{"titel":"Bekymringspunkt: førtidspension vokser hurtigere end landet","tekst":"Hvidovres førtidspension stiger 6,7 % i perioden, mens den nationale stigning er 2,4 %. Det er det eneste område hvor Hvidovre afviger negativt fra landstrenden, og forskellen er markant. Hvidovres tilgang til førtidspension er formentlig delvist koblet til den relativt store andel borgere i jobafklaringsforløb og ressourceforløb, der afslutter disse forløb ved tilkendelse af pension. Den hurtige vækst i kommunens førtidspensionsbestand bør følges tæt, da udgifterne er varige og budgetterne dermed vokser strukturelt."},{"titel":"Samlet profil: Hvidovres forsørgelsesprofil er bedre end landsgennemsnittet","tekst":"På tværs af de tolv ydelsestyper klarer Hvidovre sig bedre end landet på ni af elleve sammenlignelige indikatorer. Den samlede forsørgelsesudvikling er enten neutral eller positiv, mens landsudviklingen på a-dagpenge, kontanthjælp og ledighedsydelse er negativ. En mulig forklaring er Hvidovres relative velstand og beskæftigelsesstruktur i Storkøbenhavn, kombineret med en aktiv lokal indsats. Undtagelsen er førtidspension, som kræver fortsat bevågenhed. Parallellen mellem den lokale og nationale udvikling er i øvrigt tydelig på barselsdagpenge og fleksjob, hvor begge niveauer bevæger sig i samme retning — blot hurtigere i Hvidovre."}]
     }
   };
   const a = ANALYSER[type];
@@ -536,17 +598,18 @@ function visAnalyse(type) {
   ).join('');
 }
 
-// ── DOWNLOAD ─────────────────────────────────────────────────────────────────
 function download() {
-  const b = new Blob([document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
+  const b = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
   const a = document.createElement('a'); a.href=URL.createObjectURL(b);
   a.download='ydelsesoverblk-hvidovre-2025-2026.html'; a.click();
 }
 
-// ── INIT ─────────────────────────────────────────────────────────────────────
+// ── INIT ──────────────────────────────────────────────────────────────
 byggKPI();
-byggHVChart('alle');
-byggLandChart('alle');
+byggKort('hvGrid',   YDELSER, hvAktive,   'toggleHV');
+byggKort('landGrid', YDELSER, landAktive, 'toggleLand');
+opdaterHVChart();
+opdaterLandChart();
 visAnalyse('hv');
 visAnalyse('land');
 </script>
