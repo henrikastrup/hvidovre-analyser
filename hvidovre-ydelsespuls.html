@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hvidovre Ydelsespuls · analyse.astrup.org</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#1A4D2E;--green-mid:#2E7D54;--gold:#C9973A;--red:#C0392B;
+  --bg:#F9F6F0;--card:#FFFFFF;--text:#1C1C1A;--mid:#4A4A44;
+  --muted:#8A8A7E;--border:#E2DDD4;--shadow:0 2px 20px rgba(26,77,46,0.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;}
+
+/* NAVBAR */
+.ap-navbar{all:unset;display:flex!important;align-items:center;background:#0E1612;
+  border-bottom:1px solid rgba(255,255,255,0.08);padding:0 28px;height:40px;
+  font-family:'DM Mono',monospace;position:relative;z-index:9999;box-sizing:border-box;width:100%;}
+.ap-back{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.55);
+  font-size:11.5px;letter-spacing:0.04em;text-decoration:none;transition:color .18s;}
+.ap-back:hover{color:#E8C06A;}
+.ap-back:hover svg{transform:translateX(-3px);}
+.ap-back svg{flex-shrink:0;transition:transform .18s;}
+.ap-brand{font-size:11.5px;letter-spacing:0.08em;color:#E8C06A;margin-left:4px;}
+.ap-sep{width:1px;height:18px;background:rgba(255,255,255,0.1);margin:0 16px;}
+.ap-domain{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.25);}
+.ap-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:rgba(201,151,58,0.6);margin-right:8px;vertical-align:middle;}
+
+/* HEADER */
+.hdr{background:var(--green);color:#fff;padding:28px 48px 22px;position:relative;overflow:hidden;}
+.hdr::before{content:'';position:absolute;right:-60px;bottom:-60px;width:280px;height:280px;
+  border-radius:50%;background:rgba(255,255,255,.03);pointer-events:none;}
+.hdr-eye{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:8px;}
+.hdr h1{font-family:'DM Serif Display',serif;font-size:clamp(20px,2.5vw,26px);
+  font-weight:400;line-height:1.2;margin-bottom:6px;}
+.hdr h1 em{font-style:italic;color:#E8C06A;}
+.hdr p{font-size:12.5px;color:rgba(255,255,255,.55);font-weight:300;line-height:1.6;max-width:680px;}
+
+/* STATUSBAR */
+.statusbar{background:#fff;border-bottom:1px solid var(--border);padding:7px 48px;
+  display:flex;align-items:center;gap:10px;min-height:32px;}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot.loading{background:var(--gold);animation:pulse .9s ease-in-out infinite;}
+.dot.ok{background:var(--green-mid);}
+.dot.error{background:var(--red);}
+#statusMsg{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+main{padding:22px 48px 40px;max-width:1140px;}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-bottom:22px;}
+.kpi{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--green);
+  border-radius:10px;padding:12px 15px;box-shadow:var(--shadow);}
+.kpi.gld{border-left-color:var(--gold);}
+.kpi.red{border-left-color:var(--red);}
+.kpi.mid{border-left-color:var(--green-mid);}
+.kpi-lbl{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.kpi-val{font-family:'DM Serif Display',serif;font-size:22px;line-height:1;color:var(--text);margin-bottom:2px;}
+.kpi-delta{font-family:'DM Mono',monospace;font-size:11px;}
+.kpi-delta.pos{color:var(--green-mid);}
+.kpi-delta.neg{color:var(--red);}
+.kpi-delta.neu{color:var(--muted);}
+
+/* CHART CARD */
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:22px;box-shadow:var(--shadow);margin-bottom:16px;}
+.chart-title{font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;
+  color:var(--text);margin-bottom:3px;}
+.chart-desc{font-size:11.5px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:14px;}
+.canvas-wrap{position:relative;height:340px;}
+
+/* TOM GRAF */
+.tom-state{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;pointer-events:none;}
+.tom-state svg{opacity:.18;}
+.tom-state p{font-size:13.5px;color:var(--muted);}
+
+/* SELECTOR BAR */
+.sel-bar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;
+  margin-bottom:12px;padding-bottom:11px;border-bottom:1px solid var(--border);}
+.sel-lbl{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--muted);white-space:nowrap;}
+.btn-group{display:flex;gap:4px;}
+.sbtn{padding:5px 11px;border:1.5px solid var(--border);background:transparent;
+  font-family:'DM Sans',sans-serif;font-size:12px;color:var(--mid);
+  cursor:pointer;border-radius:6px;transition:all .15s;white-space:nowrap;}
+.sbtn:hover{border-color:var(--green);color:var(--green);}
+.sbtn.active{background:var(--green);border-color:var(--green);color:#fff;}
+.sbtn.ryd{border-color:var(--border);color:var(--muted);}
+.sbtn.ryd:hover{border-color:var(--red);color:var(--red);}
+.tsep{width:1px;height:20px;background:var(--border);margin:0 3px;flex-shrink:0;}
+
+/* YDELSE KORT GRID */
+.ydelse-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:7px;margin-bottom:18px;}
+.ydelse-kort{display:flex;align-items:stretch;border:1.5px solid var(--border);border-radius:8px;
+  background:var(--card);cursor:pointer;transition:all .18s;overflow:hidden;user-select:none;position:relative;}
+.ydelse-kort:hover{border-color:var(--kort-c,#1A4D2E);box-shadow:0 2px 10px rgba(0,0,0,0.08);}
+.ydelse-kort.aktiv{border-color:var(--kort-c);background:var(--kort-bg);}
+.ydelse-kort.aktiv .kort-name{color:var(--kort-c);}
+.kort-swatch{width:5px;flex-shrink:0;}
+.kort-body{padding:9px 11px;flex:1;min-width:0;}
+.kort-name{font-size:11.5px;font-weight:600;color:var(--mid);margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .15s;}
+.kort-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--text);}
+.kort-delta{font-family:'DM Mono',monospace;font-size:10px;margin-top:1px;}
+.kort-delta.pos{color:var(--green-mid);}
+.kort-delta.neg{color:var(--red);}
+.kort-delta.neu{color:var(--muted);}
+.kort-check{position:absolute;top:5px;right:6px;font-size:12px;opacity:0;
+  transition:opacity .15s;color:var(--kort-c);}
+.ydelse-kort.aktiv .kort-check{opacity:1;}
+
+/* ANALYSE PANEL */
+.analyse-sektion{margin-top:4px;}
+.analyse-panel{border:1px solid var(--border);border-radius:10px;overflow:hidden;
+  margin-bottom:10px;box-shadow:var(--shadow);
+  animation:slideIn .22s ease-out;}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.analyse-hdr{display:flex;align-items:center;gap:0;padding:14px 18px;
+  border-bottom:1px solid var(--border);background:var(--card);}
+.analyse-bar{width:4px;height:36px;border-radius:2px;flex-shrink:0;margin-right:14px;}
+.analyse-navn{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.analyse-overskrift{font-family:'DM Serif Display',serif;font-size:16px;
+  font-weight:400;color:var(--text);line-height:1.3;}
+.analyse-body{padding:16px 18px;background:var(--card);}
+.analyse-tekst{font-size:13.5px;line-height:1.82;color:var(--mid);max-width:780px;}
+
+/* KILDE */
+.kilde{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--muted);
+  padding:4px 48px 28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.dl-btn{padding:6px 12px;background:transparent;border:1.5px solid var(--border);
+  border-radius:6px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);
+  cursor:pointer;transition:all .15s;}
+.dl-btn:hover{border-color:var(--green);color:var(--green);}
+
+@media(max-width:700px){
+  .hdr,main,.statusbar,.kilde{padding-left:18px;padding-right:18px;}
+  .canvas-wrap{height:260px;}
+  .ydelse-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<style>
+.ap-navbar{all:unset;display:flex!important;align-items:center;background:#0E1612;
+  border-bottom:1px solid rgba(255,255,255,0.08);padding:0 28px;height:40px;
+  font-family:'DM Mono',monospace,sans-serif;position:relative;z-index:9999;box-sizing:border-box;width:100%;}
+.ap-back{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.55);
+  font-size:11.5px;letter-spacing:0.04em;text-decoration:none;transition:color 0.18s;}
+.ap-back:hover{color:#E8C06A;}
+.ap-brand{font-size:11.5px;letter-spacing:0.08em;color:#E8C06A;margin-left:4px;}
+.ap-sep{width:1px;height:18px;background:rgba(255,255,255,0.1);margin:0 16px;}
+.ap-domain{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.25);}
+.ap-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:rgba(201,151,58,0.6);margin-right:8px;vertical-align:middle;}
+</style>
+<div class="ap-navbar">
+  <a class="ap-back" href="https://analyse.astrup.org">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    <span class="ap-brand">analyse.astrup.org</span>
+  </a>
+  <div class="ap-sep"></div>
+  <span class="ap-domain"><span class="ap-dot"></span>Analyseportal</span>
+</div>
+
+<div class="hdr">
+  <div class="hdr-eye">Hvidovre Kommune · Center for Økonomi og Personale · Arbejdsmarked</div>
+  <h1>Ydelsespuls <em>rullende 12 måneder</em></h1>
+  <p>Månedligt overblik over 12 ydelsestyper i fuldtidspersoner (helårspersoner). Data og AI-analyser opdateres automatisk via n8n. Vælg en eller flere ydelsestyper ved at klikke på kortene.</p>
+</div>
+
+<div class="statusbar">
+  <div class="dot loading" id="dot"></div>
+  <span id="statusMsg">Henter data...</span>
+</div>
+
+<main>
+  <div class="kpi-row" id="kpiRow"></div>
+
+  <div class="chart-card">
+    <div class="chart-title">Fuldtidspersoner pr. ydelsestype</div>
+    <div class="chart-desc" id="periodeDesc">Vælg en ydelsestype nedenfor for at vise den i grafen</div>
+
+    <!-- SELECTOR -->
+    <div class="sel-bar">
+      <span class="sel-lbl">Gruppe</span>
+      <div class="btn-group">
+        <button class="sbtn" onclick="vælgGruppe('forsorg')">Forsørgelse</button>
+        <button class="sbtn" onclick="vælgGruppe('flex')">Fleksibilitet</button>
+        <button class="sbtn" onclick="vælgGruppe('pension')">Pensioner</button>
+        <button class="sbtn" onclick="vælgGruppe('alle')">Alle</button>
+      </div>
+      <div class="tsep"></div>
+      <button class="sbtn ryd" onclick="nulstil()">✕ Ryd</button>
+    </div>
+
+    <!-- KORT GRID -->
+    <div class="ydelse-grid" id="kortGrid"></div>
+
+    <!-- GRAF -->
+    <div class="canvas-wrap">
+      <canvas id="grafCanvas"></canvas>
+      <div class="tom-state" id="tomState">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#8A8A7E" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <p>Klik på en ydelsestype for at vise den</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALYSE SEKTION -->
+  <div class="analyse-sektion" id="analyseSektion"></div>
+</main>
+
+<div class="kilde">
+  Kilde: Jobindsats.dk, STAR · Fuldtidspersoner (helårspersoner) · Opdateres månedligt via n8n
+  <button class="dl-btn" onclick="download()">↓ Download</button>
+</div>
+
+<script>
+const JSON_URL = 'https://raw.githubusercontent.com/henrikastrup/hvidovre-analyser/main/ydelsespuls-analyse.json';
+
+const TABEL_META = {
+  y01a02: { navn: 'A-dagpenge',          farve: '#1A4D2E', gruppe: 'forsorg'  },
+  y60a02: { navn: 'Kontanthjælp',         farve: '#C9973A', gruppe: 'forsorg'  },
+  y07a02: { navn: 'Sygedagpenge',         farve: '#E74C3C', gruppe: 'forsorg'  },
+  y40a02: { navn: 'Barselsdagpenge',      farve: '#85C1E9', gruppe: 'forsorg'  },
+  y09a02: { navn: 'Ledighedsydelse',      farve: '#E67E22', gruppe: 'flex'     },
+  y08a02: { navn: 'Fleksjob',             farve: '#2E7D54', gruppe: 'flex'     },
+  y11a02: { navn: 'Ressourceforløb',      farve: '#5DADE2', gruppe: 'flex'     },
+  y12a02: { navn: 'Jobafklaringsforløb',  farve: '#8E44AD', gruppe: 'flex'     },
+  y10a02: { navn: 'Førtidspension',       farve: '#C0392B', gruppe: 'pension'  },
+  y85a02: { navn: 'Tidlig pension',       farve: '#6EB9A0', gruppe: 'pension'  },
+  y13a02: { navn: 'Seniorpension',        farve: '#4A9B7F', gruppe: 'pension'  },
+  y28a02: { navn: 'Efterløn',             farve: '#C18A3E', gruppe: 'pension'  },
+};
+
+const TABEL_IDS = Object.keys(TABEL_META);
+
+const GRUPPER = {
+  forsorg:  TABEL_IDS.filter(id => TABEL_META[id].gruppe === 'forsorg'),
+  flex:     TABEL_IDS.filter(id => TABEL_META[id].gruppe === 'flex'),
+  pension:  TABEL_IDS.filter(id => TABEL_META[id].gruppe === 'pension'),
+  alle:     TABEL_IDS,
+};
+
+// ── TILSTAND ──────────────────────────────────────────────────────────
+let data       = null;
+let aktive     = new Set();
+let grafChart  = null;
+
+// ── HJÆLPERE ──────────────────────────────────────────────────────────
+const dfmt = v => v == null ? '—' : Math.round(v).toLocaleString('da-DK');
+const hex2rgba = (hex, a) => {
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+};
+function setStatus(type, msg) {
+  document.getElementById('dot').className   = 'dot ' + type;
+  document.getElementById('statusMsg').textContent = msg;
+}
+
+// ── DATA HENT ─────────────────────────────────────────────────────────
+async function loadData() {
+  if (window.location.protocol === 'file:') {
+    setStatus('error', 'Åbn på GitHub Pages — CORS blokerer ved lokal åbning');
+    return;
+  }
+  try {
+    const r = await fetch(JSON_URL + '?t=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    data = await r.json();
+    init();
+    setStatus('ok', `Data for ${data.senesteLabel} · Genereret ${data.genereret}`);
+  } catch(e) {
+    setStatus('error', 'Fejl ved datahentning: ' + e.message);
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────
+function init() {
+  byggKPI();
+  byggKortGrid();
+  opdaterGraf();
+  document.getElementById('periodeDesc').textContent =
+    'Rullende 12 måneder · Seneste: ' + data.senesteLabel + ' · Klik kort for at tilføje til grafen';
+}
+
+// ── KPI ───────────────────────────────────────────────────────────────
+function byggKPI() {
+  const vis = ['y10a02','y01a02','y08a02','y60a02'];
+  const cls = ['red','','mid','gld'];
+  document.getElementById('kpiRow').innerHTML = vis.map((id, i) => {
+    const m   = TABEL_META[id];
+    const ftp = data.data[id]?.ftp || [];
+    const n   = ftp.length;
+    const lv  = ftp[n-1];
+    const pr  = ftp[n-2];
+    const d   = lv != null && pr != null ? lv - pr : null;
+    const dcl = d == null ? 'neu' : d < 0 ? 'pos' : d > 0 ? 'neg' : 'neu';
+    const dtx = d == null ? '—' : (d > 0 ? '▲ +' : '▼ ') + Math.abs(d).toLocaleString('da-DK');
+    return `<div class="kpi ${cls[i]}">
+      <div class="kpi-lbl">${m.navn}</div>
+      <div class="kpi-val">${dfmt(lv)}</div>
+      <div class="kpi-delta ${dcl}">${dtx} vs. forrige mdr.</div>
+    </div>`;
+  }).join('');
+}
+
+// ── KORT GRID ─────────────────────────────────────────────────────────
+function byggKortGrid() {
+  document.getElementById('kortGrid').innerHTML = TABEL_IDS.map(id => {
+    const m   = TABEL_META[id];
+    const ftp = data.data[id]?.ftp || [];
+    const n   = ftp.length;
+    const lv  = ftp[n-1];
+    const pr  = ftp[n-2];
+    const d   = lv != null && pr != null ? lv - pr : null;
+    const p   = d != null && pr ? Math.round(d/pr*100) : null;
+    const dcl = d == null ? 'neu' : d < 0 ? 'pos' : d > 0 ? 'neg' : 'neu';
+    const dtx = d == null ? '—' :
+      (d > 0 ? '▲ +' : '▼ ') + Math.abs(d).toLocaleString('da-DK')
+      + (p != null ? ` (${p > 0 ? '+' : ''}${p}%)` : '');
+    const bg  = hex2rgba(m.farve, 0.06);
+    const fejl = data.data[id]?.fejl;
+    return `<div class="ydelse-kort" id="kort-${id}"
+        style="--kort-c:${m.farve};--kort-bg:${bg}"
+        onclick="toggleYdelse('${id}')">
+      <div class="kort-swatch" style="background:${m.farve}"></div>
+      <div class="kort-body">
+        <div class="kort-name">${m.navn}${fejl ? ' ⚠' : ''}</div>
+        <div class="kort-val">${dfmt(lv)} ftp</div>
+        <div class="kort-delta ${dcl}">${dtx}</div>
+      </div>
+      <div class="kort-check">✓</div>
+    </div>`;
+  }).join('');
+}
+
+function opdaterKort() {
+  TABEL_IDS.forEach(id => {
+    const el = document.getElementById('kort-' + id);
+    if (el) el.classList.toggle('aktiv', aktive.has(id));
+  });
+}
+
+// ── TOGGLE ────────────────────────────────────────────────────────────
+function toggleYdelse(id) {
+  if (aktive.has(id)) aktive.delete(id);
+  else                aktive.add(id);
+  opdaterKort();
+  opdaterGraf();
+  opdaterAnalyser();
+}
+
+function vælgGruppe(g) {
+  const liste = GRUPPER[g] || [];
+  const allAktiv = liste.every(id => aktive.has(id));
+  liste.forEach(id => allAktiv ? aktive.delete(id) : aktive.add(id));
+  opdaterKort();
+  opdaterGraf();
+  opdaterAnalyser();
+}
+
+function nulstil() {
+  aktive.clear();
+  opdaterKort();
+  opdaterGraf();
+  opdaterAnalyser();
+}
+
+// ── GRAF ──────────────────────────────────────────────────────────────
+function opdaterGraf() {
+  const vis = TABEL_IDS.filter(id => aktive.has(id));
+  document.getElementById('tomState').style.display = vis.length ? 'none' : 'flex';
+
+  // Hent labels fra første aktive ydelse (eller alle fra meta)
+  let labels = [];
+  for (const id of vis) {
+    const l = data.data[id]?.labels;
+    if (l && l.length) { labels = l; break; }
+  }
+
+  const datasets = vis.map(id => {
+    const m   = TABEL_META[id];
+    const ftp = data.data[id]?.ftp || [];
+    return {
+      label: m.navn,
+      data:  ftp,
+      borderColor:       m.farve,
+      backgroundColor:   hex2rgba(m.farve, 0.07),
+      fill:              vis.length === 1,
+      borderWidth:       2.2,
+      tension:           0.35,
+      pointRadius:       3.5,
+      pointHoverRadius:  7,
+      pointBackgroundColor: m.farve,
+      pointBorderColor:  '#fff',
+      pointBorderWidth:  1.5,
+      spanGaps:          true,
+    };
+  });
+
+  if (grafChart) {
+    grafChart.data.labels   = labels;
+    grafChart.data.datasets = datasets;
+    grafChart.update('active');
+    return;
+  }
+
+  grafChart = new Chart(document.getElementById('grafCanvas'), {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1C1C1A',
+          titleFont: { family: 'DM Sans', size: 13, weight: '600' },
+          bodyFont:  { family: 'DM Sans', size: 12 },
+          padding: 12, cornerRadius: 6,
+          callbacks: {
+            label: c => `  ${c.dataset.label}: ${c.parsed.y?.toLocaleString('da-DK')} ftp`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { font: { family: 'DM Sans', size: 11 }, color: '#6A6A60', maxRotation: 35 },
+          grid:  { color: 'rgba(0,0,0,0.04)' }
+        },
+        y: {
+          beginAtZero: false,
+          ticks: { font: { family: 'DM Mono', size: 11 }, color: '#8A8A7E',
+            callback: v => v.toLocaleString('da-DK') },
+          grid: { color: 'rgba(0,0,0,0.05)' }
+        }
+      }
+    }
+  });
+}
+
+// ── ANALYSER ──────────────────────────────────────────────────────────
+function opdaterAnalyser() {
+  const sektion = document.getElementById('analyseSektion');
+  const vis = TABEL_IDS.filter(id => aktive.has(id));
+
+  if (!vis.length) { sektion.innerHTML = ''; return; }
+
+  sektion.innerHTML = vis.map(id => {
+    const m   = TABEL_META[id];
+    const a   = data.analyse?.[id];
+    const ovs = a?.overskrift || '—';
+    const txt = a?.tekst || 'Ingen analyse tilgængelig for denne ydelse.';
+    return `<div class="analyse-panel">
+      <div class="analyse-hdr">
+        <div class="analyse-bar" style="background:${m.farve}"></div>
+        <div>
+          <div class="analyse-navn">${m.navn}</div>
+          <div class="analyse-overskrift">${ovs}</div>
+        </div>
+      </div>
+      <div class="analyse-body">
+        <div class="analyse-tekst">${txt}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── DOWNLOAD ──────────────────────────────────────────────────────────
+function download() {
+  const b = new Blob([document.documentElement.outerHTML], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(b);
+  a.download = 'hvidovre-ydelsespuls.html';
+  a.click();
+}
+
+// ── START ─────────────────────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>
