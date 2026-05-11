@@ -38,7 +38,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;}
 .hdr h1{font-family:'DM Serif Display',serif;font-size:clamp(20px,2.5vw,26px);
   font-weight:400;line-height:1.2;margin-bottom:6px;}
 .hdr h1 em{font-style:italic;color:#E8C06A;}
-.hdr p{font-size:12.5px;color:rgba(255,255,255,.55);font-weight:300;line-height:1.6;max-width:680px;}
+.hdr p{font-size:12.5px;color:rgba(255,255,255,.55);font-weight:300;line-height:1.6;max-width:700px;}
 
 /* STATUSBAR */
 .statusbar{background:#fff;border-bottom:1px solid var(--border);padding:7px 48px;
@@ -73,7 +73,7 @@ main{padding:22px 48px 40px;max-width:1140px;}
 .chart-title{font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;
   color:var(--text);margin-bottom:3px;}
 .chart-desc{font-size:11.5px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:14px;}
-.canvas-wrap{position:relative;height:340px;}
+.canvas-wrap{position:relative;height:350px;}
 
 /* TOM GRAF */
 .tom-state{position:absolute;inset:0;display:flex;flex-direction:column;
@@ -92,9 +92,23 @@ main{padding:22px 48px 40px;max-width:1140px;}
   cursor:pointer;border-radius:6px;transition:all .15s;white-space:nowrap;}
 .sbtn:hover{border-color:var(--green);color:var(--green);}
 .sbtn.active{background:var(--green);border-color:var(--green);color:#fff;}
-.sbtn.ryd{border-color:var(--border);color:var(--muted);}
+.sbtn.ryd{color:var(--muted);}
 .sbtn.ryd:hover{border-color:var(--red);color:var(--red);}
+/* Særlig knap til forrige år */
+.sbtn.forrige-aar{gap:6px;display:flex;align-items:center;}
+.sbtn.forrige-aar.active{background:var(--gold);border-color:var(--gold);color:#fff;}
+.sbtn.forrige-aar:not(.active):hover{border-color:var(--gold);color:var(--gold);}
 .tsep{width:1px;height:20px;background:var(--border);margin:0 3px;flex-shrink:0;}
+
+/* FORRIGE ÅR LEGENDE */
+.forrige-aar-info{
+  display:none;align-items:center;gap:10px;
+  padding:9px 14px;margin-bottom:12px;
+  background:rgba(201,151,58,.07);border:1px solid rgba(201,151,58,.2);
+  border-radius:7px;font-size:12px;color:var(--mid);
+}
+.forrige-aar-info.vis{display:flex;}
+.forrige-aar-info svg{flex-shrink:0;opacity:.7;}
 
 /* YDELSE KORT GRID */
 .ydelse-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:7px;margin-bottom:18px;}
@@ -116,15 +130,21 @@ main{padding:22px 48px 40px;max-width:1140px;}
   transition:opacity .15s;color:var(--kort-c);}
 .ydelse-kort.aktiv .kort-check{opacity:1;}
 
+/* FORRIGE ÅR SAMMENLIGNING i kortet */
+.kort-forrige{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--muted);
+  margin-top:2px;display:none;}
+.forrige-aar-aktiv .kort-forrige{display:block;}
+
 /* ANALYSE PANEL */
 .analyse-sektion{margin-top:4px;}
 .analyse-panel{border:1px solid var(--border);border-radius:10px;overflow:hidden;
   margin-bottom:10px;box-shadow:var(--shadow);
   animation:slideIn .22s ease-out;}
 @keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
-.analyse-hdr{display:flex;align-items:center;gap:0;padding:14px 18px;
+.analyse-hdr{display:flex;align-items:center;padding:14px 18px;
   border-bottom:1px solid var(--border);background:var(--card);}
 .analyse-bar{width:4px;height:36px;border-radius:2px;flex-shrink:0;margin-right:14px;}
+.analyse-meta{flex:1;}
 .analyse-navn{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;
   text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
 .analyse-overskrift{font-family:'DM Serif Display',serif;font-size:16px;
@@ -152,9 +172,9 @@ main{padding:22px 48px 40px;max-width:1140px;}
 <style>
 .ap-navbar{all:unset;display:flex!important;align-items:center;background:#0E1612;
   border-bottom:1px solid rgba(255,255,255,0.08);padding:0 28px;height:40px;
-  font-family:'DM Mono',monospace,sans-serif;position:relative;z-index:9999;box-sizing:border-box;width:100%;}
+  font-family:'DM Mono',monospace,sans-serif;z-index:9999;box-sizing:border-box;width:100%;}
 .ap-back{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.55);
-  font-size:11.5px;letter-spacing:0.04em;text-decoration:none;transition:color 0.18s;}
+  font-size:11.5px;letter-spacing:0.04em;text-decoration:none;transition:color .18s;}
 .ap-back:hover{color:#E8C06A;}
 .ap-brand{font-size:11.5px;letter-spacing:0.08em;color:#E8C06A;margin-left:4px;}
 .ap-sep{width:1px;height:18px;background:rgba(255,255,255,0.1);margin:0 16px;}
@@ -173,7 +193,7 @@ main{padding:22px 48px 40px;max-width:1140px;}
 <div class="hdr">
   <div class="hdr-eye">Hvidovre Kommune · Center for Økonomi og Personale · Arbejdsmarked</div>
   <h1>Ydelsespuls <em>rullende 12 måneder</em></h1>
-  <p>Månedligt overblik over 12 ydelsestyper i fuldtidspersoner (helårspersoner). Data og AI-analyser opdateres automatisk via n8n. Vælg en eller flere ydelsestyper ved at klikke på kortene.</p>
+  <p>Månedligt overblik over 12 ydelsestyper i fuldtidspersoner. Vælg ydelsestyper ved at klikke på kortene — aktivér "Sammenlign med forrige år" for at lægge de tilsvarende 12 måneder fra sidste år ind som stiplede linjer.</p>
 </div>
 
 <div class="statusbar">
@@ -186,9 +206,9 @@ main{padding:22px 48px 40px;max-width:1140px;}
 
   <div class="chart-card">
     <div class="chart-title">Fuldtidspersoner pr. ydelsestype</div>
-    <div class="chart-desc" id="periodeDesc">Vælg en ydelsestype nedenfor for at vise den i grafen</div>
+    <div class="chart-desc" id="periodeDesc">Vælg en ydelsestype nedenfor</div>
 
-    <!-- SELECTOR -->
+    <!-- SELECTOR BAR -->
     <div class="sel-bar">
       <span class="sel-lbl">Gruppe</span>
       <div class="btn-group">
@@ -198,7 +218,19 @@ main{padding:22px 48px 40px;max-width:1140px;}
         <button class="sbtn" onclick="vælgGruppe('alle')">Alle</button>
       </div>
       <div class="tsep"></div>
+      <!-- FORRIGE ÅR TOGGLE -->
+      <button class="sbtn forrige-aar" id="btnForrigeAar" onclick="toggleForrigeAar()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Sammenlign med forrige år
+      </button>
+      <div class="tsep"></div>
       <button class="sbtn ryd" onclick="nulstil()">✕ Ryd</button>
+    </div>
+
+    <!-- INFO-BOKS NÅR FORRIGE ÅR ER AKTIV -->
+    <div class="forrige-aar-info" id="forrigeAarInfo">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Hel streg = seneste 12 måneder · Stiplet streg = tilsvarende 12 måneder året før · Samme farve = samme ydelsestype
     </div>
 
     <!-- KORT GRID -->
@@ -219,7 +251,7 @@ main{padding:22px 48px 40px;max-width:1140px;}
 </main>
 
 <div class="kilde">
-  Kilde: Jobindsats.dk, STAR · Fuldtidspersoner (helårspersoner) · Opdateres månedligt via n8n
+  Kilde: Jobindsats.dk, STAR · Fuldtidspersoner (helårspersoner) · Rullende 12 måneder · Opdateres månedligt via n8n
   <button class="dl-btn" onclick="download()">↓ Download</button>
 </div>
 
@@ -240,20 +272,19 @@ const TABEL_META = {
   y13a02: { navn: 'Seniorpension',        farve: '#4A9B7F', gruppe: 'pension'  },
   y28a02: { navn: 'Efterløn',             farve: '#C18A3E', gruppe: 'pension'  },
 };
-
 const TABEL_IDS = Object.keys(TABEL_META);
-
 const GRUPPER = {
-  forsorg:  TABEL_IDS.filter(id => TABEL_META[id].gruppe === 'forsorg'),
-  flex:     TABEL_IDS.filter(id => TABEL_META[id].gruppe === 'flex'),
-  pension:  TABEL_IDS.filter(id => TABEL_META[id].gruppe === 'pension'),
-  alle:     TABEL_IDS,
+  forsorg: TABEL_IDS.filter(id => TABEL_META[id].gruppe === 'forsorg'),
+  flex:    TABEL_IDS.filter(id => TABEL_META[id].gruppe === 'flex'),
+  pension: TABEL_IDS.filter(id => TABEL_META[id].gruppe === 'pension'),
+  alle:    TABEL_IDS,
 };
 
 // ── TILSTAND ──────────────────────────────────────────────────────────
-let data       = null;
-let aktive     = new Set();
-let grafChart  = null;
+let data          = null;
+let aktive        = new Set();
+let visForrigeAar = false;
+let grafChart     = null;
 
 // ── HJÆLPERE ──────────────────────────────────────────────────────────
 const dfmt = v => v == null ? '—' : Math.round(v).toLocaleString('da-DK');
@@ -262,7 +293,7 @@ const hex2rgba = (hex, a) => {
   return `rgba(${r},${g},${b},${a})`;
 };
 function setStatus(type, msg) {
-  document.getElementById('dot').className   = 'dot ' + type;
+  document.getElementById('dot').className        = 'dot ' + type;
   document.getElementById('statusMsg').textContent = msg;
 }
 
@@ -279,7 +310,7 @@ async function loadData() {
     init();
     setStatus('ok', `Data for ${data.senesteLabel} · Genereret ${data.genereret}`);
   } catch(e) {
-    setStatus('error', 'Fejl ved datahentning: ' + e.message);
+    setStatus('error', 'Fejl: ' + e.message + ' — kør n8n-flowet for at generere data');
   }
 }
 
@@ -289,14 +320,19 @@ function init() {
   byggKortGrid();
   opdaterGraf();
   document.getElementById('periodeDesc').textContent =
-    'Rullende 12 måneder · Seneste: ' + data.senesteLabel + ' · Klik kort for at tilføje til grafen';
+    'Rullende 12 måneder · Seneste: ' + data.senesteLabel
+    + ' · Klik kort for at tilføje';
 }
 
 // ── KPI ───────────────────────────────────────────────────────────────
 function byggKPI() {
-  const vis = ['y10a02','y01a02','y08a02','y60a02'];
-  const cls = ['red','','mid','gld'];
-  document.getElementById('kpiRow').innerHTML = vis.map((id, i) => {
+  const vis = [
+    { id: 'y10a02', cls: 'red' },
+    { id: 'y01a02', cls: '' },
+    { id: 'y08a02', cls: 'mid' },
+    { id: 'y60a02', cls: 'gld' },
+  ];
+  document.getElementById('kpiRow').innerHTML = vis.map(({ id, cls }) => {
     const m   = TABEL_META[id];
     const ftp = data.data[id]?.ftp || [];
     const n   = ftp.length;
@@ -305,10 +341,16 @@ function byggKPI() {
     const d   = lv != null && pr != null ? lv - pr : null;
     const dcl = d == null ? 'neu' : d < 0 ? 'pos' : d > 0 ? 'neg' : 'neu';
     const dtx = d == null ? '—' : (d > 0 ? '▲ +' : '▼ ') + Math.abs(d).toLocaleString('da-DK');
-    return `<div class="kpi ${cls[i]}">
+    // Forrige år sammenligning
+    const fyFtp = data.data[id]?.forrigeFtp || [];
+    const fyLv  = fyFtp[fyFtp.length-1];
+    const fyDiff = lv != null && fyLv != null ? lv - fyLv : null;
+    const fyTxt  = fyDiff == null ? '' :
+      ` · ${fyDiff > 0 ? '▲' : '▼'} ${Math.abs(fyDiff).toLocaleString('da-DK')} vs. forrige år`;
+    return `<div class="kpi ${cls}">
       <div class="kpi-lbl">${m.navn}</div>
       <div class="kpi-val">${dfmt(lv)}</div>
-      <div class="kpi-delta ${dcl}">${dtx} vs. forrige mdr.</div>
+      <div class="kpi-delta ${dcl}">${dtx} vs. forrige mdr.${fyTxt}</div>
     </div>`;
   }).join('');
 }
@@ -317,26 +359,33 @@ function byggKPI() {
 function byggKortGrid() {
   document.getElementById('kortGrid').innerHTML = TABEL_IDS.map(id => {
     const m   = TABEL_META[id];
-    const ftp = data.data[id]?.ftp || [];
+    const d   = data.data[id] || {};
+    const ftp = d.ftp || [];
     const n   = ftp.length;
     const lv  = ftp[n-1];
     const pr  = ftp[n-2];
-    const d   = lv != null && pr != null ? lv - pr : null;
-    const p   = d != null && pr ? Math.round(d/pr*100) : null;
-    const dcl = d == null ? 'neu' : d < 0 ? 'pos' : d > 0 ? 'neg' : 'neu';
-    const dtx = d == null ? '—' :
-      (d > 0 ? '▲ +' : '▼ ') + Math.abs(d).toLocaleString('da-DK')
-      + (p != null ? ` (${p > 0 ? '+' : ''}${p}%)` : '');
-    const bg  = hex2rgba(m.farve, 0.06);
-    const fejl = data.data[id]?.fejl;
+    const diff = lv != null && pr != null ? lv - pr : null;
+    const pct  = diff != null && pr ? Math.round(diff/pr*100) : null;
+    const dcl  = diff == null ? 'neu' : diff < 0 ? 'pos' : diff > 0 ? 'neg' : 'neu';
+    const dtx  = diff == null ? '—' :
+      (diff > 0 ? '▲ +' : '▼ ') + Math.abs(diff).toLocaleString('da-DK')
+      + (pct != null ? ` (${pct > 0 ? '+' : ''}${pct}%)` : '');
+    // Forrige år
+    const fy   = d.forrigeFtp || [];
+    const fyLv = fy[fy.length-1];
+    const fyDiff = lv != null && fyLv != null ? lv - fyLv : null;
+    const fyTxt  = fyDiff == null ? '—' :
+      (fyDiff > 0 ? '▲ +' : '▼ ') + Math.abs(fyDiff).toLocaleString('da-DK') + ' vs. forrige år';
+    const bg = hex2rgba(m.farve, 0.06);
     return `<div class="ydelse-kort" id="kort-${id}"
         style="--kort-c:${m.farve};--kort-bg:${bg}"
         onclick="toggleYdelse('${id}')">
       <div class="kort-swatch" style="background:${m.farve}"></div>
       <div class="kort-body">
-        <div class="kort-name">${m.navn}${fejl ? ' ⚠' : ''}</div>
+        <div class="kort-name">${m.navn}${d.fejl ? ' ⚠' : ''}</div>
         <div class="kort-val">${dfmt(lv)} ftp</div>
         <div class="kort-delta ${dcl}">${dtx}</div>
+        <div class="kort-forrige" id="kortFy-${id}">${fyTxt}</div>
       </div>
       <div class="kort-check">✓</div>
     </div>`;
@@ -352,8 +401,7 @@ function opdaterKort() {
 
 // ── TOGGLE ────────────────────────────────────────────────────────────
 function toggleYdelse(id) {
-  if (aktive.has(id)) aktive.delete(id);
-  else                aktive.add(id);
+  if (aktive.has(id)) aktive.delete(id); else aktive.add(id);
   opdaterKort();
   opdaterGraf();
   opdaterAnalyser();
@@ -375,37 +423,83 @@ function nulstil() {
   opdaterAnalyser();
 }
 
+function toggleForrigeAar() {
+  visForrigeAar = !visForrigeAar;
+  const btn  = document.getElementById('btnForrigeAar');
+  const info = document.getElementById('forrigeAarInfo');
+  const grid = document.getElementById('kortGrid');
+  btn.classList.toggle('active', visForrigeAar);
+  info.classList.toggle('vis', visForrigeAar);
+  grid.classList.toggle('forrige-aar-aktiv', visForrigeAar);
+  opdaterGraf();
+}
+
 // ── GRAF ──────────────────────────────────────────────────────────────
+function buildDatasets() {
+  const vis = TABEL_IDS.filter(id => aktive.has(id));
+  const datasets = [];
+
+  vis.forEach(id => {
+    const m   = TABEL_META[id];
+    const d   = data.data[id] || {};
+    const ftp = d.ftp || [];
+
+    // Aktuel periode — hel streg
+    datasets.push({
+      label:              m.navn,
+      data:               ftp,
+      borderColor:        m.farve,
+      backgroundColor:    hex2rgba(m.farve, 0.07),
+      fill:               vis.length === 1 && !visForrigeAar,
+      borderWidth:        2.2,
+      tension:            0.35,
+      pointRadius:        3.5,
+      pointHoverRadius:   7,
+      pointBackgroundColor: m.farve,
+      pointBorderColor:   '#fff',
+      pointBorderWidth:   1.5,
+      spanGaps:           true,
+      _id:                id,
+      _periode:           'aktuel',
+    });
+
+    // Forrige år — stiplet, lettere
+    if (visForrigeAar) {
+      const fy = d.forrigeFtp || [];
+      datasets.push({
+        label:              m.navn + ' (forrige år)',
+        data:               fy,
+        borderColor:        hex2rgba(m.farve, 0.45),
+        backgroundColor:    'transparent',
+        fill:               false,
+        borderWidth:        1.5,
+        borderDash:         [6, 4],
+        tension:            0.35,
+        pointRadius:        2.5,
+        pointHoverRadius:   5,
+        pointBackgroundColor: hex2rgba(m.farve, 0.45),
+        pointBorderColor:   '#fff',
+        pointBorderWidth:   1,
+        spanGaps:           true,
+        _id:                id,
+        _periode:           'forrige',
+      });
+    }
+  });
+  return datasets;
+}
+
 function opdaterGraf() {
   const vis = TABEL_IDS.filter(id => aktive.has(id));
   document.getElementById('tomState').style.display = vis.length ? 'none' : 'flex';
 
-  // Hent labels fra første aktive ydelse (eller alle fra meta)
   let labels = [];
   for (const id of vis) {
-    const l = data.data[id]?.labels;
+    const l = data?.data[id]?.labels;
     if (l && l.length) { labels = l; break; }
   }
 
-  const datasets = vis.map(id => {
-    const m   = TABEL_META[id];
-    const ftp = data.data[id]?.ftp || [];
-    return {
-      label: m.navn,
-      data:  ftp,
-      borderColor:       m.farve,
-      backgroundColor:   hex2rgba(m.farve, 0.07),
-      fill:              vis.length === 1,
-      borderWidth:       2.2,
-      tension:           0.35,
-      pointRadius:       3.5,
-      pointHoverRadius:  7,
-      pointBackgroundColor: m.farve,
-      pointBorderColor:  '#fff',
-      pointBorderWidth:  1.5,
-      spanGaps:          true,
-    };
-  });
+  const datasets = vis.length ? buildDatasets() : [];
 
   if (grafChart) {
     grafChart.data.labels   = labels;
@@ -418,7 +512,8 @@ function opdaterGraf() {
     type: 'line',
     data: { labels, datasets },
     options: {
-      responsive: true, maintainAspectRatio: false,
+      responsive: true,
+      maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
@@ -426,9 +521,28 @@ function opdaterGraf() {
           backgroundColor: '#1C1C1A',
           titleFont: { family: 'DM Sans', size: 13, weight: '600' },
           bodyFont:  { family: 'DM Sans', size: 12 },
-          padding: 12, cornerRadius: 6,
+          padding: 12,
+          cornerRadius: 6,
           callbacks: {
-            label: c => `  ${c.dataset.label}: ${c.parsed.y?.toLocaleString('da-DK')} ftp`
+            title: items => {
+              // Vis aktuel periode og, hvis forrige år er aktiv, forrige år's label
+              const item    = items[0];
+              const dsAktuel = items.find(i => !i.dataset.label.includes('forrige år'));
+              const dsFy     = items.find(i => i.dataset.label.includes('forrige år'));
+              const aktuelLabel = item.label;
+              const fyData = dsFy ? data.data[dsFy.dataset._id || items[0].dataset._id] : null;
+              const fyLabel = fyData?.forrigeLabels?.[item.dataIndex];
+              return visForrigeAar && fyLabel
+                ? aktuelLabel + '  ←→  ' + fyLabel + ' (forrige år)'
+                : aktuelLabel;
+            },
+            label: c => {
+              const er  = c.dataset.label.includes('forrige år');
+              const ftp = c.parsed.y?.toLocaleString('da-DK');
+              return er
+                ? `  ${c.dataset.label.replace(' (forrige år)', '')} (for. år): ${ftp} ftp`
+                : `  ${c.dataset.label}: ${ftp} ftp`;
+            }
           }
         }
       },
@@ -439,8 +553,11 @@ function opdaterGraf() {
         },
         y: {
           beginAtZero: false,
-          ticks: { font: { family: 'DM Mono', size: 11 }, color: '#8A8A7E',
-            callback: v => v.toLocaleString('da-DK') },
+          ticks: {
+            font: { family: 'DM Mono', size: 11 },
+            color: '#8A8A7E',
+            callback: v => v.toLocaleString('da-DK')
+          },
           grid: { color: 'rgba(0,0,0,0.05)' }
         }
       }
@@ -452,7 +569,6 @@ function opdaterGraf() {
 function opdaterAnalyser() {
   const sektion = document.getElementById('analyseSektion');
   const vis = TABEL_IDS.filter(id => aktive.has(id));
-
   if (!vis.length) { sektion.innerHTML = ''; return; }
 
   sektion.innerHTML = vis.map(id => {
@@ -463,7 +579,7 @@ function opdaterAnalyser() {
     return `<div class="analyse-panel">
       <div class="analyse-hdr">
         <div class="analyse-bar" style="background:${m.farve}"></div>
-        <div>
+        <div class="analyse-meta">
           <div class="analyse-navn">${m.navn}</div>
           <div class="analyse-overskrift">${ovs}</div>
         </div>
