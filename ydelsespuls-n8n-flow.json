@@ -4,12 +4,20 @@
     {
       "parameters": {
         "rule": {
-          "interval": [{ "field": "months", "triggerAtDayOfMonth": 10 }]
+          "interval": [
+            {
+              "field": "months",
+              "triggerAtDayOfMonth": 10
+            }
+          ]
         }
       },
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
-      "position": [0, 300],
+      "position": [
+        0,
+        300
+      ],
       "id": "schedule-1",
       "name": "Schedule Trigger"
     },
@@ -17,7 +25,10 @@
       "parameters": {},
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [0, 480],
+      "position": [
+        0,
+        480
+      ],
       "id": "manual-1",
       "name": "Manuel Kørsel"
     },
@@ -29,17 +40,23 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [0, 80],
+      "position": [
+        0,
+        80
+      ],
       "id": "note-1",
       "name": "Sticky Note"
     },
     {
       "parameters": {
-        "jsCode": "// Jobindsats tabel-liste — én pr. ydelsestype\nconst TOKEN = 'NW0vH4Cx-WCn_rtxgHfEPlm2pTop-xRK8PiBiH5uSIs';\nconst BASE  = 'https://api.jobindsats.dk/v3/data';\nconst OMRADE = '/40/';  // Hvidovre\nconst PERIODE = 'latest:12';\n\nconst tabeller = [\n  { id: 'y01a02', navn: 'A-dagpenge',          ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y60a02', navn: 'Kontanthjælp',         ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y07a02', navn: 'Sygedagpenge',         ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y11a02', navn: 'Ressourceforløb',      ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y09a02', navn: 'Ledighedsydelse',      ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y08a02', navn: 'Fleksjob',             ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y12a02', navn: 'Jobafklaringsforløb',  ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y10a02', navn: 'Førtidspension',       ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y85a02', navn: 'Tidlig pension',       ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y13a02', navn: 'Seniorpension',        ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y40a02', navn: 'Barselsdagpenge',      ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y28a02', navn: 'Efterløn',             ftpKol: 'Antal fuldtidspersoner med udbetalt efterløn' },\n];\n\nreturn tabeller.map(t => ({\n  json: {\n    tableId: t.id,\n    navn:    t.navn,\n    ftpKol:  t.ftpKol,\n    url:     `${BASE}/${t.id}?mgroup.*=*&period.M=${PERIODE}&hierarchy._nykom=${OMRADE}&format=json`,\n    token:   TOKEN\n  }\n}));"
+        "jsCode": "// Jobindsats tabel-liste — én pr. ydelsestype\nconst TOKEN = 'NW0vH4Cx-WCn_rtxgHfEPlm2pTop-xRK8PiBiH5uSIs';\nconst BASE  = 'https://api.jobindsats.dk/v3/data';\nconst OMRADE = '/40/';  // Hvidovre\nconst PERIODE = 'latest:24';\n\nconst tabeller = [\n  { id: 'y01a02', navn: 'A-dagpenge',          ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y60a02', navn: 'Kontanthjælp',         ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y07a02', navn: 'Sygedagpenge',         ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y11a02', navn: 'Ressourceforløb',      ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y09a02', navn: 'Ledighedsydelse',      ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y08a02', navn: 'Fleksjob',             ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y12a02', navn: 'Jobafklaringsforløb',  ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y10a02', navn: 'Førtidspension',       ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y85a02', navn: 'Tidlig pension',       ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y13a02', navn: 'Seniorpension',        ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y40a02', navn: 'Barselsdagpenge',      ftpKol: 'Antal fuldtidspersoner' },\n  { id: 'y28a02', navn: 'Efterløn',             ftpKol: 'Antal fuldtidspersoner med udbetalt efterløn' },\n];\n\nreturn tabeller.map(t => ({\n  json: {\n    tableId: t.id,\n    navn:    t.navn,\n    ftpKol:  t.ftpKol,\n    url:     `${BASE}/${t.id}?mgroup.*=*&period.M=${PERIODE}&hierarchy._nykom=${OMRADE}&format=json`,\n    token:   TOKEN\n  }\n}));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [220, 390],
+      "position": [
+        220,
+        390
+      ],
       "id": "code-tabeller",
       "name": "1. Byg tabelliste"
     },
@@ -66,18 +83,24 @@
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [440, 390],
+      "position": [
+        440,
+        390
+      ],
       "id": "http-jobindsats",
       "name": "2. Hent Jobindsats data",
       "continueOnFail": true
     },
     {
       "parameters": {
-        "jsCode": "// Hent alle HTTP-svar + original tabelmeta fra node 1\nconst httpSvar   = $input.all();\nconst tabelmeta  = $('1. Byg tabelliste').all();\n\nconst MDR = {'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'Maj',\n             '06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Okt',\n             '11':'Nov','12':'Dec'};\n\nfunction formatPeriode(p) {\n  // '2025M04' → 'Apr 25'\n  const year = p.slice(2,4);\n  const mNum = p.slice(6,8) || p.slice(5,7);\n  return (MDR[mNum] || mNum) + ' ' + year;\n}\n\nfunction fmtTal(n) {\n  if (n == null) return '—';\n  return new Intl.NumberFormat('da-DK').format(Math.round(n));\n}\n\nfunction diff(a, b) { return (a != null && b != null) ? a - b : null; }\nfunction pct(a, b)  { return (a != null && b != null && b !== 0) ? Math.round((a-b)/b*10)/10 : null; }\n\nconst dataUdtraek = {};\nconst promptData  = {};\nlet senesteLabel  = '—';\n\nfor (let i = 0; i < httpSvar.length; i++) {\n  const meta = tabelmeta[i]?.json || {};\n  const resp = httpSvar[i]?.json || {};\n  const { tableId, navn, ftpKol } = meta;\n\n  // Håndtér fejl/manglende data (fx y07a02 er p.t. utilgængeligt)\n  if (!resp.columns || !resp.rows || resp.code) {\n    dataUdtraek[tableId] = { navn, labels: [], ftp: [], fejl: true };\n    promptData[tableId]  = { navn, fejl: true };\n    continue;\n  }\n\n  const cols   = resp.columns;\n  const ftpIdx = cols.indexOf(ftpKol);\n  const perIdx = cols.indexOf('Periode');\n\n  if (ftpIdx < 0) {\n    dataUdtraek[tableId] = { navn, labels: [], ftp: [], fejl: true };\n    promptData[tableId]  = { navn, fejl: true, note: 'Kolonne ikke fundet: ' + ftpKol };\n    continue;\n  }\n\n  const raekker  = [...resp.rows].sort((a,b) => a[perIdx].localeCompare(b[perIdx]));\n  const perioder = raekker.map(r => r[perIdx]);\n  const labels   = perioder.map(formatPeriode);\n  const ftp      = raekker.map(r => { const v = r[ftpIdx]; return v != null ? Number(v) : null; });\n\n  const n = ftp.length;\n  const sidst   = ftp[n-1];\n  const forrige = ftp[n-2];\n  const toMdr   = ftp[n-3];\n  const foerste = ftp.find(v => v != null);\n\n  const d1   = diff(sidst, forrige);\n  const d2   = diff(sidst, toMdr);\n  const dAar = diff(sidst, foerste);\n  const p1   = pct(sidst, forrige);\n  const pAar = pct(sidst, foerste);\n\n  if (labels[n-1]) senesteLabel = labels[n-1];\n\n  dataUdtraek[tableId] = { navn, labels, ftp };\n\n  // Opbyg prompt-data til AI\n  promptData[tableId] = {\n    navn,\n    senesteManed:          labels[n-1] || '—',\n    sidst:                 sidst,\n    forrige:               forrige,\n    toManederSiden:        toMdr,\n    aendringVsForrige:     d1,\n    aendringVsForrigePct:  p1,\n    aendringVsToMdr:       d2,\n    aendringVsAarSiden:    dAar,\n    aendringVsAarPct:      pAar,\n    udvikling12Mdr:        raekker.map((r, idx) => ({ label: labels[idx], ftp: ftp[idx] })),\n  };\n}\n\nreturn [{ json: {\n  dataUdtraek,\n  promptData,\n  senesteLabel,\n  genereretDato: new Date().toISOString().slice(0,10)\n}}];"
+        "jsCode": "// Hent alle HTTP-svar + original tabelmeta fra node 1\nconst httpSvar   = $input.all();\nconst tabelmeta  = $('1. Byg tabelliste').all();\n\nconst MDR = {'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'Maj',\n             '06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Okt',\n             '11':'Nov','12':'Dec'};\n\nfunction formatPeriode(p) {\n  const year = p.slice(2,4);\n  const mNum = p.slice(6,8) || p.slice(5,7);\n  return (MDR[mNum] || mNum) + ' ' + year;\n}\nfunction diff(a, b) { return (a != null && b != null) ? a - b : null; }\nfunction pct(a, b)  { return (a != null && b != null && b !== 0) ? Math.round((a-b)/b*10)/10 : null; }\n\nconst dataUdtraek = {};\nconst promptData  = {};\nlet senesteLabel  = '—';\n\nfor (let i = 0; i < httpSvar.length; i++) {\n  const meta = tabelmeta[i]?.json || {};\n  const resp = httpSvar[i]?.json  || {};\n  const { tableId, navn, ftpKol } = meta;\n\n  if (!resp.columns || !resp.rows || resp.code) {\n    dataUdtraek[tableId] = { navn, labels: [], ftp: [], forrigeLabels: [], forrigeFtp: [], fejl: true };\n    promptData[tableId]  = { navn, fejl: true };\n    continue;\n  }\n\n  const cols   = resp.columns;\n  const ftpIdx = cols.indexOf(ftpKol);\n  const perIdx = cols.indexOf('Periode');\n\n  if (ftpIdx < 0) {\n    dataUdtraek[tableId] = { navn, labels: [], ftp: [], forrigeLabels: [], forrigeFtp: [], fejl: true };\n    promptData[tableId]  = { navn, fejl: true, note: 'Kolonne ikke fundet: ' + ftpKol };\n    continue;\n  }\n\n  // Sorter kronologisk og split i to 12-måneders perioder\n  const alle = [...resp.rows].sort((a,b) => a[perIdx].localeCompare(b[perIdx]));\n  const har24 = alle.length >= 24;\n\n  const aktuelRows  = alle.slice(-12);                      // Seneste 12 mdr\n  const forrigeRows = har24 ? alle.slice(-24, -12) : [];   // Forudgående 12 mdr\n\n  const labels       = aktuelRows.map(r => formatPeriode(r[perIdx]));\n  const ftp          = aktuelRows.map(r => r[ftpIdx] != null ? Number(r[ftpIdx]) : null);\n  const forrigeLabels = forrigeRows.map(r => formatPeriode(r[perIdx]));\n  const forrigeFtp    = forrigeRows.map(r => r[ftpIdx] != null ? Number(r[ftpIdx]) : null);\n\n  const n     = ftp.length;\n  const sidst   = ftp[n-1];\n  const forrige = ftp[n-2];\n  const toMdr   = ftp[n-3];\n  const foerste = ftp.find(v => v != null);\n  const forrigeAarSidst = forrigeFtp[forrigeFtp.length-1];\n\n  if (labels[n-1]) senesteLabel = labels[n-1];\n\n  dataUdtraek[tableId] = { navn, labels, ftp, forrigeLabels, forrigeFtp };\n\n  promptData[tableId] = {\n    navn,\n    senesteManed:         labels[n-1] || '—',\n    sidst, forrige, toManederSiden: toMdr,\n    aendringVsForrige:    diff(sidst, forrige),\n    aendringVsForrigePct: pct(sidst, forrige),\n    aendringVsToMdr:      diff(sidst, toMdr),\n    aendringVsAarSiden:   diff(sidst, forrigeAarSidst),\n    aendringVsAarPct:     pct(sidst, forrigeAarSidst),\n    udvikling12Mdr:       aktuelRows.map((r, idx) => ({ label: labels[idx], ftp: ftp[idx] })),\n    forrigeAar12Mdr:      forrigeRows.map((r, idx) => ({ label: forrigeLabels[idx], ftp: forrigeFtp[idx] })),\n  };\n}\n\nreturn [{ json: {\n  dataUdtraek,\n  promptData,\n  senesteLabel,\n  genereretDato: new Date().toISOString().slice(0,10)\n}}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [660, 390],
+      "position": [
+        660,
+        390
+      ],
       "id": "code-saml",
       "name": "3. Saml og beregn data"
     },
@@ -91,7 +114,10 @@
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.7,
-      "position": [880, 390],
+      "position": [
+        880,
+        390
+      ],
       "id": "ai-agent",
       "name": "4. AI Skriv Analyser (Gemini)"
     },
@@ -102,7 +128,10 @@
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
-      "position": [880, 580],
+      "position": [
+        880,
+        580
+      ],
       "id": "gemini-model",
       "name": "Google Gemini Chat Model",
       "credentials": {
@@ -118,7 +147,10 @@
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1100, 390],
+      "position": [
+        1100,
+        390
+      ],
       "id": "code-byg-json",
       "name": "5. Byg JSON-indhold"
     },
@@ -140,7 +172,10 @@
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1,
-      "position": [1320, 390],
+      "position": [
+        1320,
+        390
+      ],
       "id": "github-sha",
       "name": "6. GitHub: Hent SHA",
       "continueOnFail": true,
@@ -157,27 +192,42 @@
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1540, 390],
+      "position": [
+        1540,
+        390
+      ],
       "id": "code-sha",
       "name": "7. Udpak SHA"
     },
     {
       "parameters": {
         "conditions": {
-          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
-          "conditions": [{
-            "id": "sha-check",
-            "leftValue": "={{ $json.sha }}",
-            "rightValue": "",
-            "operator": { "type": "string", "operation": "notEmpty" }
-          }],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "sha-check",
+              "leftValue": "={{ $json.sha }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
           "combinator": "and"
         },
         "options": {}
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [1760, 390],
+      "position": [
+        1760,
+        390
+      ],
       "id": "if-node",
       "name": "8. IF: Fil eksisterer?"
     },
@@ -185,39 +235,69 @@
       "parameters": {
         "resource": "file",
         "operation": "edit",
-        "owner": { "__rl": true, "value": "henrikastrup", "mode": "name" },
-        "repository": { "__rl": true, "value": "hvidovre-analyser", "mode": "name" },
+        "owner": {
+          "__rl": true,
+          "value": "henrikastrup",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "hvidovre-analyser",
+          "mode": "name"
+        },
         "filePath": "ydelsespuls-analyse.json",
         "fileContent": "={{ $json.fileContent }}",
         "commitMessage": "=Ydelsespuls opdateret — {{ $json.senesteLabel }}",
-        "additionalParameters": { "sha": "={{ $json.sha }}" }
+        "additionalParameters": {
+          "sha": "={{ $json.sha }}"
+        }
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1,
-      "position": [1980, 280],
+      "position": [
+        1980,
+        280
+      ],
       "id": "github-edit",
       "name": "8a. GitHub: Edit",
       "credentials": {
-        "githubApi": { "id": "EfWbvTKE0KSJFGhQ", "name": "GitHub account" }
+        "githubApi": {
+          "id": "EfWbvTKE0KSJFGhQ",
+          "name": "GitHub account"
+        }
       }
     },
     {
       "parameters": {
         "resource": "file",
         "operation": "create",
-        "owner": { "__rl": true, "value": "henrikastrup", "mode": "name" },
-        "repository": { "__rl": true, "value": "hvidovre-analyser", "mode": "name" },
+        "owner": {
+          "__rl": true,
+          "value": "henrikastrup",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "hvidovre-analyser",
+          "mode": "name"
+        },
         "filePath": "ydelsespuls-analyse.json",
         "fileContent": "={{ $json.fileContent }}",
         "commitMessage": "=Ydelsespuls oprettet — {{ $json.senesteLabel }}"
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1,
-      "position": [1980, 500],
+      "position": [
+        1980,
+        500
+      ],
       "id": "github-create",
       "name": "8b. GitHub: Create",
       "credentials": {
-        "githubApi": { "id": "EfWbvTKE0KSJFGhQ", "name": "GitHub account" }
+        "githubApi": {
+          "id": "EfWbvTKE0KSJFGhQ",
+          "name": "GitHub account"
+        }
       }
     },
     {
@@ -230,56 +310,178 @@
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [2200, 390],
+      "position": [
+        2200,
+        390
+      ],
       "id": "gmail-node",
       "name": "9. Send Notifikationsmail",
       "credentials": {
-        "gmailOAuth2": { "id": "n8linaqyaWINshcs", "name": "Gmail account" }
+        "gmailOAuth2": {
+          "id": "n8linaqyaWINshcs",
+          "name": "Gmail account"
+        }
       }
     }
   ],
   "connections": {
     "Schedule Trigger": {
-      "main": [[{ "node": "1. Byg tabelliste", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "1. Byg tabelliste",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Manuel Kørsel": {
-      "main": [[{ "node": "1. Byg tabelliste", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "1. Byg tabelliste",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "1. Byg tabelliste": {
-      "main": [[{ "node": "2. Hent Jobindsats data", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "2. Hent Jobindsats data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "2. Hent Jobindsats data": {
-      "main": [[{ "node": "3. Saml og beregn data", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "3. Saml og beregn data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "3. Saml og beregn data": {
-      "main": [[{ "node": "4. AI Skriv Analyser (Gemini)", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "4. AI Skriv Analyser (Gemini)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "4. AI Skriv Analyser (Gemini)": {
-      "main": [[{ "node": "5. Byg JSON-indhold", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "5. Byg JSON-indhold",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Google Gemini Chat Model": {
-      "ai_languageModel": [[{ "node": "4. AI Skriv Analyser (Gemini)", "type": "ai_languageModel", "index": 0 }]]
+      "ai_languageModel": [
+        [
+          {
+            "node": "4. AI Skriv Analyser (Gemini)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
     },
     "5. Byg JSON-indhold": {
-      "main": [[{ "node": "6. GitHub: Hent SHA", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "6. GitHub: Hent SHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "6. GitHub: Hent SHA": {
-      "main": [[{ "node": "7. Udpak SHA", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "7. Udpak SHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "7. Udpak SHA": {
-      "main": [[{ "node": "8. IF: Fil eksisterer?", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "8. IF: Fil eksisterer?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "8. IF: Fil eksisterer?": {
       "main": [
-        [{ "node": "8a. GitHub: Edit",   "type": "main", "index": 0 }],
-        [{ "node": "8b. GitHub: Create", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "8a. GitHub: Edit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "8b. GitHub: Create",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
-    "8a. GitHub: Edit":   { "main": [[{ "node": "9. Send Notifikationsmail", "type": "main", "index": 0 }]] },
-    "8b. GitHub: Create": { "main": [[{ "node": "9. Send Notifikationsmail", "type": "main", "index": 0 }]] }
+    "8a. GitHub: Edit": {
+      "main": [
+        [
+          {
+            "node": "9. Send Notifikationsmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "8b. GitHub: Create": {
+      "main": [
+        [
+          {
+            "node": "9. Send Notifikationsmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   },
   "active": false,
-  "settings": { "executionOrder": "v1" },
-  "meta": { "templateCredsSetupCompleted": true },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "tags": []
 }
