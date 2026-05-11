@@ -152,6 +152,16 @@ main{padding:22px 48px 40px;max-width:1140px;}
 .analyse-body{padding:16px 18px;background:var(--card);}
 .analyse-tekst{font-size:13.5px;line-height:1.82;color:var(--mid);max-width:780px;}
 
+/* INGEN ANALYSE NOTE */
+.ingen-analyse-note{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:13px 16px;margin-bottom:10px;
+  background:rgba(138,138,126,0.07);border:1px solid var(--border);
+  border-radius:8px;font-size:12.5px;color:var(--mid);line-height:1.55;
+}
+.ingen-analyse-note svg{flex-shrink:0;margin-top:1px;opacity:.5;}
+.ingen-analyse-note strong{color:var(--text);}
+
 /* KILDE */
 .kilde{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--muted);
   padding:4px 48px 28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
@@ -566,16 +576,27 @@ function opdaterGraf() {
 }
 
 // ── ANALYSER ──────────────────────────────────────────────────────────
+// Ydelsestyper med selvstændig AI-analyse
+const HAR_ANALYSE = new Set(['y01a02','y07a02','y60a02','y10a02']);
+const ANALYSE_NAVNE = { y01a02:'A-dagpenge', y07a02:'Sygedagpenge', y60a02:'Kontanthjælp', y10a02:'Førtidspension' };
+
 function opdaterAnalyser() {
   const sektion = document.getElementById('analyseSektion');
   const vis = TABEL_IDS.filter(id => aktive.has(id));
   if (!vis.length) { sektion.innerHTML = ''; return; }
 
-  sektion.innerHTML = vis.map(id => {
+  // Separer i: har analyse / har ikke analyse
+  const medAnalyse  = vis.filter(id => HAR_ANALYSE.has(id));
+  const udenAnalyse = vis.filter(id => !HAR_ANALYSE.has(id));
+
+  let html = '';
+
+  // Vis fuld analyse for de 4 hoveddelsestyper
+  html += medAnalyse.map(id => {
     const m   = TABEL_META[id];
     const a   = data.analyse?.[id];
     const ovs = a?.overskrift || '—';
-    const txt = a?.tekst || 'Ingen analyse tilgængelig for denne ydelse.';
+    const txt = a?.tekst || 'Analysetekst ikke tilgængelig.';
     return `<div class="analyse-panel">
       <div class="analyse-hdr">
         <div class="analyse-bar" style="background:${m.farve}"></div>
@@ -589,6 +610,26 @@ function opdaterAnalyser() {
       </div>
     </div>`;
   }).join('');
+
+  // Vis kompakt note for de øvrige 8 ydelsestyper
+  if (udenAnalyse.length) {
+    const navne = udenAnalyse.map(id => {
+      const m = TABEL_META[id];
+      return `<span style="display:inline-flex;align-items:center;gap:5px">
+        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${m.farve};flex-shrink:0"></span>
+        ${m.navn}
+      </span>`;
+    }).join('');
+    html += `<div class="ingen-analyse-note">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <div>
+        <strong>Tal vises i grafen</strong> — selvstændig analyse er kun tilgængelig for A-dagpenge, Sygedagpenge, Kontanthjælp og Førtidspension.
+        Valgte ydelser uden analyse: ${navne}
+      </div>
+    </div>`;
+  }
+
+  sektion.innerHTML = html;
 }
 
 // ── DOWNLOAD ──────────────────────────────────────────────────────────
