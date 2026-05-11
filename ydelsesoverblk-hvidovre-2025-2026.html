@@ -211,10 +211,10 @@ main{padding:26px 48px 40px;max-width:1120px;}
       <div class="ai-icon">✦</div>
       <div class="ai-title-block">
         <div class="ai-title">Analyse af ydelsesudviklingen i Hvidovre</div>
-        <div class="ai-meta">Genereret af Claude · Baseret på live Jobindsats-data</div>
+        <div class="ai-meta">Analyse baseret på Jobindsats-data apr. 2025 – mar. 2026</div>
       </div>
     </div>
-    <div class="ai-heading" id="hvAiHeading"><span class="spinner"></span>Henter analyse...</div>
+    <div class="ai-heading" id="hvAiHeading"></div>
     <div class="ai-body" id="hvAiBody"></div>
   </div>
 
@@ -246,10 +246,10 @@ main{padding:26px 48px 40px;max-width:1120px;}
       <div class="ai-icon">✦</div>
       <div class="ai-title-block">
         <div class="ai-title">Analyse: Hvidovre sammenlignet med landsplan</div>
-        <div class="ai-meta">Genereret af Claude · Baseret på live Jobindsats-data</div>
+        <div class="ai-meta">Analyse baseret på Jobindsats-data apr. 2025 – mar. 2026</div>
       </div>
     </div>
-    <div class="ai-heading" id="landAiHeading"><span class="spinner"></span>Henter analyse...</div>
+    <div class="ai-heading" id="landAiHeading"></div>
     <div class="ai-body" id="landAiBody"></div>
   </div>
 
@@ -295,7 +295,7 @@ const FARVER = {
 const YDELSER = Object.keys(HV).filter(k => k !== "Offentligt forsørgede i alt");
 
 // ── HJÆLPERE ─────────────────────────────────────────────────────────────────
-const idx = arr => { const b=arr.find(v=>v!=null); return arr.map(v=>v==null?null:Math.round(v/b*10)/10); };
+const idx = arr => { const b=arr.find(v=>v!=null); return arr.map(v=>v==null?null:Math.round(v/b*1000)/10); };
 const dfmt = v => v==null ? '—' : v.toLocaleString('da-DK');
 const delta = (arr) => {
   const f=arr.find(v=>v!=null), l=[...arr].reverse().find(v=>v!=null);
@@ -518,67 +518,22 @@ function skiftSektion(s) {
 }
 
 // ── CLAUDE API ANALYSE ────────────────────────────────────────────────────────
-async function hentAnalyse(type) {
-  const ydListe = YDELSER.map(k => {
-    const dt = delta(HV[k]);
-    const dtLand = delta(LAND[k]);
-    return `${k}: HV ${HV[k][0]}→${HV[k][11]} ftp (${dt.d>0?'+':''}${dt.d}, ${dt.pct>0?'+':''}${dt.pct}%), DK-indeks ${idx(LAND[k])[11]?.toFixed(1)}`;
-  }).join('\n');
-
-  const prompt1 = `Du er ekspert i dansk kommunal beskæftigelsespolitik. Her er Hvidovre Kommunes ydelsesdata (fuldtidspersoner/helårspersoner) for april 2025 til marts 2026:
-
-${ydListe}
-
-Offentligt forsørgede i alt (HV): ${HV["Offentligt forsørgede i alt"][0]} → ${HV["Offentligt forsørgede i alt"][10]} ftp
-
-Lav en analytisk tekst om udviklingstendenserne i Hvidovre. Fokuser på:
-1. Hvad er de dominerende bevægelser i perioden?
-2. Sammenhæng mellem ydelser: ledighedsydelse→fleksjob, jobafklaringsforløb/ressourceforløb, tidlig pension/seniorpension/efterløn faldende.
-3. Hvilke ydelser giver anledning til opmærksomhed?
-4. Samlet vurdering af det offentlige forsørgelsesniveau.
-
-Returnér KUN gyldigt JSON uden markdown-kodeblokke:
-{"overskrift":"...","afsnit":[{"titel":"...","tekst":"..."},{"titel":"...","tekst":"..."},{"titel":"...","tekst":"..."},{"titel":"...","tekst":"..."}]}`;
-
-  const prompt2 = `Du er ekspert i dansk kommunal beskæftigelsespolitik. Her er data for Hvidovre vs. landsplan (fuldtidspersoner) for april 2025 til marts 2026, indekseret (apr 2025=100):
-
-${YDELSER.map(k => {
-  const hvIdx = idx(HV[k]);
-  const dkIdx = idx(LAND[k]);
-  return `${k}: HV ${hvIdx[0]?.toFixed(1)}→${hvIdx[11]?.toFixed(1)}, DK ${dkIdx[0]?.toFixed(1)}→${dkIdx[11]?.toFixed(1)}`;
-}).join('\n')}
-
-Analysér hvor Hvidovre afviger fra landsudviklingen — positivt og negativt. Inddrag sammenhænge på tværs af ydelsestyper (fx ledighedsydelse og fleksjob hænger sammen). Vurder om Hvidovres profil er bedre eller dårligere end landsgennemsnittet, og hvad det kan skyldes. Peeg på paralleller: de mønstre der ses lokalt, genkendes de nationalt?
-
-Returnér KUN gyldigt JSON uden markdown-kodeblokke:
-{"overskrift":"...","afsnit":[{"titel":"...","tekst":"..."},{"titel":"...","tekst":"..."},{"titel":"...","tekst":"..."},{"titel":"...","tekst":"..."}]}`;
-
-  const prompt = type === 'hv' ? prompt1 : prompt2;
-  const headingEl = document.getElementById(type+'AiHeading');
-  const bodyEl = document.getElementById(type+'AiBody');
-
-  try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({
-        model:"claude-sonnet-4-20250514",
-        max_tokens:1000,
-        messages:[{role:"user",content:prompt}]
-      })
-    });
-    const data = await res.json();
-    const raw = data.content?.find(c=>c.type==='text')?.text || '';
-    const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
-
-    headingEl.innerHTML = parsed.overskrift;
-    bodyEl.innerHTML = parsed.afsnit.map(a =>
-      `<div class="ai-afsnit"><h4>${a.titel}</h4><p>${a.tekst}</p></div>`
-    ).join('');
-  } catch(e) {
-    headingEl.innerHTML = 'Analyse midlertidigt utilgængelig';
-    bodyEl.innerHTML = `<div class="ai-afsnit"><p style="color:var(--muted)">${e.message}</p></div>`;
-  }
+function visAnalyse(type) {
+  const ANALYSER = {
+    hv: {
+      overskrift: "Hvidovres forsørgelsesprofil: fald i aktive ydelser, pres fra førtidspension",
+      afsnit: [{"titel": "Positive tendenser: aktiveringsvejen virker", "tekst": "Perioden viser en overordnet positiv bevægelse på de ydelsestyper, der er tættest knyttet til aktiv beskæftigelsesindsats. Jobafklaringsforløb falder markant fra 221 til 188 fuldtidspersoner (-14,9 %), og ressourceforløb er reduceret fra 190 til 180 (-5,3 %). Det indikerer, at borgere i komplekse sager i stigende grad afslutter deres forløb og bevæger sig videre — enten til fleksjob, pension eller ordinær beskæftigelse. Sygedagpenge er ligeledes reduceret fra 811 til 768 fuldtidspersoner (-5,3 %) over de elleve tilgængelige måneder, med det laveste niveau i august (710 ftp), hvad der svarer til et normalt sæsondip. Kontanthjælp falder fra 723 til 698 ftp (-3,5 %) og understøtter det generelt positive billede."}, {"titel": "Sammenhænge mellem ydelser: overgangsflows er tydelige", "tekst": "Data viser tydeligt de forventede overgangsflows mellem ydelseskategorier. Ledighedsydelse falder fra 74 til 67 fuldtidspersoner (-9,5 %) i samme periode som fleksjob stiger fra 708 til 739 (+4,4 %). Dette klassiske flow — fra venteydelse til støttet beskæftigelse — er en positiv indikator for, at visitationsprocessen fungerer. På pensionssiden ses et parallelt fald i alle tre overgangsydelser: tidlig pension (-33,3 %, fra 108 til 72 ftp), seniorpension (-12,4 %, fra 275 til 241 ftp) og efterløn (-8,7 %, fra 126 til 115 ftp). Disse fald hænger strukturelt sammen og afspejler, at de midlertidige og aldersbetingede pensionsordninger gradvist reduceres i omfang i takt med ændrede regler og demografi."}, {"titel": "Bekymringspunkt: førtidspension stiger støt", "tekst": "Den eneste ydelsestype med en klar og ubrudt stigning er førtidspension, der vokser fra 2.149 til 2.294 fuldtidspersoner (+6,7 %) over tolv måneder. Førtidspension er med sine ca. 2.300 ftp langt den største enkeltydelse i kommunen — mere end tre gange kontanthjælp og tre gange fleksjob. Den konstante vækst på ca. 12-15 fuldtidspersoner pr. måned kræver opmærksomhed, da udgifterne er permanente og stigende. A-dagpenge viser sæsonbetinget spids i januar-februar 2026 (757 og 756 ftp) efter et lavpunkt i december 2025 (607 ftp), men det samlede niveau for perioden er på linje med april 2025 (+4,6 %)."}, {"titel": "Samlet vurdering: stabilt med strukturelt pres", "tekst": "Det samlede antal offentligt forsørgede i Hvidovre er relativt stabilt på ca. 6.000–6.130 fuldtidspersoner through perioden, med et let fald hen over sommeren 2025 og en normalisering op mod 2026. Sammensætningen bevæger sig i en hensigtsmæssig retning: de kortere, aktiverende ydelser (jobafklaringsforløb, ressourceforløb, sygedagpenge, kontanthjælp) falder, mens fleksjob stiger. Det primære strukturelle pres kommer fra den vedvarende vækst i førtidspension, som på sigt vil bidrage til stigende forsørgelsesudgifter. Barselsdagpenge stiger fra 415 til 458 ftp (+10,4 %), hvilket er et positivt demografisk signal om en yngre og reproduktionsaktiv befolkning."}]
+    },
+    land: {
+      overskrift: "Hvidovre afviger positivt fra landstendensen på næsten alle forsørgelsesydelser",
+      afsnit: [{"titel": "Stærk relativ forbedring: Hvidovre klarer sig markant bedre end landet", "tekst": "Sammenlignes den indekserede udvikling (april 2025 = 100), skiller Hvidovre sig tydeligt positivt ud på de centrale aktive ydelser. A-dagpenge falder i Hvidovre med 4,6 %, mens det nationalt stiger 7,2 % — en forskel på knap 12 procentpoint. Ledighedsydelse falder 9,5 % i Hvidovre mod en national stigning på 2,8 %. Kontanthjælp reduceres med 3,5 % lokalt mod en national stigning på 0,5 %. Jobafklaringsforløb falder 14,9 % i Hvidovre mod 9,0 % nationalt. På alle disse parametre performer Hvidovre væsentligt stærkere end landsgennemsnittet, hvilket indikerer en effektiv lokal beskæftigelsesindsats."}, {"titel": "På linje med landet: fleksjob og ressourceforløb", "tekst": "Fleksjob vokser 4,4 % i Hvidovre mod 1,7 % nationalt — Hvidovre er altså en anelse stærkere end landet, men begge steder i positiv retning. Ressourceforløb falder 5,3 % lokalt mod 1,7 % nationalt; begge steder et fald, men Hvidovres er lidt mere udpræget. Barselsdagpenge stiger 10,4 % lokalt mod 6,6 % nationalt — begge steder en vækst, og Hvidovres er lidt højere, formentlig drevet af en demografisk yngre kernefamilieprofil. Disse ydelsestyper understøtter det samlede billede af en kommune, der følger eller overgår landets positive tendenser."}, {"titel": "Bekymringspunkt: førtidspension vokser hurtigere end landet", "tekst": "Hvidovres førtidspension stiger 6,7 % i perioden, mens den nationale stigning er 2,4 %. Det er det eneste område hvor Hvidovre afviger negativt fra landstrenden, og forskellen er markant. Hvidovre tilgang til førtidspension er formentlig delvist koblet til den relativt store andel borgere i jobafklaringsforløb og ressourceforløb, der afslutter disse forløb ved tilkendelse af pension. Den hurtige vækst i kommunens førtidspensionsbestand bør følges tæt, da udgifterne er varige og budgetterne dermed vokser strukturelt."}, {"titel": "Samlet profil: Hvidovres forsørgelsesprofil er bedre end landsgennemsnittet", "tekst": "På tværs af de tolv ydelsestyper klarer Hvidovre sig bedre end landet på ni af elleve sammenlignelige indikatorer. Den samlede forsørgelsesudvikling er enten neutral eller positiv, mens landsudviklingen på a-dagpenge, kontanthjælp og ledighedsydelse er negativ. En mulig forklaring er Hvidovres relative velstand og beskæftigelsesstruktur i Storkøbenhavn, kombineret med en aktiv lokal indsats. Undtagelsen er førtidspension, som kræver fortsat bevågenhed. Parallellen mellem den lokale og nationale udvikling er i øvrigt tydelig på barselsdagpenge og fleksjob, hvor begge niveauer bevæger sig i samme retning — blot hurtigere i Hvidovre."}]
+    }
+  };
+  const a = ANALYSER[type];
+  document.getElementById(type+'AiHeading').innerHTML = a.overskrift;
+  document.getElementById(type+'AiBody').innerHTML = a.afsnit.map(x =>
+    `<div class="ai-afsnit"><h4>${x.titel}</h4><p>${x.tekst}</p></div>`
+  ).join('');
 }
 
 // ── DOWNLOAD ─────────────────────────────────────────────────────────────────
@@ -592,8 +547,8 @@ function download() {
 byggKPI();
 byggHVChart('alle');
 byggLandChart('alle');
-hentAnalyse('hv');
-hentAnalyse('land');
+visAnalyse('hv');
+visAnalyse('land');
 </script>
 </body>
 </html>
