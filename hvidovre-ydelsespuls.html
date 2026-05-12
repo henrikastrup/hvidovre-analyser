@@ -308,6 +308,82 @@ function setStatus(type, msg) {
 }
 
 // ── DATA HENT ─────────────────────────────────────────────────────────
+function normaliserJSON(raw) {
+  // Understøtter begge JSON-formater fra n8n
+  // Format A: { genereret, senesteLabel, data:{}, analyse:{} }
+  // Format B: { sidst_opdateret, seneste_periode, samlet_analyse, ydelser:[] }
+
+  if (raw.data && typeof raw.data === 'object' && !Array.isArray(raw.data)) {
+    // Format A — bruges direkte
+    return raw;
+  }
+
+  // Format B — konvertér til Format A
+  const MDR_NUM = {'1':'Jan','2':'Feb','3':'Mar','4':'Apr','5':'Maj','6':'Jun',
+                   '7':'Jul','8':'Aug','9':'Sep','10':'Okt','11':'Nov','12':'Dec'};
+
+  // Parse seneste_periode: "3 26" → "Mar 26"
+  const perStr = String(raw.seneste_periode || '').trim();
+  const perParts = perStr.split(' ');
+  const senesteLabel = perParts.length >= 2
+    ? (MDR_NUM[perParts[0]] || perParts[0]) + ' ' + perParts[1]
+    : perStr;
+
+  // Generer 12 måneds-labels baglæns fra seneste_periode
+  function genLabels(antalMdr) {
+    const mdrNavn = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+    let mdr = parseInt(perParts[0]) - 1; // 0-baseret
+    let aar = parseInt(perParts[1]);
+    const labels = [];
+    for (let i = 0; i < antalMdr; i++) {
+      labels.unshift(mdrNavn[mdr] + ' ' + String(aar).slice(-2));
+      mdr--;
+      if (mdr < 0) { mdr = 11; aar--; }
+    }
+    return labels;
+  }
+  const labels12 = genLabels(12);
+
+  // Konvertér ydelser-array til data-objekt
+  const dataObj = {};
+  const ydelser = Array.isArray(raw.ydelser) ? raw.ydelser : [];
+  ydelser.forEach(y => {
+    // historik er kommasepareret string, nyeste først → vend om
+    const ftpStr = String(y.historik || '');
+    const ftpArr = ftpStr.split(',').map(s => {
+      const n = parseInt(s.trim());
+      return isNaN(n) ? null : n;
+    });
+    ftpArr.reverse(); // gør kronologisk (ældste først)
+
+    // Sørg for at arrays har samme længde som labels
+    while (ftpArr.length < labels12.length) ftpArr.unshift(null);
+    const ftp12 = ftpArr.slice(-12);
+
+    dataObj[y.id] = {
+      navn: y.navn,
+      labels: labels12,
+      ftp: ftp12,
+      forrigeLabels: [],
+      forrigeFtp: []
+    };
+  });
+
+  // Parse samlet_analyse (er en JSON-string)
+  let analyse = { overskrift: '—', tekst: 'Ingen analyse.' };
+  try {
+    const aRaw = raw.samlet_analyse || '{}';
+    analyse = typeof aRaw === 'string' ? JSON.parse(aRaw) : aRaw;
+  } catch(e) {}
+
+  return {
+    genereret:    (raw.sidst_opdateret || '').slice(0, 10),
+    senesteLabel: senesteLabel,
+    data:         dataObj,
+    analyse:      analyse
+  };
+}
+
 async function loadData() {
   if (window.location.protocol === 'file:') {
     setStatus('error', 'Åbn på GitHub Pages — CORS blokerer ved lokal åbning');
@@ -316,7 +392,8 @@ async function loadData() {
   try {
     const r = await fetch(JSON_URL + '?t=' + Date.now());
     if (!r.ok) throw new Error('HTTP ' + r.status);
-    data = await r.json();
+    const raw = await r.json();
+    data = normaliserJSON(raw);
     init();
     setStatus('ok', `Data for ${data.senesteLabel} · Genereret ${data.genereret}`);
   } catch(e) {
@@ -338,12 +415,15 @@ function init() {
 
 // ── KPI ───────────────────────────────────────────────────────────────
 function byggKPI() {
-  const vis = [
-    { id: 'y10a02', cls: 'red' },
-    { id: 'y01a02', cls: '' },
-    { id: 'y08a02', cls: 'mid' },
-    { id: 'y60a02', cls: 'gld' },
-  ];
+  // Brug kun ydelsestyper der faktisk har data
+  const pref = ['y10a02','y01a02','y08a02','y60a02'];
+  const cls  = { 'y10a02':'red','y01a02':'','y08a02':'mid','y60a02':'gld' };
+  const vis = pref.filter(id => data.data[id] && !data.data[id].fejl)
+    .map(id => ({ id, cls: cls[id] || '' }));
+  if (!vis.length) {
+    // Fallback: brug de første 4 der har data
+    Object.keys(data.data).slice(0,4).forEach(id => vis.push({ id, cls: '' }));
+  }
   document.getElementById('kpiRow').innerHTML = vis.map(({ id, cls }) => {
     const m   = TABEL_META[id];
     const ftp = data.data[id]?.ftp || [];
@@ -369,7 +449,8 @@ function byggKPI() {
 
 // ── KORT GRID ─────────────────────────────────────────────────────────
 function byggKortGrid() {
-  document.getElementById('kortGrid').innerHTML = TABEL_IDS.map(id => {
+  const TILGAENGELIGE = Object.keys(data.data);
+  document.getElementById('kortGrid').innerHTML = TABEL_IDS.filter(id => TILGAENGELIGE.includes(id)).map(id => {
     const m   = TABEL_META[id];
     const d   = data.data[id] || {};
     const ftp = d.ftp || [];
