@@ -1,7 +1,7 @@
 {
-  "sidst_opdateret": "2026-05-12T13:29:49.863Z",
+  "sidst_opdateret": "2026-05-12T17:13:08.096Z",
   "seneste_periode": "3 26",
-  "samlet_analyse": "{\"overskrift\": \"Markant fald i sygedagpenge og stigning i kontanthjælp i marts\", \"tekst\": \"Sygedagpengemodtagerne faldt med 29 fuldtidspersoner til 759 i marts og tegner sig for månedens mest markante bevægelse. Modsat steg antallet af kontanthjælpsmodtagere med 14 personer til 698, hvilket er det højeste niveau i ti måneder. A-dagpengemodtagerne faldt med 8 personer til 748, men ligger fortsat omkring 100 personer over niveauet fra efteråret. Ledighedsydelsen voksede med 7 personer til 67, mens bestanden i ressourceforløb faldt med 6 personer til 180. Udviklingen på de konjunkturfølsomme ydelser tyder på en vis træghed i udslusningen til beskæftigelse trods det lavere sygefravær. Den samlede ydelsesbestand bevæger sig mod en stabilisering, da faldet i sygefravær og a-dagpenge i marts opvejes af tilgang til kontanthjælp og ledighedsydelse.\"}",
+  "samlet_analyse": "{\"overskrift\": \"Fald i sygedagpenge og stigning i kontanthjælp i marts\", \"tekst\": \"Sygedagpengemodtagere faldt markant med 29 fuldtidspersoner til 759 i marts. Modsat steg antallet af borgere på kontanthjælp med 14 personer til i alt 698. A-dagpengeområdet faldt med 8 personer til 748 i marts, men niveauet er fortsat højere end i det foregående halvår. Antallet af borgere i fleksjob steg med 2 personer til 739 og fortsætter en stabil tilgang. Ressourceforløb faldt med 6 fuldtidspersoner til 180 og fortsætter en generel reduktion i denne gruppe. Samlet set peger udviklingen på tværs af ydelserne mod en svag reduktion i det samlede antal ydelsesmodtagere i marts.\"}",
   "ydelser": [
     {
       "id": "y01a02",
@@ -36,12 +36,12 @@
       "historik": "180, 186, 197, 198, 202, 197, 193, 201, 195, 199, 201, 190"
     },
     {
-      "id": "y09a02",
-      "navn": "Ledighedsydelse",
-      "ftp_aktuel": 67,
-      "udvikling_1mdr": 7,
+      "id": "y08a02",
+      "navn": "Fleksjob",
+      "ftp_aktuel": 739,
+      "udvikling_1mdr": 2,
       "udvikling_1aar": 0,
-      "historik": "67, 60, 63, 67, 67, 59, 62, 58, 63, 67, 73, 74"
+      "historik": "739, 737, 729, 723, 721, 720, 719, 717, 716, 716, 711, 708"
     }
   ]
 }
