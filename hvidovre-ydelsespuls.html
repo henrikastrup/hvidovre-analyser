@@ -203,7 +203,7 @@ main{padding:22px 48px 40px;max-width:1140px;}
 <div class="hdr">
   <div class="hdr-eye">Hvidovre Kommune · Center for Økonomi og Personale · Arbejdsmarked</div>
   <h1>Ydelsespuls <em>rullende 12 måneder</em></h1>
-  <p>Månedligt overblik over 12 ydelsestyper i fuldtidspersoner. Vælg ydelsestyper ved at klikke på kortene — aktivér "Sammenlign med forrige år" for at lægge de tilsvarende 12 måneder fra sidste år ind som stiplede linjer.</p>
+  <p>Månedligt overblik over 12 ydelsestyper i fuldtidspersoner. Vælg ydelsestyper ved at klikke på kortene — aktivér "Sammenlign med sidste år" for at lægge de tilsvarende 12 måneder fra sidste år ind som stiplede linjer.</p>
 </div>
 
 <div class="statusbar">
@@ -231,7 +231,7 @@ main{padding:22px 48px 40px;max-width:1140px;}
       <!-- FORRIGE ÅR TOGGLE -->
       <button class="sbtn forrige-aar" id="btnForrigeAar" onclick="toggleForrigeAar()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-        Sammenlign med forrige år
+        Sammenlign med sidste år
       </button>
       <div class="tsep"></div>
       <button class="sbtn ryd" onclick="nulstil()">✕ Ryd</button>
@@ -671,37 +671,36 @@ function opdaterGraf() {
 // ── ANALYSE ───────────────────────────────────────────────────────────
 function visAnalyse() {
   const sektion = document.getElementById('analyseSektion');
-  if (!data?.analyse) { sektion.innerHTML = ''; return; }
+  if (!data || !data.analyse) { sektion.innerHTML = ''; return; }
 
-  let a = data.analyse;
+  const a = data.analyse;
+  let overskrift = '';
+  let tekst = '';
 
-  // Håndter begge formater:
-  // Format A: { overskrift, tekst } — brug direkte
-  // Format B: { y01a02: { overskrift, tekst }, ... } — saml til én tekst
-  if (!a.overskrift && typeof a === 'object') {
-    const ydelser = Object.values(a).filter(v => v && v.tekst);
-    if (ydelser.length > 0) {
-      a = {
-        overskrift: ydelser[0].overskrift || 'Analyse',
-        tekst: ydelser.map(y =>
-          '<strong>' + (y.overskrift || '') + '</strong> ' + (y.tekst || '')
-        ).join('<br><br>')
-      };
-    }
+  if (a.overskrift) {
+    // Samlet format: { overskrift, tekst }
+    overskrift = a.overskrift;
+    tekst = a.tekst || '';
+  } else {
+    // Pr.-ydelsestype format: { y01a02: { overskrift, tekst }, ... }
+    const poster = Object.values(a).filter(v => v && (v.overskrift || v.tekst));
+    if (poster.length === 0) { sektion.innerHTML = ''; return; }
+    overskrift = poster[0].overskrift || 'Analyse';
+    tekst = poster.map(p =>
+      '<strong>' + (p.overskrift || '') + '</strong><br>' + (p.tekst || '')
+    ).join('<br><br>');
   }
 
-  sektion.innerHTML = `<div class="analyse-panel">
-    <div class="analyse-hdr">
-      <div class="analyse-bar" style="background:var(--green)"></div>
-      <div class="analyse-meta">
-        <div class="analyse-navn">Samlet analyse · ${data.senesteLabel}</div>
-        <div class="analyse-overskrift">${a.overskrift || '—'}</div>
-      </div>
-    </div>
-    <div class="analyse-body">
-      <div class="analyse-tekst">${a.tekst || 'Ingen analyse tilgængelig.'}</div>
-    </div>
-  </div>`;
+  sektion.innerHTML = '<div class="analyse-panel">'
+    + '<div class="analyse-hdr">'
+    + '<div class="analyse-bar" style="background:var(--green)"></div>'
+    + '<div class="analyse-meta">'
+    + '<div class="analyse-navn">Samlet analyse · ' + (data.senesteLabel || '') + '</div>'
+    + '<div class="analyse-overskrift">' + overskrift + '</div>'
+    + '</div></div>'
+    + '<div class="analyse-body">'
+    + '<div class="analyse-tekst">' + tekst + '</div>'
+    + '</div></div>';
 }
 function opdaterAnalyser() {}
 // ── DOWNLOAD ──────────────────────────────────────────────────────────
