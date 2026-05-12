@@ -1,22 +1,22 @@
 {
   "genereret": "2026-05-12",
-  "senesteLabel": "3 26",
+  "senesteLabel": "Mar 26",
   "data": {
     "y01a02": {
       "navn": "A-dagpenge",
       "labels": [
-        "4 25",
-        "5 25",
-        "6 25",
-        "7 25",
-        "8 25",
-        "9 25",
-        "0 25",
-        "1 25",
-        "2 25",
-        "1 26",
-        "2 26",
-        "3 26"
+        "Apr 25",
+        "Maj 25",
+        "Jun 25",
+        "Jul 25",
+        "Aug 25",
+        "Sep 25",
+        "Okt 25",
+        "Nov 25",
+        "Dec 25",
+        "Jan 26",
+        "Feb 26",
+        "Mar 26"
       ],
       "ftp": [
         715,
@@ -33,18 +33,18 @@
         748
       ],
       "forrigeLabels": [
-        "4 24",
-        "5 24",
-        "6 24",
-        "7 24",
-        "8 24",
-        "9 24",
-        "0 24",
-        "1 24",
-        "2 24",
-        "1 25",
-        "2 25",
-        "3 25"
+        "Apr 24",
+        "Maj 24",
+        "Jun 24",
+        "Jul 24",
+        "Aug 24",
+        "Sep 24",
+        "Okt 24",
+        "Nov 24",
+        "Dec 24",
+        "Jan 25",
+        "Feb 25",
+        "Mar 25"
       ],
       "forrigeFtp": [
         672,
@@ -64,18 +64,18 @@
     "y60a02": {
       "navn": "Kontanthjælp",
       "labels": [
-        "4 25",
-        "5 25",
-        "6 25",
-        "7 25",
-        "8 25",
-        "9 25",
-        "0 25",
-        "1 25",
-        "2 25",
-        "1 26",
-        "2 26",
-        "3 26"
+        "Apr 25",
+        "Maj 25",
+        "Jun 25",
+        "Jul 25",
+        "Aug 25",
+        "Sep 25",
+        "Okt 25",
+        "Nov 25",
+        "Dec 25",
+        "Jan 26",
+        "Feb 26",
+        "Mar 26"
       ],
       "ftp": [
         723,
@@ -92,18 +92,18 @@
         698
       ],
       "forrigeLabels": [
-        "4 24",
-        "5 24",
-        "6 24",
-        "7 24",
-        "8 24",
-        "9 24",
-        "0 24",
-        "1 24",
-        "2 24",
-        "1 25",
-        "2 25",
-        "3 25"
+        "Apr 24",
+        "Maj 24",
+        "Jun 24",
+        "Jul 24",
+        "Aug 24",
+        "Sep 24",
+        "Okt 24",
+        "Nov 24",
+        "Dec 24",
+        "Jan 25",
+        "Feb 25",
+        "Mar 25"
       ],
       "forrigeFtp": [
         794,
@@ -123,18 +123,18 @@
     "y07a02": {
       "navn": "Sygedagpenge",
       "labels": [
-        "4 25",
-        "5 25",
-        "6 25",
-        "7 25",
-        "8 25",
-        "9 25",
-        "0 25",
-        "1 25",
-        "2 25",
-        "1 26",
-        "2 26",
-        "3 26"
+        "Apr 25",
+        "Maj 25",
+        "Jun 25",
+        "Jul 25",
+        "Aug 25",
+        "Sep 25",
+        "Okt 25",
+        "Nov 25",
+        "Dec 25",
+        "Jan 26",
+        "Feb 26",
+        "Mar 26"
       ],
       "ftp": [
         811,
@@ -151,18 +151,18 @@
         759
       ],
       "forrigeLabels": [
-        "4 24",
-        "5 24",
-        "6 24",
-        "7 24",
-        "8 24",
-        "9 24",
-        "0 24",
-        "1 24",
-        "2 24",
-        "1 25",
-        "2 25",
-        "3 25"
+        "Apr 24",
+        "Maj 24",
+        "Jun 24",
+        "Jul 24",
+        "Aug 24",
+        "Sep 24",
+        "Okt 24",
+        "Nov 24",
+        "Dec 24",
+        "Jan 25",
+        "Feb 25",
+        "Mar 25"
       ],
       "forrigeFtp": [
         788,
@@ -182,18 +182,18 @@
     "y11a02": {
       "navn": "Ressourceforløb",
       "labels": [
-        "4 25",
-        "5 25",
-        "6 25",
-        "7 25",
-        "8 25",
-        "9 25",
-        "0 25",
-        "1 25",
-        "2 25",
-        "1 26",
-        "2 26",
-        "3 26"
+        "Apr 25",
+        "Maj 25",
+        "Jun 25",
+        "Jul 25",
+        "Aug 25",
+        "Sep 25",
+        "Okt 25",
+        "Nov 25",
+        "Dec 25",
+        "Jan 26",
+        "Feb 26",
+        "Mar 26"
       ],
       "ftp": [
         190,
@@ -210,18 +210,18 @@
         180
       ],
       "forrigeLabels": [
-        "4 24",
-        "5 24",
-        "6 24",
-        "7 24",
-        "8 24",
-        "9 24",
-        "0 24",
-        "1 24",
-        "2 24",
-        "1 25",
-        "2 25",
-        "3 25"
+        "Apr 24",
+        "Maj 24",
+        "Jun 24",
+        "Jul 24",
+        "Aug 24",
+        "Sep 24",
+        "Okt 24",
+        "Nov 24",
+        "Dec 24",
+        "Jan 25",
+        "Feb 25",
+        "Mar 25"
       ],
       "forrigeFtp": [
         179,
@@ -241,18 +241,18 @@
     "y09a02": {
       "navn": "Ledighedsydelse",
       "labels": [
-        "4 25",
-        "5 25",
-        "6 25",
-        "7 25",
-        "8 25",
-        "9 25",
-        "0 25",
-        "1 25",
-        "2 25",
-        "1 26",
-        "2 26",
-        "3 26"
+        "Apr 25",
+        "Maj 25",
+        "Jun 25",
+        "Jul 25",
+        "Aug 25",
+        "Sep 25",
+        "Okt 25",
+        "Nov 25",
+        "Dec 25",
+        "Jan 26",
+        "Feb 26",
+        "Mar 26"
       ],
       "ftp": [
         74,
@@ -269,18 +269,18 @@
         67
       ],
       "forrigeLabels": [
-        "4 24",
-        "5 24",
-        "6 24",
-        "7 24",
-        "8 24",
-        "9 24",
-        "0 24",
-        "1 24",
-        "2 24",
-        "1 25",
-        "2 25",
-        "3 25"
+        "Apr 24",
+        "Maj 24",
+        "Jun 24",
+        "Jul 24",
+        "Aug 24",
+        "Sep 24",
+        "Okt 24",
+        "Nov 24",
+        "Dec 24",
+        "Jan 25",
+        "Feb 25",
+        "Mar 25"
       ],
       "forrigeFtp": [
         76,
@@ -300,18 +300,18 @@
     "y08a02": {
       "navn": "Fleksjob",
       "labels": [
-        "4 25",
-        "5 25",
-        "6 25",
-        "7 25",
-        "8 25",
-        "9 25",
-        "0 25",
-        "1 25",
-        "2 25",
-        "1 26",
-        "2 26",
-        "3 26"
+        "Apr 25",
+        "Maj 25",
+        "Jun 25",
+        "Jul 25",
+        "Aug 25",
+        "Sep 25",
+        "Okt 25",
+        "Nov 25",
+        "Dec 25",
+        "Jan 26",
+        "Feb 26",
+        "Mar 26"
       ],
       "ftp": [
         708,
@@ -328,18 +328,18 @@
         739
       ],
       "forrigeLabels": [
-        "4 24",
-        "5 24",
-        "6 24",
-        "7 24",
-        "8 24",
-        "9 24",
-        "0 24",
-        "1 24",
-        "2 24",
-        "1 25",
-        "2 25",
-        "3 25"
+        "Apr 24",
+        "Maj 24",
+        "Jun 24",
+        "Jul 24",
+        "Aug 24",
+        "Sep 24",
+        "Okt 24",
+        "Nov 24",
+        "Dec 24",
+        "Jan 25",
+        "Feb 25",
+        "Mar 25"
       ],
       "forrigeFtp": [
         682,
@@ -359,18 +359,18 @@
     "y12a02": {
       "navn": "Jobafklaringsforløb",
       "labels": [
-        "4 25",
-        "5 25",
-        "6 25",
-        "7 25",
-        "8 25",
-        "9 25",
-        "0 25",
-        "1 25",
-        "2 25",
-        "1 26",
-        "2 26",
-        "3 26"
+        "Apr 25",
+        "Maj 25",
+        "Jun 25",
+        "Jul 25",
+        "Aug 25",
+        "Sep 25",
+        "Okt 25",
+        "Nov 25",
+        "Dec 25",
+        "Jan 26",
+        "Feb 26",
+        "Mar 26"
       ],
       "ftp": [
         221,
@@ -387,18 +387,18 @@
         188
       ],
       "forrigeLabels": [
-        "4 24",
-        "5 24",
-        "6 24",
-        "7 24",
-        "8 24",
-        "9 24",
-        "0 24",
-        "1 24",
-        "2 24",
-        "1 25",
-        "2 25",
-        "3 25"
+        "Apr 24",
+        "Maj 24",
+        "Jun 24",
+        "Jul 24",
+        "Aug 24",
+        "Sep 24",
+        "Okt 24",
+        "Nov 24",
+        "Dec 24",
+        "Jan 25",
+        "Feb 25",
+        "Mar 25"
       ],
       "forrigeFtp": [
         253,
@@ -426,52 +426,52 @@
   },
   "analyse": {
     "y01a02": {
-      "overskrift": "A-dagpenge falder til 748 i marts efter stigning tidligere på året",
-      "tekst": "Antallet af modtagere af A-dagpenge er i marts opgjort til 748 helårspersoner. Dette markerer et fald på 8 personer sammenlignet med den foregående måned, men er fortsat 22 personer højere end niveauet for to måneder siden. Set over det seneste år er antallet samlet set steget med 22 helårspersoner. Udviklingen de seneste måneder viser en vis volatilitet, hvor marts-faldet bryder med den opadgående tendens set i starten af året. Sæsonmæssige variationer kan påvirke de månedlige udsving, men niveauet fremstår relativt stabilt i et længere tidsperspektiv. Retningen vurderes som værende stabiliserende efter en kortere periode med vækst."
+      "overskrift": "A-dagpenge falder til 748 i marts efter stigning i starten af året",
+      "tekst": "Antallet af modtagere af A-dagpenge udgør 748 fuldtidspersoner i marts 2026. Dette er et fald på 8 personer i forhold til februar, men en stigning på 22 personer sammenlignet med januar. Set over det seneste år er niveauet samlet set steget med 22 personer, hvilket indikerer en flad til svagt stigende tendens over en 12-måneders periode. Den kortsigtede udvikling viser en stabilisering efter de foregående måneders bevægelser. Der observeres ingen markante sæsonudsving i marts udover den mindre korrektion efter vinterperioden. Den overordnede retning vurderes som værende stabil på det nuværende niveau."
     },
     "y60a02": {
-      "overskrift": "Kontanthjælp stiger til 698 personer i marts trods fald det seneste år",
-      "tekst": "I marts er antallet af kontanthjælpsmodtagere opgjort til 698 helårspersoner. Der er tale om en stigning på 14 personer siden sidste måned og en samlet tilgang på 33 personer over de seneste to måneder. På trods af den aktuelle stigning ligger niveauet 34 personer lavere end for et år siden. Den kortsigtede udvikling viser således en opadgående tendens, der afviger fra det generelle fald i 12-måneders perspektivet. Dette kan indikere en ændring i tilgangen til ydelsen eller en opbremsning i afgangen i det tidlige forår. Den samlede retning peger på en aktuel stigning i antallet af modtagere."
+      "overskrift": "Kontanthjælpsmodtagere stiger til 698 i marts trods fald over det seneste år",
+      "tekst": "For kontanthjælp er antallet af helårspersoner opgjort til 698 i marts 2026. Det svarer til en stigning på 14 personer siden februar og en vækst på 33 personer over de seneste to måneder. På trods af den aktuelle stigning ligger niveauet 34 personer lavere end på samme tidspunkt sidste år. Udviklingen i de seneste to måneder bryder med den ellers langsigtede nedadgående trend for denne ydelsestype. Der ses et mønster med øget tilgang i det tidlige forår sammenlignet med de foregående vintermåneder. Den aktuelle retning i marts peger mod en kortsigtet stigning i sagsstammen."
     },
     "y07a02": {
-      "overskrift": "Sygedagpenge falder væsentligt til 759 helårspersoner i marts",
-      "tekst": "Antallet af helårspersoner på sygedagpenge er faldet til 759 i marts måned. Dette er en reduktion på 29 personer sammenlignet med måneden før og 32 færre end for to måneder siden. Den overordnede tendens det seneste år viser et markant fald på i alt 109 helårspersoner. Det systematiske fald gennem perioden peger på en vedvarende nedadgående trend i volumen for denne ydelsestype. Marts-tallene bekræfter denne retning og placerer ydelsen på det laveste niveau i den rullende 12-måneders periode. Den fremadrettede retning vurderes fortsat at være nedadgående."
+      "overskrift": "Markant fald i sygedagpenge til 759 fuldtidspersoner i marts",
+      "tekst": "Antallet af personer på sygedagpenge er opgjort til 759 i marts 2026, hvilket er 29 færre end i februar. Sammenlignet med januar er der tale om et fald på 32 personer i sagsstammen. Over det seneste år er antallet reduceret markant med 109 helårspersoner, svarende til et fald på cirka 10 procent. Dette understøtter en vedvarende nedadgående tendens gennem hele den rullende 12-måneders periode. Faldet i marts er større end de foregående måneders justeringer og indikerer en forstærket bevægelse. Udviklingen vurderes som fortsat nedadgående."
     },
     "y11a02": {
-      "overskrift": "Ressourceforløb fortsætter faldet til 180 helårspersoner i marts",
-      "tekst": "I marts var der 180 helårspersoner i ressourceforløb, hvilket er 6 færre end i den foregående måned. Sammenlignet med for to måneder siden er der tale om et fald på 17 personer. Over det seneste år er antallet af modtagere reduceret med i alt 13 helårspersoner. Udviklingen peger på en stabil afgang fra ordningen i de seneste måneder efter en periode med højere aktivitet. Faldet er mest udtalt på den korte bane, mens det årlige fald fremstår mere moderat. Retningen for ydelsen vurderes på nuværende tidspunkt at være svagt nedadgående."
+      "overskrift": "Ressourceforløb reduceret til 180 personer i marts efter jævnt fald",
+      "tekst": "Der var 180 fuldtidspersoner i ressourceforløb i marts 2026, hvilket er en nedgang på 6 personer fra februar. I forhold til januar er faldet på 17 personer, hvilket viser en tydelig reduktion i årets første kvartal. Set over det seneste år er antallet af modtagere faldet med 13 personer i alt. Data indikerer en stabil afgang fra ordningen, der har taget fart i begyndelsen af året efter en mere stabil periode. Der ses ingen tegn på pludselige stigninger eller ændrede mønstre i tilgangen. Retningen vurderes som værende moderat nedadgående."
     },
     "y09a02": {
-      "overskrift": "Ledighedsydelse stiger marginalt til 67 helårspersoner i marts måned",
-      "tekst": "Antallet af modtagere af ledighedsydelse udgør 67 helårspersoner i marts. Det svarer til en stigning på 7 personer i forhold til måneden før og 4 personer sammenlignet med to måneder tilbage. Set i forhold til samme måned sidste år er der tale om en næsten uændret status med et fald på kun én person. Ydelsen udviser generelt små udsving hen over året, og den aktuelle stigning ligger inden for de normale variationer. Den langsigtede trend fremstår stabil uden tegn på væsentlige strukturelle forskydninger i antallet af visiterede. Den overordnede retning vurderes som værende neutral."
+      "overskrift": "Ledighedsydelsen stiger til 67 personer i marts efter stabil periode",
+      "tekst": "Antallet af modtagere af ledighedsydelse udgjorde 67 personer i marts 2026. Dette repræsenterer en stigning på 7 personer sammenlignet med februar og 4 flere end i januar. Over det seneste år er niveauet stort set uændret med et marginalt fald på kun én person. Den månedlige ændring i marts er relativt stor for denne ydelsestype, men skal ses i lyset af det lave samlede antal modtagere. Udviklingen viser en mindre forskydning inden for et ellers meget stabilt og fastlåst leje gennem det seneste år. Den aktuelle retning er svagt stigende."
     },
     "y08a02": {
-      "overskrift": "Antallet af personer i fleksjob stiger til 739 i marts",
-      "tekst": "Ved udgangen af marts er antallet af personer i fleksjob opgjort til 739 helårspersoner. Dette er en mindre stigning på 2 personer siden sidste måned og en tilgang på 10 personer over de seneste to måneder. Over en 12-måneders periode er antallet steget med 34 personer, hvilket markerer en stabil vækst i ordningen. Udviklingen afspejler en vedvarende tendens til, at flere borgere visiteres til og fastholdes i fleksjob-ordningen. Der ses ingen tegn på opbremsning i denne tilgang på nuværende tidspunkt i de foreliggende data. Den overordnede retning vurderes som værende jævnt stigende."
+      "overskrift": "Fleksjob fortsætter stigning til 739 fuldtidspersoner i marts",
+      "tekst": "Antallet af personer i fleksjob er opgjort til 739 i marts 2026. Det er en stigning på 2 personer siden februar og en samlet vækst på 10 personer siden januar. Set over det seneste år er der sket en tilgang på 34 helårspersoner til ordningen, hvilket svarer til den generelle udvikling på området. Udviklingen afspejler en langsigtet og jævn vækst i antallet af visiterede til fleksjob i kommunen. Der er ikke tegn på sæsonmæssige udsving, men derimod en vedvarende strukturel trend. Retningen vurderes som værende fortsat svagt opadgående."
     },
     "y12a02": {
-      "overskrift": "Jobafklaringsforløb reduceret til 188 helårspersoner i marts",
-      "tekst": "Antallet af borgere i jobafklaringsforløb er i marts opgjort til 188 helårspersoner. Der er observeret et fald på 4 personer siden sidste måned og et tydeligt fald på 22 personer over de seneste to måneder. Set over det seneste år er antallet af modtagere faldet med 25 helårspersoner i alt. Den kortsigtede udvikling viser en acceleration i faldet sammenlignet med gennemsnittet for det forgangne år. Dette mønster kan indikere en effektiv afklaring og afgang til andre forsørgelsesformer eller beskæftigelse. Retningen for antallet af jobafklaringsforløb vurderes at være nedadgående."
+      "overskrift": "Færre i jobafklaringsforløb med et fald til 188 i marts",
+      "tekst": "I marts 2026 var der 188 fuldtidspersoner i jobafklaringsforløb, hvilket er 4 færre end måneden før. Sammenlignet med januar er faldet på 22 personer, hvilket markerer en tydelig reduktion i årets første kvartal. Over det seneste år er antallet af forløb faldet med 25 personer, hvilket svarer til en reduktion på 10 procent. Denne udvikling følger tendensen for de øvrige sygeopfølgningsydelser i Hvidovre Kommune. Der observeres en accelererende afgang i de seneste måneder sammenlignet med det foregående halve år. Den overordnede retning er nedadgående."
     },
     "y10a02": {
-      "overskrift": "Data ikke tilgængeligt for denne periode.",
-      "tekst": "Data ikke tilgængeligt for denne periode."
+      "overskrift": "Førtidspension marts 2026",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
     },
     "y85a02": {
-      "overskrift": "Data ikke tilgængeligt for denne periode.",
-      "tekst": "Data ikke tilgængeligt for denne periode."
+      "overskrift": "Øvrige ydelser marts 2026",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
     },
     "y13a02": {
-      "overskrift": "Data ikke tilgængeligt for denne periode.",
-      "tekst": "Data ikke tilgængeligt for denne periode."
+      "overskrift": "Øvrige ydelser marts 2026",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
     },
     "y40a02": {
-      "overskrift": "Data ikke tilgængeligt for denne periode.",
-      "tekst": "Data ikke tilgængeligt for denne periode."
+      "overskrift": "Øvrige ydelser marts 2026",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
     },
     "y28a02": {
-      "overskrift": "Data ikke tilgængeligt for denne periode.",
-      "tekst": "Data ikke tilgængeligt for denne periode."
+      "overskrift": "Øvrige ydelser marts 2026",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
     }
   }
 }
