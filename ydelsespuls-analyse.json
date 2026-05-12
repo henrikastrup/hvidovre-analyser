@@ -1,106 +1,69 @@
 {
   "genereret": "2026-05-12",
-  "senesteLabel": "-",
+  "senesteLabel": "3 26",
   "data": {
     "y01a02": {
       "navn": "A-dagpenge",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
-    },
-    "y60a02": {
-      "navn": "Kontanthjælp",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
-    },
-    "y07a02": {
-      "navn": "Sygedagpenge",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
-    },
-    "y11a02": {
-      "navn": "Ressourceforløb",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
-    },
-    "y09a02": {
-      "navn": "Ledighedsydelse",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
-    },
-    "y08a02": {
-      "navn": "Fleksjob",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
-    },
-    "y12a02": {
-      "navn": "Jobafklaringsforløb",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
-    },
-    "y10a02": {
-      "navn": "Førtidspension",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
-    },
-    "y85a02": {
-      "navn": "Tidlig pension",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
-    },
-    "y13a02": {
-      "navn": "Seniorpension",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
-    },
-    "y40a02": {
-      "navn": "Barselsdagpenge",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
-    },
-    "y28a02": {
-      "navn": "Efterløn",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
+      "labels": [
+        "4 25",
+        "5 25",
+        "6 25",
+        "7 25",
+        "8 25",
+        "9 25",
+        "0 25",
+        "1 25",
+        "2 25",
+        "1 26",
+        "2 26",
+        "3 26"
+      ],
+      "ftp": [
+        715,
+        693,
+        699,
+        716,
+        700,
+        687,
+        675,
+        639,
+        607,
+        726,
+        756,
+        748
+      ],
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        672,
+        655,
+        655,
+        644,
+        692,
+        650,
+        636,
+        622,
+        609,
+        714,
+        711,
+        726
+      ]
     }
   },
   "analyse": {
-    "overskrift": "Total mangel på opdaterede ydelsesdata for den seneste måned",
-    "tekst": "Den seneste månedsrapportering er markant ved et totalt fravær af opdaterede data for Hvidovre Kommunes ydelsesområder. Der er p.t. ingen tilgængelige tal for hverken førtidspension, a-dagpenge eller kontanthjælp, hvilket hindrer den sædvanlige økonomiske opfølgning. Dette datagab umuliggør en vurdering af udviklingen set i forhold til både den foregående måned og samme tidspunkt sidste år. Også de øvrige ydelser som sygedagpenge og fleksjob er uden friske registreringer, hvorfor eventuelle forskydninger i arbejdsmarkedstilknytningen ikke kan identificeres. Uden valide oplysninger om tilgangen til ydelserne kan forvaltningen ikke korrigere forventningerne til de budgetterede overførselsudgifter. Manglen på data betyder, at de seneste måneders tendenser på tværs af de vigtige ydelser ikke kan bekræftes eller afkræftes. Forvaltningen afventer en systemmæssig afklaring for at kunne levere en retvisende status til politikere og ledelse. Den samlede økonomiske retning for ydelsesområdet i Hvidovre henstår derfor uafklaret indtil næste opdatering."
+    "overskrift": "Stabilt niveau for A-dagpenge i marts trods manglende datagrundlag",
+    "tekst": "A-dagpengemodtagerne faldt med 8 personer til 748 i marts og udviser dermed stabilitet i forhold til februar. Over de seneste 12 måneder er antallet af forsikrede ledige steget med 22 personer. Datagrundlaget for de øvrige centrale indsatsområder, herunder y10a02 og sygedagpenge, er aktuelt utilgængeligt. Manglen på opdaterede tal for de øvrige vigtige ydelser vanskeliggør en samlet vurdering af dynamikken på tværs af forsørgelsestyperne. Der er ikke i det foreliggende materiale indikationer på markante forskydninger i borgernes forsørgelsesgrundlag. Den økonomiske opfølgning forudsætter derfor en efterfølgende analyse, når de resterende data indløber fra de centrale registre. Den samlede retning for marts måned vurderes som neutral med fokus på de forsikrede lediges mindre fald."
   }
 }
