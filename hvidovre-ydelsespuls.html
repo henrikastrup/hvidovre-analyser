@@ -369,11 +369,24 @@ function normaliserJSON(raw) {
     };
   });
 
-  // Parse samlet_analyse (er en JSON-string)
+  // Parse analyse — håndter både samlet og pr.-ydelsestype format
   let analyse = { overskrift: '—', tekst: 'Ingen analyse.' };
   try {
     const aRaw = raw.samlet_analyse || '{}';
-    analyse = typeof aRaw === 'string' ? JSON.parse(aRaw) : aRaw;
+    const parsed = typeof aRaw === 'string' ? JSON.parse(aRaw) : aRaw;
+    if (parsed.overskrift) {
+      // Samlet format: { overskrift, tekst }
+      analyse = parsed;
+    } else {
+      // Pr.-ydelsestype format: { y01a02: { overskrift, tekst }, ... }
+      const ydelser = Object.values(parsed);
+      if (ydelser.length > 0) {
+        analyse.overskrift = ydelser[0].overskrift || '—';
+        analyse.tekst = ydelser.map(y =>
+          (y.overskrift ? y.overskrift + ': ' : '') + (y.tekst || '')
+        ).join(' ');
+      }
+    }
   } catch(e) {}
 
   return {
@@ -659,7 +672,24 @@ function opdaterGraf() {
 function visAnalyse() {
   const sektion = document.getElementById('analyseSektion');
   if (!data?.analyse) { sektion.innerHTML = ''; return; }
-  const a = data.analyse;
+
+  let a = data.analyse;
+
+  // Håndter begge formater:
+  // Format A: { overskrift, tekst } — brug direkte
+  // Format B: { y01a02: { overskrift, tekst }, ... } — saml til én tekst
+  if (!a.overskrift && typeof a === 'object') {
+    const ydelser = Object.values(a).filter(v => v && v.tekst);
+    if (ydelser.length > 0) {
+      a = {
+        overskrift: ydelser[0].overskrift || 'Analyse',
+        tekst: ydelser.map(y =>
+          '<strong>' + (y.overskrift || '') + '</strong> ' + (y.tekst || '')
+        ).join('<br><br>')
+      };
+    }
+  }
+
   sektion.innerHTML = `<div class="analyse-panel">
     <div class="analyse-hdr">
       <div class="analyse-bar" style="background:var(--green)"></div>
