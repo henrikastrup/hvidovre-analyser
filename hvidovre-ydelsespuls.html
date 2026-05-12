@@ -100,6 +100,22 @@ main{padding:22px 48px 40px;max-width:1140px;}
 .sbtn.forrige-aar:not(.active):hover{border-color:var(--gold);color:var(--gold);}
 .tsep{width:1px;height:20px;background:var(--border);margin:0 3px;flex-shrink:0;}
 
+/* TABEL */
+.tbl-wrap{overflow-x:auto;margin-top:4px;}
+.data-tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
+.data-tbl th{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--muted);padding:9px 12px;text-align:right;
+  border-bottom:2px solid var(--border);white-space:nowrap;background:#faf8f4;}
+.data-tbl th:first-child{text-align:left;}
+.data-tbl td{padding:9px 12px;border-bottom:1px solid var(--border);
+  font-family:'DM Mono',monospace;text-align:right;color:var(--text);}
+.data-tbl td:first-child{text-align:left;font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:500;}
+.data-tbl tr:last-child td{border-bottom:none;}
+.data-tbl tr:hover td{background:rgba(26,77,46,.03);}
+.data-tbl td.pos{color:var(--green-mid);}
+.data-tbl td.neg{color:var(--red);}
+
 /* FORRIGE ÅR LEGENDE */
 .forrige-aar-info{
   display:none;align-items:center;gap:10px;
@@ -235,6 +251,12 @@ main{padding:22px 48px 40px;max-width:1140px;}
       </button>
       <div class="tsep"></div>
       <button class="sbtn ryd" onclick="nulstil()">✕ Ryd</button>
+      <div class="tsep"></div>
+      <span class="sel-lbl">Visning</span>
+      <div class="btn-group">
+        <button class="sbtn active" id="btnGraf" onclick="skiftVisning('graf')">Diagram</button>
+        <button class="sbtn" id="btnTabel" onclick="skiftVisning('tabel')">Tabel</button>
+      </div>
     </div>
 
     <!-- INFO-BOKS NÅR FORRIGE ÅR ER AKTIV -->
@@ -247,11 +269,19 @@ main{padding:22px 48px 40px;max-width:1140px;}
     <div class="ydelse-grid" id="kortGrid"></div>
 
     <!-- GRAF -->
-    <div class="canvas-wrap">
-      <canvas id="grafCanvas"></canvas>
-      <div class="tom-state" id="tomState">
-        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#8A8A7E" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        <p>Klik på en ydelsestype for at vise den</p>
+    <div id="grafArea">
+      <div class="canvas-wrap">
+        <canvas id="grafCanvas"></canvas>
+        <div class="tom-state" id="tomState">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#8A8A7E" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <p>Klik på en ydelsestype for at vise den</p>
+        </div>
+      </div>
+    </div>
+    <!-- TABEL -->
+    <div id="tabelArea" style="display:none">
+      <div class="tbl-wrap">
+        <table class="data-tbl"><thead id="tblHead"></thead><tbody id="tblBody"></tbody></table>
       </div>
     </div>
   </div>
@@ -604,6 +634,8 @@ function opdaterGraf() {
 
   const datasets = vis.length ? buildDatasets() : [];
 
+  if (aktivVisning === 'tabel') { byggTabel(); return; }
+
   if (grafChart) {
     grafChart.data.labels   = labels;
     grafChart.data.datasets = datasets;
@@ -736,6 +768,55 @@ function opdaterAnalyser() {
   }).join('');
 }
 // ── DOWNLOAD ──────────────────────────────────────────────────────────
+// ── GRAF / TABEL VISNING ──────────────────────────────────────────────
+let aktivVisning = 'graf';
+
+function skiftVisning(v) {
+  aktivVisning = v;
+  document.getElementById('btnGraf').classList.toggle('active', v === 'graf');
+  document.getElementById('btnTabel').classList.toggle('active', v === 'tabel');
+  document.getElementById('grafArea').style.display  = v === 'graf'  ? '' : 'none';
+  document.getElementById('tabelArea').style.display = v === 'tabel' ? '' : 'none';
+  if (v === 'tabel') byggTabel();
+}
+
+function byggTabel() {
+  const vis = TABEL_IDS.filter(id => aktive.has(id));
+  if (!vis.length || !data) {
+    document.getElementById('tblHead').innerHTML = '';
+    document.getElementById('tblBody').innerHTML =
+      '<tr><td colspan="99" style="color:var(--muted);padding:20px">Vælg en ydelsestype for at se data</td></tr>';
+    return;
+  }
+
+  // Hent labels fra første aktive ydelse
+  const labels = data.data[vis[0]]?.labels || [];
+
+  // Header
+  document.getElementById('tblHead').innerHTML =
+    '<tr><th>Ydelse</th>' + labels.map(l => `<th>${l}</th>`).join('') + '<th>Ændring</th></tr>';
+
+  // Rækker
+  document.getElementById('tblBody').innerHTML = vis.map(id => {
+    const m   = TABEL_META[id];
+    const ftp = data.data[id]?.ftp || [];
+    const n   = ftp.length;
+    const lv  = ftp[n-1];
+    const fv  = ftp.find(v => v != null);
+    const diff = lv != null && fv != null ? lv - fv : null;
+    const pct  = diff != null && fv ? Math.round(diff/fv*100) : null;
+    const dcl  = diff == null ? '' : diff < 0 ? 'pos' : diff > 0 ? 'neg' : '';
+    const dtxt = diff == null ? '—' :
+      (diff > 0 ? '▲ +' : '▼ ') + Math.abs(diff).toLocaleString('da-DK')
+      + (pct != null ? ` (${pct > 0 ? '+' : ''}${pct}%)` : '');
+    return `<tr>
+      <td style="color:${m.farve};font-weight:600">${m.navn}</td>
+      ${ftp.map(v => `<td>${v != null ? v.toLocaleString('da-DK') : '—'}</td>`).join('')}
+      <td class="${dcl}">${dtxt}</td>
+    </tr>`;
+  }).join('');
+}
+
 function download() {
   const b = new Blob([document.documentElement.outerHTML], { type: 'text/html;charset=utf-8' });
   const a = document.createElement('a');
