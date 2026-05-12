@@ -1,52 +1,295 @@
 {
-  "analyse": {
+  "genereret": "2026-05-12",
+  "senesteLabel": "3 26",
+  "data": {
     "y01a02": {
-      "overskrift": "A-dagpenge stiger til 720 i marts efter et dyk i februar",
-      "tekst": "I marts var der 720 fuldtidspersoner på A-dagpenge, hvilket er en stigning på 10 personer sammenlignet med februar. Niveauet ligger dog 10 personer lavere end i januar, hvor der blev registreret 730 modtagere. Gennem de seneste 12 måneder har antallet svinget mellem 680 og 740 helårspersoner, hvilket indikerer en stabil udvikling. Den seneste stigning i marts afspejler den normale overgang fra vintermånederne mod foråret. Der observeres ingen ekstraordinære udsving i perioden sammenlignet med tidligere år. Retningen vurderes som neutral med forventning om en stabilisering i det kommende kvartal."
+      "navn": "A-dagpenge",
+      "labels": [
+        "4 25",
+        "5 25",
+        "6 25",
+        "7 25",
+        "8 25",
+        "9 25",
+        "0 25",
+        "1 25",
+        "2 25",
+        "1 26",
+        "2 26",
+        "3 26"
+      ],
+      "ftp": [
+        715,
+        693,
+        699,
+        716,
+        700,
+        687,
+        675,
+        639,
+        607,
+        726,
+        756,
+        748
+      ],
+      "forrigeLabels": [],
+      "forrigeFtp": []
     },
     "y60a02": {
-      "overskrift": "Kontanthjælp falder til 450 i marts efter en jævn vinterperiode",
-      "tekst": "Marts-tallet for kontanthjælpsmodtagere viser 450 fuldtidspersoner, hvilket er et fald på 5 personer siden februar og 10 færre end i januar. Over det seneste rullende år er antallet faldet gradvist fra et toppunkt på 475 i den tidlige sommer. Dette mønster peger på en vedvarende strukturel reduktion i antallet af modtagere i Hvidovre Kommune. Der ses ikke betydelige sæsonudsving for denne ydelsestype i det nuværende datagrundlag. Reduktionen sker i et moderat tempo uden pludselige skift i visitationsmønstrene. Udviklingen vurderes som værende i en fortsat svagt nedadgående retning."
+      "navn": "Kontanthjælp",
+      "labels": [
+        "4 25",
+        "5 25",
+        "6 25",
+        "7 25",
+        "8 25",
+        "9 25",
+        "0 25",
+        "1 25",
+        "2 25",
+        "1 26",
+        "2 26",
+        "3 26"
+      ],
+      "ftp": [
+        723,
+        698,
+        669,
+        653,
+        635,
+        637,
+        648,
+        666,
+        674,
+        665,
+        684,
+        698
+      ],
+      "forrigeLabels": [],
+      "forrigeFtp": []
     },
     "y07a02": {
-      "overskrift": "Sygedagpenge falder til 580 i marts efter vinterens sæsonmæssige top",
-      "tekst": "Antallet af sygedagpengemodtagere faldt til 580 fuldtidspersoner i marts fra 600 i februar og 620 i januar. I løbet af de seneste 12 måneder har niveauet toppet i midten af vinteren, hvilket er sædvanligt for ydelsen. Faldet på i alt 40 personer over de sidste to måneder følger det forventede mønster efter afslutningen på influenzasæsonen. Data viser en tydelig sæsonafhængighed, som korrelerer med sygefraværet i tidligere år. Der er ikke observeret underliggende ændringer i fraværsstatistikken udover de sæsonbetingede faktorer. Retningen vurderes som stabil og følger den normale årscyklus."
+      "navn": "Sygedagpenge",
+      "labels": [
+        "4 25",
+        "5 25",
+        "6 25",
+        "7 25",
+        "8 25",
+        "9 25",
+        "0 25",
+        "1 25",
+        "2 25",
+        "1 26",
+        "2 26",
+        "3 26"
+      ],
+      "ftp": [
+        811,
+        767,
+        752,
+        730,
+        711,
+        724,
+        762,
+        756,
+        771,
+        791,
+        788,
+        759
+      ],
+      "forrigeLabels": [],
+      "forrigeFtp": []
     },
     "y11a02": {
-      "overskrift": "Ledighedsydelse stabiliseres på 140 fuldtidspersoner i marts",
-      "tekst": "Der var 140 personer på ledighedsydelse i marts, hvilket udgør en stigning på 2 personer sammenlignet med februar. Niveauet er dog lavere end i januar, hvor antallet var opgjort til 142 personer. Over det seneste år har gruppen ligget meget konstant omkring et gennemsnit på 140 modtagere. Stabiliteten indikerer en jævn balance mellem tilgangen af borgere og afgangen til konkrete fleksjob. Der ses ingen markante sæsonudsving eller tendenser til væsentlig vækst i gruppen. Udviklingen vurderes som neutral og forventes at forblive i det nuværende leje."
+      "navn": "Ressourceforløb",
+      "labels": [
+        "4 25",
+        "5 25",
+        "6 25",
+        "7 25",
+        "8 25",
+        "9 25",
+        "0 25",
+        "1 25",
+        "2 25",
+        "1 26",
+        "2 26",
+        "3 26"
+      ],
+      "ftp": [
+        190,
+        201,
+        199,
+        195,
+        201,
+        193,
+        197,
+        202,
+        198,
+        197,
+        186,
+        180
+      ],
+      "forrigeLabels": [],
+      "forrigeFtp": []
     },
     "y09a02": {
-      "overskrift": "Revalidering fastholdes på et lavt niveau med 12 personer i marts",
-      "tekst": "Ved udgangen af marts var 12 fuldtidspersoner i revalidering, hvilket er uændret i forhold til februar. Sammenlignet med januar er der tale om et fald på én enkelt person. Gennem de seneste 12 måneder har antallet ligget stabilt i det snævre interval mellem 10 og 15 personer. Denne ydelsestype anvendes i begrænset omfang, hvilket afspejles i de meget små månedlige forskydninger. Der er ikke tegn på ændret administrativ praksis eller nye tendenser i visitationerne til området. Udviklingen vurderes at fortsætte på dette lave og stabile niveau."
+      "navn": "Ledighedsydelse",
+      "labels": [
+        "4 25",
+        "5 25",
+        "6 25",
+        "7 25",
+        "8 25",
+        "9 25",
+        "0 25",
+        "1 25",
+        "2 25",
+        "1 26",
+        "2 26",
+        "3 26"
+      ],
+      "ftp": [
+        74,
+        73,
+        67,
+        63,
+        58,
+        62,
+        59,
+        67,
+        67,
+        63,
+        60,
+        67
+      ],
+      "forrigeLabels": [],
+      "forrigeFtp": []
     },
     "y08a02": {
-      "overskrift": "Ressourceforløb stiger marginalt til 195 fuldtidspersoner i marts",
-      "tekst": "I marts var der 195 fuldtidspersoner i ressourceforløb, hvilket er 3 flere end i februar og 5 flere end i januar. Gennem de seneste 12 måneder har der været en svagt stigende tendens fra et startniveau på 185. Denne udvikling følger den generelle tendens, hvor flere borgere visiteres til længerevarende afklaringsforløb. Der er ingen indikationer på sæsonbetingede udsving, da ydelsen styres af komplekse visitationsforløb. Stabiliteten i månedstallene tyder på en fastgjort praksis i det kommunale visitationsudvalg. Retningen vurderes som værende i svag stigning."
+      "navn": "Fleksjob",
+      "labels": [
+        "4 25",
+        "5 25",
+        "6 25",
+        "7 25",
+        "8 25",
+        "9 25",
+        "0 25",
+        "1 25",
+        "2 25",
+        "1 26",
+        "2 26",
+        "3 26"
+      ],
+      "ftp": [
+        708,
+        711,
+        716,
+        716,
+        717,
+        719,
+        720,
+        721,
+        723,
+        729,
+        737,
+        739
+      ],
+      "forrigeLabels": [],
+      "forrigeFtp": []
     },
     "y12a02": {
-      "overskrift": "Jobafklaringsforløb falder til 210 i marts efter en stabil periode",
-      "tekst": "Antallet af personer i jobafklaringsforløb er opgjort til 210 i marts, hvilket er et fald på 5 ift. februar og 10 ift. januar. I løbet af det seneste rullende år har niveauet svinget mellem 205 og 225 fuldtidspersoner. Dette vidner om et stabilt flow af borgere ind og ud af ordningen uden større ophobninger. De seneste måneders fald ligger inden for den forventede statistiske varians for området. Der er ikke observeret væsentlige ændringer i visitationstakten eller den gennemsnitlige varighed af forløbene. Den fremtidige retning vurderes som neutral og stabil."
+      "navn": "Jobafklaringsforløb",
+      "labels": [
+        "4 25",
+        "5 25",
+        "6 25",
+        "7 25",
+        "8 25",
+        "9 25",
+        "0 25",
+        "1 25",
+        "2 25",
+        "1 26",
+        "2 26",
+        "3 26"
+      ],
+      "ftp": [
+        221,
+        218,
+        227,
+        221,
+        227,
+        221,
+        226,
+        225,
+        224,
+        210,
+        192,
+        188
+      ],
+      "forrigeLabels": [],
+      "forrigeFtp": []
     },
     "y10a02": {
-      "overskrift": "Fleksjob fortsætter den jævne stigning til 1.100 personer i marts",
-      "tekst": "Antallet af personer i fleksjob er opgjort til 1.100 i marts, hvilket er en stigning på 5 ift. februar og 10 ift. januar. Over det seneste rullende år er antallet steget fra 1.050, hvilket svarer til en jævn tilgang gennem hele perioden. Den konstante vækst afspejler en strukturel udvikling mod flere visiterede til ordningen i kommunen. Der ses ingen betydelige månedlige udsving, hvilket indikerer en stabil fastholdelse af borgere i ordningen. Fleksjobområdet er ikke i væsentlig grad påvirket af kortsigtede sæsonudsving på arbejdsmarkedet. Udviklingen vurderes at fortsætte i en jævn opadgående retning."
+      "navn": "Førtidspension",
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
+    }
+  },
+  "analyse": {
+    "y01a02": {
+      "overskrift": "A-dagpenge falder til 748 helårspersoner i marts efter tidligere stigning",
+      "tekst": "Antallet af modtagere af A-dagpenge udgør 748 helårspersoner i den seneste opgørelse. Dette svarer til et fald på 8 personer sammenlignet med måneden før, mens niveauet fortsat er 22 personer højere end for to måneder siden. Set over den rullende 12-måneders periode er der tale om mindre fluktuationer omkring et stabilt gennemsnit. Den seneste måneds fald bryder med den kortsigtede stigning, der blev observeret i den foregående måned. Mønsteret tyder på en stabilisering i ledighedstallene efter en periode med svag vækst. Den overordnede tendens peger på et relativt uforandret niveau for forsikrede ledige."
+    },
+    "y60a02": {
+      "overskrift": "Kontanthjælp stiger til 698 helårspersoner med en stigning på 14 personer",
+      "tekst": "Niveauet for kontanthjælpsmodtagere er steget til 698 helårspersoner i den seneste måned. Det er 14 flere end måneden før og 33 flere end for to måneder siden. Denne udvikling placerer ydelsesområdet i den høje ende af det seneste års interval. Der observeres en vedvarende opadgående tendens gennem det seneste kvartal, hvilket adskiller sig fra de mere fluktuerende bevægelser tidligere i perioden. Den samlede tilgang indikerer en øget volumen på området sammenlignet med det foregående kvartal. Den overordnede retning for kontanthjælpsområdet vurderes aktuelt at være moderat stigende."
+    },
+    "y07a02": {
+      "overskrift": "Markant fald i sygedagpenge til 759 helårspersoner i marts",
+      "tekst": "Antallet af sygedagpengemodtagere falder i den seneste måned med 29 helårspersoner til i alt 759. Sammenlignet med niveauet for to måneder siden er der tale om en reduktion på 32 personer. Dette fald markerer en afvigelse fra de foregående måneder, hvor antallet lå stabilt omkring 790 personer. Den nedadgående bevægelse i marts kan indikere en afslutning på en belastningsperiode, der ofte ses i vintermånederne. Udviklingen i den seneste måned trækker det samlede gennemsnit nedad for 12-måneders perioden. Den nuværende retning peger på et faldende forbrug af sygedagpenge."
+    },
+    "y11a02": {
+      "overskrift": "Ressourceforløb fortsætter faldet til 180 personer i seneste måned",
+      "tekst": "For ydelsestypen ressourceforløb er antallet opgjort til 180 helårspersoner i marts. Der er tale om en reduktion på 6 personer i forhold til sidste måned og 17 færre end for to måneder siden. Niveauet er dermed det laveste observeret inden for de seneste måneder af den rullende 12-måneders periode. Den gradvise reduktion tyder på en kontinuerlig afgang fra ordningen, som overstiger tilgangen af nye borgere. Udviklingen fremstår som en stabil tendens frem for en isoleret hændelse over tid. Retningen for ressourceforløb vurderes at være fortsat svagt nedadgående."
+    },
+    "y09a02": {
+      "overskrift": "Ledighedsydelse stiger til 67 personer efter en stigning på 7",
+      "tekst": "Antallet af modtagere af ledighedsydelse er opgjort til 67 helårspersoner i den seneste måned. Dette er en stigning på 7 personer sammenlignet med sidste måned og en stigning på 4 i forhold til for to måneder siden. Niveauet svinger fortsat inden for et snævert interval, hvilket er karakteristisk for ydelsens volumen i kommunen. Selvom der er tale om en procentvis stigning, er de absolutte tal fortsat lave set i forhold til de øvrige ydelsesområder. Mønsteret viser ingen entydig trend, men snarere mindre løbende justeringer i visitation og jobstart. Den overordnede retning for ledighedsydelsen vurderes at være stabil."
+    },
+    "y08a02": {
+      "overskrift": "Svag stigning i antallet af personer i fleksjob til 739",
+      "tekst": "Antallet af helårspersoner i fleksjob udgør 739 i den seneste opgørelse. Dette dækker over en mindre stigning på 2 personer i forhold til sidste måned og en stigning på 10 personer over de seneste to måneder. Udviklingen afspejler en langsigtet tendens med en stabil eller svagt stigende volumen på fleksjobområdet. De små månedlige forskydninger tyder på en jævn balance mellem tilgang fra visitationsprocessen og afgang til andre ordninger. Fleksjobområdet udgør fortsat en væsentlig og stabil del af de kommunale ydelser. Retningen for fleksjobområdet vurderes at være stabil med en svag positiv vækst."
+    },
+    "y12a02": {
+      "overskrift": "Jobafklaringsforløb falder til 188 helårspersoner i marts måned",
+      "tekst": "I marts er antallet af personer i jobafklaringsforløb faldet til 188 helårspersoner. Det er en reduktion på 4 personer i forhold til måneden før og 22 personer færre end for to måneder siden. Niveauet er faldet markant over det seneste kvartal og ligger nu i den lave ende af den 12-måneders periode. Denne udvikling kan hænge sammen med sagsflowet og afslutningen af forløb mod enten raskmelding eller ressourceforløb. Der ses en tydelig nedadgående trend i tallene for den seneste periode. Den aktuelle retning for jobafklaringsforløb vurderes at være nedadgående."
+    },
+    "y10a02": {
+      "overskrift": ": Data ikke tilgængeligt for denne periode.",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
     },
     "y85a02": {
-      "overskrift": "Førtidspension stiger til 2.850 i marts i takt med befolkningsudviklingen",
-      "tekst": "I marts modtog 2.850 personer førtidspension, hvilket er en stigning på 5 personer ift. februar og 10 ift. januar. Set over de seneste 12 måneder er bestanden vokset marginalt fra 2.830 personer. Denne jævne stigning følger de demografiske fremskrivninger og den løbende tilgang af nye modtagere. Da der er tale om en varig ydelse, er de månedlige ændringer typisk små og uden store udsving. Der ses ingen tegn på ændret visitationspraksis i de seneste måneders opgørelser. Retningen vurderes som stabil med en fortsat svagt opadgående tendens."
+      "overskrift": ": Data ikke tilgængeligt for denne periode.",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
     },
     "y13a02": {
-      "overskrift": "Seniorpension stiger til 85 personer i marts efter jævn tilgang",
-      "tekst": "Antallet af modtagere af seniorpension steg til 85 fuldtidspersoner i marts, en stigning på 2 fra februar og 5 fra januar. Over det seneste år er der observeret en løbende tilgang af borgere til ordningen i kommunen. Stigningen afspejler en national tendens, hvor flere borgere søger og tilkendes ydelsen frem for andre ordninger. Der er tale om en jævn vækst uden pludselige hop i datagrundlaget for de enkelte måneder. Mønsteret peger på en modning af ordningen i takt med et øget kendskab blandt borgerne. Udviklingen vurderes at fortsætte med en svag opadgående retning."
+      "overskrift": ": Data ikke tilgængeligt for denne periode.",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
     },
     "y40a02": {
-      "overskrift": "Tidlig pension udgør 65 personer i marts med minimal ændring",
-      "tekst": "I marts modtog 65 personer tidlig pension, hvilket er én person mere end i februar og to flere end i januar. Gennem det seneste rullende år har antallet af modtagere vist en meget svag, men stabil opadgående kurve. Den beskedne vækst tyder på en jævn indfasning af ydelsen blandt de berettigede årgange i Hvidovre. Der ses ingen sæsonmæssige variationer, da tilgangen er styret af alder og anciennitet på arbejdsmarkedet. Data indikerer en stabil konsolidering af ydelsesgruppen i kommunen. Retningen vurderes som fortsat stabil med meget små månedlige forskydninger."
+      "overskrift": ": Data ikke tilgængeligt for denne periode.",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
     },
     "y28a02": {
-      "overskrift": "Efterløn falder til 310 personer i marts som led i langsigtet trend",
-      "tekst": "I marts modtog 310 personer efterløn, hvilket er et fald på 5 i forhold til februar og 10 færre end i januar. Set over de seneste 12 måneder er antallet faldet støt fra et niveau omkring 350 modtagere. Udviklingen er i tråd med den gradvise forhøjelse af efterlønsalderen, som reducerer den samlede bestand. Der ses ingen tegn på sæsonmæssige variationer i afgangen fra ordningen i Hvidovre. Faldet i marts bekræfter den langsigtede tendens, hvor færre borgere benytter ordningen sammenlignet med tidligere. Den fremtidige retning vurderes som fortsat nedadgående."
+      "overskrift": ": Data ikke tilgængeligt for denne periode.",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
     }
   }
 }
