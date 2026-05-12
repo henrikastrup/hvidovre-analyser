@@ -1,6 +1,6 @@
 {
   "genereret": "2026-05-12",
-  "senesteLabel": "3 26",
+  "senesteLabel": "-",
   "data": {
     "y01a02": {
       "navn": "A-dagpenge",
@@ -12,121 +12,19 @@
     },
     "y60a02": {
       "navn": "Kontanthjælp",
-      "labels": [
-        "4 25",
-        "5 25",
-        "6 25",
-        "7 25",
-        "8 25",
-        "9 25",
-        "0 25",
-        "1 25",
-        "2 25",
-        "1 26",
-        "2 26",
-        "3 26"
-      ],
-      "ftp": [
-        723,
-        698,
-        669,
-        653,
-        635,
-        637,
-        648,
-        666,
-        674,
-        665,
-        684,
-        698
-      ],
-      "forrigeLabels": [
-        "4 24",
-        "5 24",
-        "6 24",
-        "7 24",
-        "8 24",
-        "9 24",
-        "0 24",
-        "1 24",
-        "2 24",
-        "1 25",
-        "2 25",
-        "3 25"
-      ],
-      "forrigeFtp": [
-        794,
-        786,
-        763,
-        740,
-        739,
-        730,
-        732,
-        731,
-        731,
-        721,
-        732,
-        732
-      ]
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
     },
     "y07a02": {
       "navn": "Sygedagpenge",
-      "labels": [
-        "4 25",
-        "5 25",
-        "6 25",
-        "7 25",
-        "8 25",
-        "9 25",
-        "0 25",
-        "1 25",
-        "2 25",
-        "1 26",
-        "2 26",
-        "3 26"
-      ],
-      "ftp": [
-        811,
-        767,
-        752,
-        730,
-        711,
-        724,
-        762,
-        756,
-        771,
-        791,
-        788,
-        759
-      ],
-      "forrigeLabels": [
-        "4 24",
-        "5 24",
-        "6 24",
-        "7 24",
-        "8 24",
-        "9 24",
-        "0 24",
-        "1 24",
-        "2 24",
-        "1 25",
-        "2 25",
-        "3 25"
-      ],
-      "forrigeFtp": [
-        788,
-        778,
-        765,
-        711,
-        746,
-        738,
-        802,
-        831,
-        827,
-        844,
-        862,
-        868
-      ]
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
     },
     "y11a02": {
       "navn": "Ressourceforløb",
@@ -170,121 +68,19 @@
     },
     "y85a02": {
       "navn": "Tidlig pension",
-      "labels": [
-        "4 25",
-        "5 25",
-        "6 25",
-        "7 25",
-        "8 25",
-        "9 25",
-        "0 25",
-        "1 25",
-        "2 25",
-        "1 26",
-        "2 26",
-        "3 26"
-      ],
-      "ftp": [
-        108,
-        102,
-        100,
-        91,
-        88,
-        89,
-        88,
-        82,
-        81,
-        76,
-        76,
-        72
-      ],
-      "forrigeLabels": [
-        "4 24",
-        "5 24",
-        "6 24",
-        "7 24",
-        "8 24",
-        "9 24",
-        "0 24",
-        "1 24",
-        "2 24",
-        "1 25",
-        "2 25",
-        "3 25"
-      ],
-      "forrigeFtp": [
-        131,
-        128,
-        128,
-        126,
-        120,
-        122,
-        116,
-        114,
-        113,
-        122,
-        117,
-        113
-      ]
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
     },
     "y13a02": {
       "navn": "Seniorpension",
-      "labels": [
-        "4 25",
-        "5 25",
-        "6 25",
-        "7 25",
-        "8 25",
-        "9 25",
-        "0 25",
-        "1 25",
-        "2 25",
-        "1 26",
-        "2 26",
-        "3 26"
-      ],
-      "ftp": [
-        275,
-        274,
-        273,
-        269,
-        268,
-        267,
-        259,
-        260,
-        258,
-        256,
-        250,
-        241
-      ],
-      "forrigeLabels": [
-        "4 24",
-        "5 24",
-        "6 24",
-        "7 24",
-        "8 24",
-        "9 24",
-        "0 24",
-        "1 24",
-        "2 24",
-        "1 25",
-        "2 25",
-        "3 25"
-      ],
-      "forrigeFtp": [
-        273,
-        273,
-        276,
-        277,
-        275,
-        276,
-        275,
-        281,
-        281,
-        282,
-        277,
-        278
-      ]
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
     },
     "y40a02": {
       "navn": "Barselsdagpenge",
@@ -304,7 +100,7 @@
     }
   },
   "analyse": {
-    "overskrift": "Udvikling i forsørgelsesydelser i marts 2026 med 759 sygedagpengemodtagere",
-    "tekst": "I marts 2026 er antallet af modtagere af kontanthjælp opgjort til 698 personer, hvilket svarer til en stigning på 14 personer siden februar. Antallet af modtagere af sygedagpenge udgør 759 personer, hvilket er et fald på 29 personer i forhold til den seneste måned. Over de seneste 12 måneder ses en nedadgående tendens på kontanthjælpsområdet med en reduktion på i alt 34 personer. Sygedagpengeområdet viser ligeledes et fald over det seneste år med 109 færre modtagere sammenlignet med samme periode året før. For de øvrige ydelser ses 241 borgere på seniorpension og 72 på tidlig pension, hvilket er fald på henholdsvis 9 og 4 personer i marts måned. Udviklingen over de seneste 12 måneder for disse tilbagetrækningsydelser viser samlede fald på henholdsvis 37 og 41 personer. Da data for jobafklarings- og ressourceforløb ikke er tilgængelige, kan de specifikke flowmønstre mellem sygdomsforløb og de øvrige indsatsområder ikke dokumenteres. Fraværet af data på a-dagpenge og førtidspension begrænser muligheden for en fuldstændig analyse af det samlede forsørgelsesbillede i kommunen. Den overordnede retning for forsørgelsesniveauet i Hvidovre Kommune er for de tilgængelige ydelsesområder faldende over den seneste 12-måneders periode."
+    "overskrift": "Total mangel på opdaterede ydelsesdata for den seneste måned",
+    "tekst": "Den seneste månedsrapportering er markant ved et totalt fravær af opdaterede data for Hvidovre Kommunes ydelsesområder. Der er p.t. ingen tilgængelige tal for hverken førtidspension, a-dagpenge eller kontanthjælp, hvilket hindrer den sædvanlige økonomiske opfølgning. Dette datagab umuliggør en vurdering af udviklingen set i forhold til både den foregående måned og samme tidspunkt sidste år. Også de øvrige ydelser som sygedagpenge og fleksjob er uden friske registreringer, hvorfor eventuelle forskydninger i arbejdsmarkedstilknytningen ikke kan identificeres. Uden valide oplysninger om tilgangen til ydelserne kan forvaltningen ikke korrigere forventningerne til de budgetterede overførselsudgifter. Manglen på data betyder, at de seneste måneders tendenser på tværs af de vigtige ydelser ikke kan bekræftes eller afkræftes. Forvaltningen afventer en systemmæssig afklaring for at kunne levere en retvisende status til politikere og ledelse. Den samlede økonomiske retning for ydelsesområdet i Hvidovre henstår derfor uafklaret indtil næste opdatering."
   }
 }
