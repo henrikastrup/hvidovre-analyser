@@ -60,10 +60,302 @@
         711,
         726
       ]
+    },
+    "y60a02": {
+      "navn": "Kontanthjælp",
+      "labels": [
+        "4 25",
+        "5 25",
+        "6 25",
+        "7 25",
+        "8 25",
+        "9 25",
+        "0 25",
+        "1 25",
+        "2 25",
+        "1 26",
+        "2 26",
+        "3 26"
+      ],
+      "ftp": [
+        723,
+        698,
+        669,
+        653,
+        635,
+        637,
+        648,
+        666,
+        674,
+        665,
+        684,
+        698
+      ],
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        794,
+        786,
+        763,
+        740,
+        739,
+        730,
+        732,
+        731,
+        731,
+        721,
+        732,
+        732
+      ]
+    },
+    "y07a02": {
+      "navn": "Sygedagpenge",
+      "labels": [
+        "4 25",
+        "5 25",
+        "6 25",
+        "7 25",
+        "8 25",
+        "9 25",
+        "0 25",
+        "1 25",
+        "2 25",
+        "1 26",
+        "2 26",
+        "3 26"
+      ],
+      "ftp": [
+        811,
+        767,
+        752,
+        730,
+        711,
+        724,
+        762,
+        756,
+        771,
+        791,
+        788,
+        759
+      ],
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        788,
+        778,
+        765,
+        711,
+        746,
+        738,
+        802,
+        831,
+        827,
+        844,
+        862,
+        868
+      ]
+    },
+    "y11a02": {
+      "navn": "Ressourceforløb",
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
+    },
+    "y09a02": {
+      "navn": "Ledighedsydelse",
+      "labels": [
+        "4 25",
+        "5 25",
+        "6 25",
+        "7 25",
+        "8 25",
+        "9 25",
+        "0 25",
+        "1 25",
+        "2 25",
+        "1 26",
+        "2 26",
+        "3 26"
+      ],
+      "ftp": [
+        74,
+        73,
+        67,
+        63,
+        58,
+        62,
+        59,
+        67,
+        67,
+        63,
+        60,
+        67
+      ],
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        76,
+        69,
+        60,
+        60,
+        65,
+        64,
+        63,
+        59,
+        57,
+        56,
+        59,
+        68
+      ]
+    },
+    "y08a02": {
+      "navn": "Fleksjob",
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
+    },
+    "y12a02": {
+      "navn": "Jobafklaringsforløb",
+      "labels": [
+        "4 25",
+        "5 25",
+        "6 25",
+        "7 25",
+        "8 25",
+        "9 25",
+        "0 25",
+        "1 25",
+        "2 25",
+        "1 26",
+        "2 26",
+        "3 26"
+      ],
+      "ftp": [
+        221,
+        218,
+        227,
+        221,
+        227,
+        221,
+        226,
+        225,
+        224,
+        210,
+        192,
+        188
+      ],
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        253,
+        260,
+        249,
+        233,
+        233,
+        227,
+        235,
+        227,
+        213,
+        227,
+        220,
+        213
+      ]
+    },
+    "y10a02": {
+      "navn": "Førtidspension",
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
+    },
+    "y85a02": {
+      "navn": "Tidlig pension",
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
+    },
+    "y13a02": {
+      "navn": "Seniorpension",
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
+    },
+    "y40a02": {
+      "navn": "Barselsdagpenge",
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
+    },
+    "y28a02": {
+      "navn": "Efterløn",
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
     }
   },
   "analyse": {
-    "overskrift": "Stabilt niveau for A-dagpenge i marts trods manglende datagrundlag",
-    "tekst": "A-dagpengemodtagerne faldt med 8 personer til 748 i marts og udviser dermed stabilitet i forhold til februar. Over de seneste 12 måneder er antallet af forsikrede ledige steget med 22 personer. Datagrundlaget for de øvrige centrale indsatsområder, herunder y10a02 og sygedagpenge, er aktuelt utilgængeligt. Manglen på opdaterede tal for de øvrige vigtige ydelser vanskeliggør en samlet vurdering af dynamikken på tværs af forsørgelsestyperne. Der er ikke i det foreliggende materiale indikationer på markante forskydninger i borgernes forsørgelsesgrundlag. Den økonomiske opfølgning forudsætter derfor en efterfølgende analyse, når de resterende data indløber fra de centrale registre. Den samlede retning for marts måned vurderes som neutral med fokus på de forsikrede lediges mindre fald."
+    "overskrift": "Markant fald i sygedagpenge og stigning i kontanthjælp i marts",
+    "tekst": "Sygedagpengeområdet faldt med 29 personer i marts til 759 modtagere. Denne ydelse er nu reduceret med 109 personer sammenlignet med samme måned sidste år. Kontanthjælpsområdet voksede med 14 personer til i alt 698 modtagere i den seneste periode. Sammenlignet med marts sidste år er der dog fortsat 34 færre på kontanthjælp. A-dagpengebestanden udgør 748 personer efter et fald på otte i marts, men ligger 22 personer over niveauet fra sidste år. Udviklingen i jobafklaringsforløb følger tendensen fra sygedagpenge med et fald på 25 personer over det seneste år. Ledighedsydelsen steg med syv personer til 67 i marts måned. Den samlede overførselsbestand i marts peger mod færre sygemeldte og en generel stabilisering af de øvrige ydelsesgrupper."
   }
 }
