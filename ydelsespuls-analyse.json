@@ -32,8 +32,34 @@
         756,
         748
       ],
-      "forrigeLabels": [],
-      "forrigeFtp": []
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        672,
+        655,
+        655,
+        644,
+        692,
+        650,
+        636,
+        622,
+        609,
+        714,
+        711,
+        726
+      ]
     },
     "y60a02": {
       "navn": "Kontanthjælp",
@@ -65,8 +91,34 @@
         684,
         698
       ],
-      "forrigeLabels": [],
-      "forrigeFtp": []
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        794,
+        786,
+        763,
+        740,
+        739,
+        730,
+        732,
+        731,
+        731,
+        721,
+        732,
+        732
+      ]
     },
     "y07a02": {
       "navn": "Sygedagpenge",
@@ -98,8 +150,34 @@
         788,
         759
       ],
-      "forrigeLabels": [],
-      "forrigeFtp": []
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        788,
+        778,
+        765,
+        711,
+        746,
+        738,
+        802,
+        831,
+        827,
+        844,
+        862,
+        868
+      ]
     },
     "y11a02": {
       "navn": "Ressourceforløb",
@@ -131,8 +209,34 @@
         186,
         180
       ],
-      "forrigeLabels": [],
-      "forrigeFtp": []
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        179,
+        179,
+        175,
+        171,
+        174,
+        178,
+        184,
+        184,
+        193,
+        196,
+        198,
+        193
+      ]
     },
     "y09a02": {
       "navn": "Ledighedsydelse",
@@ -164,8 +268,34 @@
         60,
         67
       ],
-      "forrigeLabels": [],
-      "forrigeFtp": []
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        76,
+        69,
+        60,
+        60,
+        65,
+        64,
+        63,
+        59,
+        57,
+        56,
+        59,
+        68
+      ]
     },
     "y08a02": {
       "navn": "Fleksjob",
@@ -197,8 +327,34 @@
         737,
         739
       ],
-      "forrigeLabels": [],
-      "forrigeFtp": []
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        682,
+        684,
+        699,
+        697,
+        698,
+        707,
+        705,
+        714,
+        719,
+        712,
+        707,
+        705
+      ]
     },
     "y12a02": {
       "navn": "Jobafklaringsforløb",
@@ -230,8 +386,34 @@
         192,
         188
       ],
-      "forrigeLabels": [],
-      "forrigeFtp": []
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        253,
+        260,
+        249,
+        233,
+        233,
+        227,
+        235,
+        227,
+        213,
+        227,
+        220,
+        213
+      ]
     },
     "y10a02": {
       "navn": "Førtidspension",
@@ -244,52 +426,52 @@
   },
   "analyse": {
     "y01a02": {
-      "overskrift": "A-dagpenge falder til 748 helårspersoner i marts efter tidligere stigning",
-      "tekst": "Antallet af modtagere af A-dagpenge udgør 748 helårspersoner i den seneste opgørelse. Dette svarer til et fald på 8 personer sammenlignet med måneden før, mens niveauet fortsat er 22 personer højere end for to måneder siden. Set over den rullende 12-måneders periode er der tale om mindre fluktuationer omkring et stabilt gennemsnit. Den seneste måneds fald bryder med den kortsigtede stigning, der blev observeret i den foregående måned. Mønsteret tyder på en stabilisering i ledighedstallene efter en periode med svag vækst. Den overordnede tendens peger på et relativt uforandret niveau for forsikrede ledige."
+      "overskrift": "A-dagpenge falder til 748 i marts efter stigning tidligere på året",
+      "tekst": "Antallet af modtagere af A-dagpenge er i marts opgjort til 748 helårspersoner. Dette markerer et fald på 8 personer sammenlignet med den foregående måned, men er fortsat 22 personer højere end niveauet for to måneder siden. Set over det seneste år er antallet samlet set steget med 22 helårspersoner. Udviklingen de seneste måneder viser en vis volatilitet, hvor marts-faldet bryder med den opadgående tendens set i starten af året. Sæsonmæssige variationer kan påvirke de månedlige udsving, men niveauet fremstår relativt stabilt i et længere tidsperspektiv. Retningen vurderes som værende stabiliserende efter en kortere periode med vækst."
     },
     "y60a02": {
-      "overskrift": "Kontanthjælp stiger til 698 helårspersoner med en stigning på 14 personer",
-      "tekst": "Niveauet for kontanthjælpsmodtagere er steget til 698 helårspersoner i den seneste måned. Det er 14 flere end måneden før og 33 flere end for to måneder siden. Denne udvikling placerer ydelsesområdet i den høje ende af det seneste års interval. Der observeres en vedvarende opadgående tendens gennem det seneste kvartal, hvilket adskiller sig fra de mere fluktuerende bevægelser tidligere i perioden. Den samlede tilgang indikerer en øget volumen på området sammenlignet med det foregående kvartal. Den overordnede retning for kontanthjælpsområdet vurderes aktuelt at være moderat stigende."
+      "overskrift": "Kontanthjælp stiger til 698 personer i marts trods fald det seneste år",
+      "tekst": "I marts er antallet af kontanthjælpsmodtagere opgjort til 698 helårspersoner. Der er tale om en stigning på 14 personer siden sidste måned og en samlet tilgang på 33 personer over de seneste to måneder. På trods af den aktuelle stigning ligger niveauet 34 personer lavere end for et år siden. Den kortsigtede udvikling viser således en opadgående tendens, der afviger fra det generelle fald i 12-måneders perspektivet. Dette kan indikere en ændring i tilgangen til ydelsen eller en opbremsning i afgangen i det tidlige forår. Den samlede retning peger på en aktuel stigning i antallet af modtagere."
     },
     "y07a02": {
-      "overskrift": "Markant fald i sygedagpenge til 759 helårspersoner i marts",
-      "tekst": "Antallet af sygedagpengemodtagere falder i den seneste måned med 29 helårspersoner til i alt 759. Sammenlignet med niveauet for to måneder siden er der tale om en reduktion på 32 personer. Dette fald markerer en afvigelse fra de foregående måneder, hvor antallet lå stabilt omkring 790 personer. Den nedadgående bevægelse i marts kan indikere en afslutning på en belastningsperiode, der ofte ses i vintermånederne. Udviklingen i den seneste måned trækker det samlede gennemsnit nedad for 12-måneders perioden. Den nuværende retning peger på et faldende forbrug af sygedagpenge."
+      "overskrift": "Sygedagpenge falder væsentligt til 759 helårspersoner i marts",
+      "tekst": "Antallet af helårspersoner på sygedagpenge er faldet til 759 i marts måned. Dette er en reduktion på 29 personer sammenlignet med måneden før og 32 færre end for to måneder siden. Den overordnede tendens det seneste år viser et markant fald på i alt 109 helårspersoner. Det systematiske fald gennem perioden peger på en vedvarende nedadgående trend i volumen for denne ydelsestype. Marts-tallene bekræfter denne retning og placerer ydelsen på det laveste niveau i den rullende 12-måneders periode. Den fremadrettede retning vurderes fortsat at være nedadgående."
     },
     "y11a02": {
-      "overskrift": "Ressourceforløb fortsætter faldet til 180 personer i seneste måned",
-      "tekst": "For ydelsestypen ressourceforløb er antallet opgjort til 180 helårspersoner i marts. Der er tale om en reduktion på 6 personer i forhold til sidste måned og 17 færre end for to måneder siden. Niveauet er dermed det laveste observeret inden for de seneste måneder af den rullende 12-måneders periode. Den gradvise reduktion tyder på en kontinuerlig afgang fra ordningen, som overstiger tilgangen af nye borgere. Udviklingen fremstår som en stabil tendens frem for en isoleret hændelse over tid. Retningen for ressourceforløb vurderes at være fortsat svagt nedadgående."
+      "overskrift": "Ressourceforløb fortsætter faldet til 180 helårspersoner i marts",
+      "tekst": "I marts var der 180 helårspersoner i ressourceforløb, hvilket er 6 færre end i den foregående måned. Sammenlignet med for to måneder siden er der tale om et fald på 17 personer. Over det seneste år er antallet af modtagere reduceret med i alt 13 helårspersoner. Udviklingen peger på en stabil afgang fra ordningen i de seneste måneder efter en periode med højere aktivitet. Faldet er mest udtalt på den korte bane, mens det årlige fald fremstår mere moderat. Retningen for ydelsen vurderes på nuværende tidspunkt at være svagt nedadgående."
     },
     "y09a02": {
-      "overskrift": "Ledighedsydelse stiger til 67 personer efter en stigning på 7",
-      "tekst": "Antallet af modtagere af ledighedsydelse er opgjort til 67 helårspersoner i den seneste måned. Dette er en stigning på 7 personer sammenlignet med sidste måned og en stigning på 4 i forhold til for to måneder siden. Niveauet svinger fortsat inden for et snævert interval, hvilket er karakteristisk for ydelsens volumen i kommunen. Selvom der er tale om en procentvis stigning, er de absolutte tal fortsat lave set i forhold til de øvrige ydelsesområder. Mønsteret viser ingen entydig trend, men snarere mindre løbende justeringer i visitation og jobstart. Den overordnede retning for ledighedsydelsen vurderes at være stabil."
+      "overskrift": "Ledighedsydelse stiger marginalt til 67 helårspersoner i marts måned",
+      "tekst": "Antallet af modtagere af ledighedsydelse udgør 67 helårspersoner i marts. Det svarer til en stigning på 7 personer i forhold til måneden før og 4 personer sammenlignet med to måneder tilbage. Set i forhold til samme måned sidste år er der tale om en næsten uændret status med et fald på kun én person. Ydelsen udviser generelt små udsving hen over året, og den aktuelle stigning ligger inden for de normale variationer. Den langsigtede trend fremstår stabil uden tegn på væsentlige strukturelle forskydninger i antallet af visiterede. Den overordnede retning vurderes som værende neutral."
     },
     "y08a02": {
-      "overskrift": "Svag stigning i antallet af personer i fleksjob til 739",
-      "tekst": "Antallet af helårspersoner i fleksjob udgør 739 i den seneste opgørelse. Dette dækker over en mindre stigning på 2 personer i forhold til sidste måned og en stigning på 10 personer over de seneste to måneder. Udviklingen afspejler en langsigtet tendens med en stabil eller svagt stigende volumen på fleksjobområdet. De små månedlige forskydninger tyder på en jævn balance mellem tilgang fra visitationsprocessen og afgang til andre ordninger. Fleksjobområdet udgør fortsat en væsentlig og stabil del af de kommunale ydelser. Retningen for fleksjobområdet vurderes at være stabil med en svag positiv vækst."
+      "overskrift": "Antallet af personer i fleksjob stiger til 739 i marts",
+      "tekst": "Ved udgangen af marts er antallet af personer i fleksjob opgjort til 739 helårspersoner. Dette er en mindre stigning på 2 personer siden sidste måned og en tilgang på 10 personer over de seneste to måneder. Over en 12-måneders periode er antallet steget med 34 personer, hvilket markerer en stabil vækst i ordningen. Udviklingen afspejler en vedvarende tendens til, at flere borgere visiteres til og fastholdes i fleksjob-ordningen. Der ses ingen tegn på opbremsning i denne tilgang på nuværende tidspunkt i de foreliggende data. Den overordnede retning vurderes som værende jævnt stigende."
     },
     "y12a02": {
-      "overskrift": "Jobafklaringsforløb falder til 188 helårspersoner i marts måned",
-      "tekst": "I marts er antallet af personer i jobafklaringsforløb faldet til 188 helårspersoner. Det er en reduktion på 4 personer i forhold til måneden før og 22 personer færre end for to måneder siden. Niveauet er faldet markant over det seneste kvartal og ligger nu i den lave ende af den 12-måneders periode. Denne udvikling kan hænge sammen med sagsflowet og afslutningen af forløb mod enten raskmelding eller ressourceforløb. Der ses en tydelig nedadgående trend i tallene for den seneste periode. Den aktuelle retning for jobafklaringsforløb vurderes at være nedadgående."
+      "overskrift": "Jobafklaringsforløb reduceret til 188 helårspersoner i marts",
+      "tekst": "Antallet af borgere i jobafklaringsforløb er i marts opgjort til 188 helårspersoner. Der er observeret et fald på 4 personer siden sidste måned og et tydeligt fald på 22 personer over de seneste to måneder. Set over det seneste år er antallet af modtagere faldet med 25 helårspersoner i alt. Den kortsigtede udvikling viser en acceleration i faldet sammenlignet med gennemsnittet for det forgangne år. Dette mønster kan indikere en effektiv afklaring og afgang til andre forsørgelsesformer eller beskæftigelse. Retningen for antallet af jobafklaringsforløb vurderes at være nedadgående."
     },
     "y10a02": {
-      "overskrift": ": Data ikke tilgængeligt for denne periode.",
-      "tekst": ": Data ikke tilgængeligt for denne periode."
+      "overskrift": "Data ikke tilgængeligt for denne periode.",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y85a02": {
-      "overskrift": ": Data ikke tilgængeligt for denne periode.",
-      "tekst": ": Data ikke tilgængeligt for denne periode."
+      "overskrift": "Data ikke tilgængeligt for denne periode.",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y13a02": {
-      "overskrift": ": Data ikke tilgængeligt for denne periode.",
-      "tekst": ": Data ikke tilgængeligt for denne periode."
+      "overskrift": "Data ikke tilgængeligt for denne periode.",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y40a02": {
-      "overskrift": ": Data ikke tilgængeligt for denne periode.",
-      "tekst": ": Data ikke tilgængeligt for denne periode."
+      "overskrift": "Data ikke tilgængeligt for denne periode.",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y28a02": {
-      "overskrift": ": Data ikke tilgængeligt for denne periode.",
-      "tekst": ": Data ikke tilgængeligt for denne periode."
+      "overskrift": "Data ikke tilgængeligt for denne periode.",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     }
   }
 }
