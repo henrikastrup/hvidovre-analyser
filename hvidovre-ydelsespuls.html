@@ -329,6 +329,8 @@ function init() {
   byggKPI();
   byggKortGrid();
   opdaterGraf();
+  visAnalyse();
+  visAnalyse();
   document.getElementById('periodeDesc').textContent =
     'Rullende 12 måneder · Seneste: ' + data.senesteLabel
     + ' · Klik kort for at tilføje';
@@ -414,7 +416,6 @@ function toggleYdelse(id) {
   if (aktive.has(id)) aktive.delete(id); else aktive.add(id);
   opdaterKort();
   opdaterGraf();
-  opdaterAnalyser();
 }
 
 function vælgGruppe(g) {
@@ -423,14 +424,12 @@ function vælgGruppe(g) {
   liste.forEach(id => allAktiv ? aktive.delete(id) : aktive.add(id));
   opdaterKort();
   opdaterGraf();
-  opdaterAnalyser();
 }
 
 function nulstil() {
   aktive.clear();
   opdaterKort();
   opdaterGraf();
-  opdaterAnalyser();
 }
 
 function toggleForrigeAar() {
@@ -575,63 +574,25 @@ function opdaterGraf() {
   });
 }
 
-// ── ANALYSER ──────────────────────────────────────────────────────────
-// Ydelsestyper med selvstændig AI-analyse
-const HAR_ANALYSE = new Set(['y01a02','y07a02','y60a02','y10a02']);
-const ANALYSE_NAVNE = { y01a02:'A-dagpenge', y07a02:'Sygedagpenge', y60a02:'Kontanthjælp', y10a02:'Førtidspension' };
-
-function opdaterAnalyser() {
+// ── ANALYSE ───────────────────────────────────────────────────────────
+function visAnalyse() {
   const sektion = document.getElementById('analyseSektion');
-  const vis = TABEL_IDS.filter(id => aktive.has(id));
-  if (!vis.length) { sektion.innerHTML = ''; return; }
-
-  // Separer i: har analyse / har ikke analyse
-  const medAnalyse  = vis.filter(id => HAR_ANALYSE.has(id));
-  const udenAnalyse = vis.filter(id => !HAR_ANALYSE.has(id));
-
-  let html = '';
-
-  // Vis fuld analyse for de 4 hoveddelsestyper
-  html += medAnalyse.map(id => {
-    const m   = TABEL_META[id];
-    const a   = data.analyse?.[id];
-    const ovs = a?.overskrift || '—';
-    const txt = a?.tekst || 'Analysetekst ikke tilgængelig.';
-    return `<div class="analyse-panel">
-      <div class="analyse-hdr">
-        <div class="analyse-bar" style="background:${m.farve}"></div>
-        <div class="analyse-meta">
-          <div class="analyse-navn">${m.navn}</div>
-          <div class="analyse-overskrift">${ovs}</div>
-        </div>
+  if (!data?.analyse) { sektion.innerHTML = ''; return; }
+  const a = data.analyse;
+  sektion.innerHTML = `<div class="analyse-panel">
+    <div class="analyse-hdr">
+      <div class="analyse-bar" style="background:var(--green)"></div>
+      <div class="analyse-meta">
+        <div class="analyse-navn">Samlet analyse · ${data.senesteLabel}</div>
+        <div class="analyse-overskrift">${a.overskrift || '—'}</div>
       </div>
-      <div class="analyse-body">
-        <div class="analyse-tekst">${txt}</div>
-      </div>
-    </div>`;
-  }).join('');
-
-  // Vis kompakt note for de øvrige 8 ydelsestyper
-  if (udenAnalyse.length) {
-    const navne = udenAnalyse.map(id => {
-      const m = TABEL_META[id];
-      return `<span style="display:inline-flex;align-items:center;gap:5px">
-        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${m.farve};flex-shrink:0"></span>
-        ${m.navn}
-      </span>`;
-    }).join('');
-    html += `<div class="ingen-analyse-note">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <div>
-        <strong>Tal vises i grafen</strong> — selvstændig analyse er kun tilgængelig for A-dagpenge, Sygedagpenge, Kontanthjælp og Førtidspension.
-        Valgte ydelser uden analyse: ${navne}
-      </div>
-    </div>`;
-  }
-
-  sektion.innerHTML = html;
+    </div>
+    <div class="analyse-body">
+      <div class="analyse-tekst">${a.tekst || 'Ingen analyse tilgængelig.'}</div>
+    </div>
+  </div>`;
 }
-
+function opdaterAnalyser() {}
 // ── DOWNLOAD ──────────────────────────────────────────────────────────
 function download() {
   const b = new Blob([document.documentElement.outerHTML], { type: 'text/html;charset=utf-8' });
