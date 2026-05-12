@@ -4,6 +4,22 @@
   "data": {
     "y01a02": {
       "navn": "A-dagpenge",
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
+    },
+    "y60a02": {
+      "navn": "Kontanthjælp",
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
+    },
+    "y07a02": {
+      "navn": "Sygedagpenge",
       "labels": [
         "4 25",
         "5 25",
@@ -19,45 +35,106 @@
         "3 26"
       ],
       "ftp": [
-        715,
-        693,
-        699,
-        716,
-        700,
-        687,
-        675,
-        639,
-        607,
-        726,
+        811,
+        767,
+        752,
+        730,
+        711,
+        724,
+        762,
         756,
-        748
+        771,
+        791,
+        788,
+        759
       ],
-      "forrigeLabels": [],
-      "forrigeFtp": []
-    },
-    "y60a02": {
-      "navn": "Kontanthjælp",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
-    },
-    "y07a02": {
-      "navn": "Sygedagpenge",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        788,
+        778,
+        765,
+        711,
+        746,
+        738,
+        802,
+        831,
+        827,
+        844,
+        862,
+        868
+      ]
     },
     "y11a02": {
       "navn": "Ressourceforløb",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
+      "labels": [
+        "4 25",
+        "5 25",
+        "6 25",
+        "7 25",
+        "8 25",
+        "9 25",
+        "0 25",
+        "1 25",
+        "2 25",
+        "1 26",
+        "2 26",
+        "3 26"
+      ],
+      "ftp": [
+        190,
+        201,
+        199,
+        195,
+        201,
+        193,
+        197,
+        202,
+        198,
+        197,
+        186,
+        180
+      ],
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        179,
+        179,
+        175,
+        171,
+        174,
+        178,
+        184,
+        184,
+        193,
+        196,
+        198,
+        193
+      ]
     },
     "y09a02": {
       "navn": "Ledighedsydelse",
@@ -89,41 +166,42 @@
         60,
         67
       ],
-      "forrigeLabels": [],
-      "forrigeFtp": []
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        76,
+        69,
+        60,
+        60,
+        65,
+        64,
+        63,
+        59,
+        57,
+        56,
+        59,
+        68
+      ]
     },
     "y08a02": {
       "navn": "Fleksjob",
-      "labels": [
-        "4 25",
-        "5 25",
-        "6 25",
-        "7 25",
-        "8 25",
-        "9 25",
-        "0 25",
-        "1 25",
-        "2 25",
-        "1 26",
-        "2 26",
-        "3 26"
-      ],
-      "ftp": [
-        708,
-        711,
-        716,
-        716,
-        717,
-        719,
-        720,
-        721,
-        723,
-        729,
-        737,
-        739
-      ],
+      "labels": [],
+      "ftp": [],
       "forrigeLabels": [],
-      "forrigeFtp": []
+      "forrigeFtp": [],
+      "fejl": true
     },
     "y12a02": {
       "navn": "Jobafklaringsforløb",
@@ -155,8 +233,34 @@
         192,
         188
       ],
-      "forrigeLabels": [],
-      "forrigeFtp": []
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        253,
+        260,
+        249,
+        233,
+        233,
+        227,
+        235,
+        227,
+        213,
+        227,
+        220,
+        213
+      ]
     },
     "y10a02": {
       "navn": "Førtidspension",
@@ -168,36 +272,11 @@
     },
     "y85a02": {
       "navn": "Tidlig pension",
-      "labels": [
-        "4 25",
-        "5 25",
-        "6 25",
-        "7 25",
-        "8 25",
-        "9 25",
-        "0 25",
-        "1 25",
-        "2 25",
-        "1 26",
-        "2 26",
-        "3 26"
-      ],
-      "ftp": [
-        108,
-        102,
-        100,
-        91,
-        88,
-        89,
-        88,
-        82,
-        81,
-        76,
-        76,
-        72
-      ],
+      "labels": [],
+      "ftp": [],
       "forrigeLabels": [],
-      "forrigeFtp": []
+      "forrigeFtp": [],
+      "fejl": true
     },
     "y13a02": {
       "navn": "Seniorpension",
@@ -217,15 +296,112 @@
     },
     "y28a02": {
       "navn": "Efterløn",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
+      "labels": [
+        "4 25",
+        "5 25",
+        "6 25",
+        "7 25",
+        "8 25",
+        "9 25",
+        "0 25",
+        "1 25",
+        "2 25",
+        "1 26",
+        "2 26",
+        "3 26"
+      ],
+      "ftp": [
+        126,
+        122,
+        121,
+        116,
+        118,
+        120,
+        115,
+        112,
+        114,
+        115,
+        116,
+        115
+      ],
+      "forrigeLabels": [
+        "4 24",
+        "5 24",
+        "6 24",
+        "7 24",
+        "8 24",
+        "9 24",
+        "0 24",
+        "1 24",
+        "2 24",
+        "1 25",
+        "2 25",
+        "3 25"
+      ],
+      "forrigeFtp": [
+        186,
+        179,
+        170,
+        171,
+        162,
+        161,
+        149,
+        145,
+        136,
+        138,
+        133,
+        130
+      ]
     }
   },
   "analyse": {
-    "overskrift": "Fald i A-dagpenge og stigning i ledighedsydelse i marts",
-    "tekst": "A-dagpengeområdet faldt i marts med 8 personer til i alt 748 modtagere. Grundet manglende dataleverance for førtidspension, kontanthjælp og sygedagpenge er det ikke muligt at vurdere den samlede udvikling på de tungeste ydelsesområder. Blandt de øvrige ydelser steg antallet af borgere på ledighedsydelse med 7 personer til i alt 67. Denne stigning modsvares ikke af en tilsvarende vækst i fleksjob, hvor bestanden steg med 2 personer til 739. Antallet af borgere i jobafklaringsforløb faldt med 4 personer og lander på 188 modtagere. Bestanden på tidlig pension blev ligeledes reduceret med 4 personer til i alt 72. Samlet set udviser de tilgængelige data for marts en tendens mod små forskydninger uden en entydig retning for kommunens samlede overførselsudgifter."
+    "y01a02": {
+      "overskrift": "A-dagpenge: Data ikke tilgængeligt for denne periode.",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
+    },
+    "y60a02": {
+      "overskrift": "Kontanthjælp: Data ikke tilgængeligt for denne periode.",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
+    },
+    "y07a02": {
+      "overskrift": "Sygedagpenge falder til 759 fuldtidspersoner i marts 2026",
+      "tekst": "Niveauet for sygedagpenge er opgjort til 759 fuldtidspersoner i marts, hvilket er et fald på 29 personer sammenlignet med februar. Sammenlignes der med januar, er der tale om en reduktion på 32 personer. Set over den seneste 12-måneders periode har niveauet fluktueret, men marts-tallet er markant lavere end de 868 personer, der var registreret samme måned året før. Der ses en tendens til, at vinterens stigning i januar og februar er aftaget i løbet af marts. Udviklingen følger et mønster med generelt færre sygedagpengemodtagere sammenlignet med det foregående års gennemsnit. Retningen for ydelsen vurderes som nedadgående i det aktuelle kvartal."
+    },
+    "y11a02": {
+      "overskrift": "Ressourceforløb reduceret til 180 personer i marts måned",
+      "tekst": "I marts er antallet af personer i ressourceforløb opgjort til 180, hvilket er 6 færre end i den foregående måned. I forhold til januar er faldet på 17 personer, hvilket indikerer en øget afgang i det seneste kvartal. Gennem det meste af 2025 har antallet ligget stabilt omkring 200 personer, men de seneste tal viser et brud med denne stabilitet. Niveauet er nu også lavere end marts året før, hvor 193 personer var på ydelsen. Faldet i marts markerer det laveste punkt i den viste 12-måneders serie for denne ydelsestype. Den aktuelle trend peger mod et lavere stabiliseret niveau for ydelsen."
+    },
+    "y09a02": {
+      "overskrift": "Ledighedsydelse stiger til 67 fuldtidspersoner i marts",
+      "tekst": "Antallet af modtagere af ledighedsydelse udgør 67 fuldtidspersoner i marts, en stigning på 7 personer fra februar. Sammenholdt med januar er der tale om en vækst på 4 personer, hvilket bringer niveauet tilbage til niveauet fra januar 2025. På trods af den månedlige stigning er niveauet tæt på marts sidste år, hvor tallet var 68 personer. Ydelsen har over det seneste år bevæget sig i et snævert interval mellem 58 og 74 personer uden en entydig langsigtet retning. Sæsonudsvingene fremstår mindre systematiske for denne ydelse sammenlignet med øvrige områder. Den samlede vurdering er, at ydelsen befinder sig på et stabilt niveau med mindre månedlige fluktuationer."
+    },
+    "y08a02": {
+      "overskrift": "Fleksjob: Data ikke tilgængeligt for denne periode.",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
+    },
+    "y12a02": {
+      "overskrift": "Fortsat fald i jobafklaringsforløb til 188 fuldtidspersoner i marts",
+      "tekst": "Jobafklaringsforløb omfatter 188 fuldtidspersoner i marts, hvilket er en reduktion på 4 personer i forhold til februar. Faldet er mere udtalt i forhold til januar, hvor der var 22 personer flere på ydelsen. Set over det seneste år er antallet reduceret gradvist fra 221 i april 2025 til det nuværende niveau. Dette svarer til en udvikling, hvor niveauet ligger væsentligt under samme måned året før, hvor tallet var 213. Der ses en tydelig nedadgående trend fra starten af 2026, som bryder med den stabilitet, der prægede efteråret 2025. Den overordnede retning for ydelsen vurderes som faldende."
+    },
+    "y10a02": {
+      "overskrift": "Førtidspension: Data ikke tilgængeligt for denne periode.",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
+    },
+    "y85a02": {
+      "overskrift": "Tidlig pension: Data ikke tilgængeligt for denne periode.",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
+    },
+    "y13a02": {
+      "overskrift": "Seniorpension: Data ikke tilgængeligt for denne periode.",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
+    },
+    "y40a02": {
+      "overskrift": "Barselsdagpenge: Data ikke tilgængeligt for denne periode.",
+      "tekst": ": Data ikke tilgængeligt for denne periode."
+    },
+    "y28a02": {
+      "overskrift": "Efterløn stabiliserer sig på 115 fuldtidspersoner i marts",
+      "tekst": "I marts er antallet af efterlønsmodtagere opgjort til 115 fuldtidspersoner, hvilket er et fald på én person fra måneden før. Niveauet er identisk med opgørelsen fra to måneder tilbage, hvilket vidner om en høj grad af stabilitet i starten af 2026. Sammenlignes der med samme tidspunkt sidste år, er der sket en reduktion på 15 personer fra 130 modtagere. Den langsigtede trend viser en markant lavere benyttelse af ordningen sammenlignet med forrige årsperiode, hvor tallene lå over 180 personer. Marts-tallene bekræfter en opbremsning i den ellers jævne nedgang, der er observeret over det seneste år. Udviklingen vurderes aktuelt som stabil på et historisk lavt niveau."
+    }
   }
 }
