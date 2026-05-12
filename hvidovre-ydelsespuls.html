@@ -420,7 +420,6 @@ function init() {
   byggKortGrid();
   opdaterGraf();
   visAnalyse();
-  visAnalyse();
   document.getElementById('periodeDesc').textContent =
     'Rullende 12 måneder · Seneste: ' + data.senesteLabel
     + ' · Klik kort for at tilføje';
@@ -510,6 +509,7 @@ function toggleYdelse(id) {
   if (aktive.has(id)) aktive.delete(id); else aktive.add(id);
   opdaterKort();
   opdaterGraf();
+  opdaterAnalyser();
 }
 
 function vælgGruppe(g) {
@@ -524,6 +524,7 @@ function nulstil() {
   aktive.clear();
   opdaterKort();
   opdaterGraf();
+  opdaterAnalyser();
 }
 
 function toggleForrigeAar() {
@@ -702,7 +703,39 @@ function visAnalyse() {
     + '<div class="analyse-tekst">' + tekst + '</div>'
     + '</div></div>';
 }
-function opdaterAnalyser() {}
+function opdaterAnalyser() {
+  const sektion = document.getElementById('analyseSektion');
+  const vis = TABEL_IDS.filter(id => aktive.has(id));
+
+  if (!vis.length || !data || !data.analyse) {
+    sektion.innerHTML = '';
+    return;
+  }
+
+  const a = data.analyse;
+
+  sektion.innerHTML = vis.map(id => {
+    const m = TABEL_META[id];
+
+    // Hent analyse for denne ydelse
+    // Format A: { overskrift, tekst } — vis samme for alle
+    // Format B: { y01a02: { overskrift, tekst }, ... } — vis specifik
+    const analyse = a.overskrift ? a : (a[id] || null);
+
+    if (!analyse) return '';
+
+    return '<div class="analyse-panel">'
+      + '<div class="analyse-hdr">'
+      + '<div class="analyse-bar" style="background:' + m.farve + '"></div>'
+      + '<div class="analyse-meta">'
+      + '<div class="analyse-navn">' + m.navn + '</div>'
+      + '<div class="analyse-overskrift">' + (analyse.overskrift || '—') + '</div>'
+      + '</div></div>'
+      + '<div class="analyse-body">'
+      + '<div class="analyse-tekst">' + (analyse.tekst || 'Ingen analyse for denne ydelsestype.') + '</div>'
+      + '</div></div>';
+  }).join('');
+}
 // ── DOWNLOAD ──────────────────────────────────────────────────────────
 function download() {
   const b = new Blob([document.documentElement.outerHTML], { type: 'text/html;charset=utf-8' });
