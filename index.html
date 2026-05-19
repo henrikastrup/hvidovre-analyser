@@ -283,7 +283,7 @@ function visAnalyse(a){
   setParam(a.url);
   const frame=document.getElementById('analysisFrame');
   const home=document.getElementById('homeView');
-  frame.src=a.url;
+  frame.src=a.url+'?v='+Date.now();
   frame.style.display='block';
   home.style.display='none';
   const nc=document.getElementById('navCurrent');
