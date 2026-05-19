@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nepal-tilflytning · Hvidovre og sammenligningskommuner</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --green:#1A4D2E;--green-mid:#2D7A4A;--green-lt:#52A870;--green-bg:#EEF7F0;--green-50:#F5FAF6;
+  --gold:#C4973A;--gold-lt:#E8C06A;
+  --bg:#F4F6F3;--white:#fff;--border:#D4DDD7;--text:#1C1C1A;--mid:#3D4A41;--muted:#7A8C80;
+  --red:#DC2626;--pos:#16A34A;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.55}
+
+/* ── OVERLAY ── */
+.overlay{position:fixed;inset:0;background:rgba(245,247,242,.92);z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.show{opacity:1;pointer-events:all}
+.spinner{width:38px;height:38px;border:3px solid var(--green-bg);border-top-color:var(--green);border-radius:50%;animation:spin .75s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ovl-msg{font-family:'DM Mono',monospace;font-size:12px;color:var(--green)}
+
+/* ── NAVBAR ── */
+.ap-navbar{display:flex;align-items:center;background:#0E1612;border-bottom:1px solid rgba(255,255,255,.08);padding:0 32px;height:40px;font-family:'DM Mono',monospace}
+.ap-back{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.55);font-size:11.5px;letter-spacing:.04em;text-decoration:none;transition:color .18s}
+.ap-back:hover{color:#E8C06A}.ap-back:hover svg{transform:translateX(-3px)}.ap-back svg{transition:transform .18s;flex-shrink:0}
+.ap-brand{color:#E8C06A;margin-left:4px}
+.ap-sep{width:1px;height:18px;background:rgba(255,255,255,.1);margin:0 16px}
+.ap-domain{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.25)}
+.ap-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:rgba(201,151,58,.6);margin-right:8px;vertical-align:middle}
+
+/* ── HEADER ── */
+.hdr{background:var(--green);padding:26px 40px 24px;border-bottom:3px solid var(--gold)}
+.hdr-eye{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:6px}
+.hdr h1{font-family:'DM Serif Display',serif;font-size:24px;font-weight:400;color:#fff;margin-bottom:4px}
+.hdr-sub{font-size:12.5px;color:rgba(255,255,255,.5)}
+
+/* ── STATUS BAR ── */
+.statusbar{display:flex;align-items:center;gap:8px;padding:8px 40px;background:var(--white);border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot.loading{background:var(--gold);animation:pulse 1s ease-in-out infinite}
+.dot.ok{background:var(--pos)}
+.dot.error{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── KPI ── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-bottom:1px solid var(--border)}
+.kpi-card{background:var(--white);padding:16px 22px}
+.kpi-card:first-child{border-left:3px solid var(--green)}
+.kpi-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.kpi-val{font-family:'DM Mono',monospace;font-size:26px;font-weight:500;color:var(--green);line-height:1}
+.kpi-d{font-size:11px;margin-top:4px}
+.pos{color:var(--pos)}.neg{color:var(--red)}.neu{color:var(--muted)}
+
+/* ── TOOLBAR ── */
+.toolbar{display:flex;align-items:stretch;background:var(--white);border-bottom:2px solid var(--border);padding:0 40px}
+.tab-btn{padding:14px 22px;border:none;background:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;position:relative;transition:color .15s;white-space:nowrap}
+.tab-btn::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--green);transform:scaleX(0);transition:transform .2s}
+.tab-btn.on{color:var(--green)}.tab-btn.on::after{transform:scaleX(1)}
+.tab-btn:hover:not(.on){color:var(--mid)}
+
+/* ── MAIN ── */
+main{padding:28px 40px 40px;max-width:1160px}
+.tab-pane{display:none}.tab-pane.on{display:block}
+.overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:860px){.overview-grid,.kpi-row{grid-template-columns:1fr 1fr}}
+
+/* ── SECTION ── */
+.section{background:var(--white);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:20px;box-shadow:var(--shadow)}
+.sec-head{display:flex;align-items:flex-start;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--green-50)}
+.sec-title{font-size:13px;font-weight:600;color:var(--text)}
+.sec-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ── CONTROLS ── */
+.ctrl-bar{display:flex;align-items:center;gap:8px;padding:11px 20px;border-bottom:1px solid var(--border);background:var(--bg);flex-wrap:wrap}
+.ctrl-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-right:2px}
+.pills{display:flex}
+.pill{padding:5px 13px;border:1px solid var(--border);background:var(--white);font-family:'DM Sans',sans-serif;font-size:12px;color:var(--mid);cursor:pointer;transition:all .13s}
+.pill:first-child{border-radius:20px 0 0 20px}.pill:last-child{border-radius:0 20px 20px 0;margin-left:-1px}
+.pill.on{background:var(--green);color:#fff;border-color:var(--green);z-index:1}
+.pill:hover:not(.on){background:var(--green-bg)}
+.csep{width:1px;height:22px;background:var(--border);margin:0 4px}
+
+/* ── CANVAS ── */
+.canvas-wrap{padding:20px;position:relative;height:340px}
+
+/* ── CARD SELECTOR ── */
+.card-sel{padding:14px 20px;border-bottom:1px solid var(--border);background:var(--white)}
+.gbtns{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.gbtn{padding:3px 11px;font-size:11px;border:1px solid var(--border);border-radius:20px;background:var(--white);color:var(--mid);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .12s}
+.gbtn:hover{background:var(--green-bg);border-color:var(--green-lt)}
+.gbtn.clr{color:var(--red);border-color:#FECACA}.gbtn.clr:hover{background:#FEF2F2}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:7px}
+.kk{border:1px solid var(--border);border-left:3px solid transparent;border-radius:6px;padding:9px 12px;cursor:pointer;transition:all .14s;background:var(--white);user-select:none}
+.kk:hover{background:var(--green-50)}.kk.on{background:var(--green-50)}
+.kk-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+.kk-name{font-size:12px;font-weight:600;color:var(--text)}
+.kk-chk{font-size:10px;color:var(--green-lt);opacity:0;transition:opacity .1s}.kk.on .kk-chk{opacity:1}
+.kk-val{font-family:'DM Mono',monospace;font-size:19px;font-weight:500;margin:1px 0}
+.kk-meta{font-size:10px;color:var(--muted)}
+.kk-d{font-size:10px;margin-top:1px}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--bg)}
+th{padding:9px 14px;text-align:right;font-size:11px;font-weight:500;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+th:first-child{text-align:left}
+td{padding:9px 14px;text-align:right;border-bottom:1px solid var(--green-50);color:var(--mid)}
+td:first-child{text-align:left;font-weight:500;color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--green-50)}
+.hv td{background:var(--green-bg)!important}.hv td:first-child{color:var(--green);font-weight:700}
+.mn{font-family:'DM Mono',monospace}
+
+/* ── NOTE / WARN ── */
+.note-bar{font-size:11.5px;color:var(--muted);padding:10px 20px;border-top:1px solid var(--border);background:var(--green-50);line-height:1.6}
+.warn-box{background:#FFFBEB;border:1px solid #FDE68A;border-left:3px solid var(--gold);border-radius:6px;padding:10px 14px;font-size:11.5px;color:#92400E;line-height:1.6;margin:14px 20px}
+
+/* ── KILDE ── */
+.kilde{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--muted);padding:14px 40px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;border-top:1px solid var(--border)}
+.dl-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:transparent;border:1.5px solid var(--border);border-radius:6px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);cursor:pointer;transition:all .15s;margin-left:auto}
+.dl-btn:hover{border-color:var(--green);color:var(--green)}
+</style>
+</head>
+<body>
+
+<!-- OVERLAY -->
+<div class="overlay show" id="overlay">
+  <div class="spinner"></div>
+  <div class="ovl-msg" id="ovl-msg">Henter data fra Danmarks Statistik...</div>
+</div>
+
+<!-- NAVBAR -->
+<div class="ap-navbar">
+  <a class="ap-back" href="https://analyse.astrup.org">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    <span class="ap-brand">analyse.astrup.org</span>
+  </a>
+  <div class="ap-sep"></div>
+  <span class="ap-domain"><span class="ap-dot"></span>Indvandring &amp; Migration</span>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-eye">Hvidovre Kommune · Befolkningsanalyse</div>
+  <h1>Tilflytning fra Nepal</h1>
+  <div class="hdr-sub" id="hdr-sub">Hvidovre og sammenligningskommuner · DST VAN1UGE · Henter data...</div>
+</div>
+
+<!-- STATUS -->
+<div class="statusbar">
+  <span class="dot loading" id="dot"></span>
+  <span id="statusMsg">Henter tabelinfo fra Danmarks Statistik...</span>
+</div>
+
+<!-- KPI -->
+<div class="kpi-row" id="kpi-row">
+  <div class="kpi-card"><div class="kpi-lbl">Hvidovre 2025</div><div class="kpi-val">—</div><div class="kpi-d neu">Henter...</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">Hvidovre 2026 ÅTD</div><div class="kpi-val">—</div><div class="kpi-d neu">Henter...</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">Hele landet 2025</div><div class="kpi-val">—</div><div class="kpi-d neu">Henter...</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">Hele landet 2026 ÅTD</div><div class="kpi-val">—</div><div class="kpi-d neu">Henter...</div></div>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <button class="tab-btn on" data-tab="oversigt" onclick="setTab('oversigt')">Oversigt</button>
+  <button class="tab-btn"    data-tab="mdr"      onclick="setTab('mdr')">Månedlig udvikling</button>
+  <button class="tab-btn"    data-tab="kum"      onclick="setTab('kum')">Kumulativ · Indekseret</button>
+</div>
+
+<main>
+
+  <!-- TAB 1 OVERSIGT -->
+  <div class="tab-pane on" id="tab-oversigt">
+    <div class="overview-grid">
+
+      <div class="section">
+        <div class="sec-head">
+          <div>
+            <div class="sec-title">2025 og 2026 ÅTD — som andel af 2025-årstotal</div>
+            <div class="sec-sub" id="bar-sub">Begge år som % af 2025 · kommuner og Hele landet sammenlignelige</div>
+          </div>
+          <div style="display:flex;gap:4px;align-items:center;padding-right:4px">
+            <div class="pills">
+              <div class="pill on" id="bpill25" onclick="barToggle(25)">Vis 2025</div>
+              <div class="pill on" id="bpill26" onclick="barToggle(26)" style="margin-left:-1px">Vis 2026</div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:20px;height:300px;position:relative"><canvas id="barChart"></canvas></div>
+        <div class="note-bar" id="bar-note">Mørk søjle = 2025 u1–NN · Lys søjle = 2026 u1–NN · begge som % af kommunens 2025-årstotal</div>
+      </div>
+
+      <div class="section">
+        <div class="sec-head">
+          <div>
+            <div class="sec-title">Nøgletal pr. kommune</div>
+            <div class="sec-sub" id="tbl-sub">2025 og 2026 ÅTD sammenlignet med samme periode 2025</div>
+          </div>
+        </div>
+        <div class="tbl-wrap" id="tbl-overview"><div style="padding:40px;text-align:center;color:var(--muted);font-size:13px">Henter data...</div></div>
+        <div class="note-bar" id="tbl-note">Δ% = procentvis ændring i tilsvarende periode · Hele landet er ~30× større end kommunerne</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TAB 2 MÅNEDLIG -->
+  <div class="tab-pane" id="tab-mdr">
+    <div class="section">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">Månedlig tilflytning fra Nepal — 2026 ÅTD</div>
+          <div class="sec-sub">2026 (markeret slutpunkt) · 2025 som valgfri sammenligning</div>
+        </div>
+      </div>
+      <div class="warn-box">OBS: Hele landets tal er ca. 30× større end de enkelte kommuners. Brug <strong>Kumulativ · Indekseret</strong> → "% af 2025-total" for meningsfuld sammenligning på tværs.</div>
+      <div class="card-sel">
+        <div class="gbtns">
+          <button class="gbtn" onclick="grp(['Hele landet'])">Hele landet</button>
+          <button class="gbtn" onclick="grp(['Hvidovre','Brøndby','Rødovre','Ballerup','Gladsaxe','Herlev'])">Benchmark-kommuner</button>
+          <button class="gbtn" onclick="grpAll()">Alle</button>
+          <button class="gbtn clr" onclick="grpClear()">✕ Ryd</button>
+        </div>
+        <div class="card-grid" id="cards-mdr"></div>
+      </div>
+      <div class="ctrl-bar">
+        <span class="ctrl-lbl">Vis 2025</span>
+        <div class="pills">
+          <div class="pill on"  id="mp25j" onclick="mdrToggle25(true)">Ja</div>
+          <div class="pill"     id="mp25n" onclick="mdrToggle25(false)">Nej</div>
+        </div>
+      </div>
+      <div class="canvas-wrap"><canvas id="mdrChart"></canvas></div>
+      <div class="note-bar" id="mdr-note">Uger kortlagt til måneder via ISO-standard. 2026-serie vises t.o.m. seneste tilgængelige uge — foreløbige tal fra DST.</div>
+    </div>
+  </div>
+
+  <!-- TAB 3 KUMULATIV -->
+  <div class="tab-pane" id="tab-kum">
+    <div class="section">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">Kumulativ tilflytning fra årets start</div>
+          <div class="sec-sub">Løbende sum uge for uge · 2026-linje stopper ved seneste tilgængelige uge</div>
+        </div>
+      </div>
+      <div class="card-sel">
+        <div class="gbtns">
+          <button class="gbtn" onclick="grp(['Hele landet'])">Hele landet</button>
+          <button class="gbtn" onclick="grp(['Hvidovre','Brøndby','Rødovre','Ballerup','Gladsaxe','Herlev'])">Benchmark-kommuner</button>
+          <button class="gbtn" onclick="grpAll()">Alle</button>
+          <button class="gbtn clr" onclick="grpClear()">✕ Ryd</button>
+        </div>
+        <div class="card-grid" id="cards-kum"></div>
+      </div>
+      <div class="ctrl-bar">
+        <span class="ctrl-lbl">Visning</span>
+        <div class="pills">
+          <div class="pill on" id="ka"    onclick="kumTypSet('abs')">Absolut antal</div>
+          <div class="pill"    id="kp"    onclick="kumTypSet('pct')">% af 2025-total</div>
+        </div>
+        <div class="csep"></div>
+        <span class="ctrl-lbl">Vis 2025</span>
+        <div class="pills">
+          <div class="pill on" id="kp25j" onclick="kumToggle25(true)">Ja</div>
+          <div class="pill"    id="kp25n" onclick="kumToggle25(false)">Nej</div>
+        </div>
+      </div>
+      <div class="canvas-wrap"><canvas id="kumChart"></canvas></div>
+      <div class="note-bar" id="kum-note">Absolut: akkumuleret antal pr. uge — alle kommuner starter ved 0. Brug "% af 2025-total" for sammenligning på tværs af størrelser.</div>
+    </div>
+  </div>
+
+</main>
+
+<div class="kilde">
+  <span>Danmarks Statistik · VAN1UGE · INDVLAND=Nepal (kode 5464) · Alle aldre og køn summeret</span>
+  <span id="kilde-tid">Live-fetch ved åbning</span>
+  <button class="dl-btn" onclick="dl()">↓ Download HTML</button>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  KONSTANTER
+// ══════════════════════════════════════════
+const KOM_LIST = [
+  {kode:'000', navn:'Hele landet'},
+  {kode:'167', navn:'Hvidovre'},
+  {kode:'153', navn:'Brøndby'},
+  {kode:'175', navn:'Rødovre'},
+  {kode:'151', navn:'Ballerup'},
+  {kode:'159', navn:'Gladsaxe'},
+  {kode:'163', navn:'Herlev'}
+];
+const KOM  = KOM_LIST.map(k=>k.navn);
+const COL  = {'Hele landet':'#6B7280','Hvidovre':'#1A4D2E','Brøndby':'#2563EB','Rødovre':'#DC2626','Ballerup':'#D97706','Gladsaxe':'#7C3AED','Herlev':'#DB2777'};
+const MDR  = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+const MB   = [0,4,8,13,17,21,26,30,35,39,43,47,52];
+const DST  = 'https://api.statbank.dk/v1';
+
+// ══════════════════════════════════════════
+//  DYNAMISK DATA — opdateres ved fetch
+// ══════════════════════════════════════════
+let RAW = {};
+let LATEST = {yr:2026, wk:1};   // sættes fra tableinfo
+let sB25=true, sB26=true;
+let tab='oversigt', aktiv=new Set(['Hvidovre']), mdr25=true, kumTyp='abs', kum25=true;
+let barC=null, mdrC=null, kumC=null;
+
+// ══════════════════════════════════════════
+//  HJÆLPEFUNKTIONER — DATA
+// ══════════════════════════════════════════
+function w2m(w){for(let m=0;m<12;m++)if(w>MB[m]&&w<=MB[m+1])return m;return 11;}
+
+function getMdr(n,y){
+  const r=new Array(12).fill(0),s=RAW[n]||{};
+  for(const[k,v]of Object.entries(s)){
+    if(parseInt(k.slice(0,4))===y) r[w2m(parseInt(k.slice(5)))]+=v;
+  }
+  return r;
+}
+
+function tot(n,y){return getMdr(n,y).reduce((a,b)=>a+b,0);}
+
+function ytdW(n,y,maxW){
+  let s=0;const src=RAW[n]||{};
+  for(let w=1;w<=maxW;w++) s+=src[`${y}U${String(w).padStart(2,'0')}`]||0;
+  return s;
+}
+function ytd26(n){return ytdW(n,2026,LATEST.wk);}
+function ytd25same(n){return ytdW(n,2025,LATEST.wk);}  // samme periode i 2025
+
+function getCum(n,y,maxW){
+  const src=RAW[n]||{},r=[];let s=0;
+  for(let w=1;w<=52;w++){
+    if(w<=(maxW||52)){s+=src[`${y}U${String(w).padStart(2,'0')}`]||0;r.push(s);}
+    else r.push(null);
+  }
+  return r;
+}
+function getCumPct(n,y,maxW){
+  const base=tot(n,2025);if(!base)return new Array(52).fill(null);
+  return getCum(n,y,maxW).map(v=>v!=null?Math.round(v/base*1000)/10:null);
+}
+
+function dPct(a,b){if(!b)return null;return Math.round((a-b)/b*100);}
+function dStr(v){if(v==null)return '—';return(v>0?'+':'')+v+'%';}
+function dC(v){return v==null?'neu':v>5?'pos':v<-5?'neg':'neu';}
+function ytdLabel(){return `u1\u201${LATEST.wk}, ${LATEST.yr}`;}
+
+// ══════════════════════════════════════════
+//  FETCH — JSONSTAT PARSER
+// ══════════════════════════════════════════
+function sumByTid(ds){
+  const dimIds=ds.id, sizes=ds.size, values=ds.value;
+
+  // Beregn strides (sidst-dimensionen har stride 1)
+  const strides=new Array(dimIds.length).fill(1);
+  for(let i=dimIds.length-2;i>=0;i--) strides[i]=strides[i+1]*sizes[i+1];
+
+  // Find Tid-dimensionens indeks og kategori-labels
+  const tidDimIdx=dimIds.indexOf('Tid');
+  const tidCat=ds.dimension['Tid'].category;
+  let tidLabels;
+  if(Array.isArray(tidCat.index)){
+    tidLabels=tidCat.index;
+  } else {
+    tidLabels=Object.entries(tidCat.index).sort((a,b)=>a[1]-b[1]).map(([k])=>k);
+  }
+  const tidSize=sizes[tidDimIdx];
+
+  // Summer alle ikke-Tid-dimensioner for hvert Tid-punkt
+  const result={};
+  values.forEach((v,flatIdx)=>{
+    if(!v) return;
+    const tidPos=Math.floor(flatIdx/strides[tidDimIdx])%tidSize;
+    const tid=tidLabels[tidPos];
+    result[tid]=(result[tid]||0)+v;
+  });
+  return result;
+}
+
+// ══════════════════════════════════════════
+//  FETCH — LOADDATA
+// ══════════════════════════════════════════
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+function setStatus(type,msg){
+  document.getElementById('dot').className='dot '+type;
+  document.getElementById('statusMsg').textContent=msg;
+}
+function setOverlay(on,msg){
+  document.getElementById('overlay').classList.toggle('show',on);
+  if(msg) document.getElementById('ovl-msg').textContent=msg;
+}
+
+async function loadData(){
+  setOverlay(true,'Henter tabelinfo fra Danmarks Statistik...');
+  setStatus('loading','Henter tabelinfo...');
+
+  try{
+    // 1. Tableinfo — find gyldige Tid-værdier
+    const infoR=await fetch(`${DST}/tableinfo/VAN1UGE?lang=da&t=${Date.now()}`);
+    if(!infoR.ok) throw new Error(`Tableinfo HTTP ${infoR.status}`);
+    const info=await infoR.json();
+
+    const tidVar=info.variables.find(v=>v.id==='Tid');
+    if(!tidVar) throw new Error('Tid-variabel ikke fundet i tableinfo');
+
+    const allTids=tidVar.values.map(v=>v.id);
+    // Kun 2025 og 2026
+    const tidPeriods=allTids.filter(t=>t.startsWith('2025')||t.startsWith('2026'));
+
+    // Bestem seneste 2026-uge
+    const tids2026=tidPeriods.filter(t=>t.startsWith('2026'));
+    if(tids2026.length>0){
+      const last=tids2026[tids2026.length-1];
+      LATEST={yr:2026, wk:parseInt(last.slice(5))};
+    }
+
+    // 2. Hent data for hver kommune sekventielt
+    RAW={};
+    for(let i=0;i<KOM_LIST.length;i++){
+      const {kode,navn}=KOM_LIST[i];
+      const msg=`Henter ${navn} (${i+1}/${KOM_LIST.length})...`;
+      setOverlay(true,msg);
+      setStatus('loading',msg);
+
+      const payload={
+        table:'VAN1UGE',
+        format:'JSONSTAT',
+        lang:'da',
+        variables:[
+          {code:'OMRÅDE', values:[kode]},
+          {code:'KØN',    values:['1','2']},
+          {code:'ALDER',  values:['*']},
+          {code:'INDVLAND',values:['5464']},
+          {code:'Tid',    values:tidPeriods}
+        ]
+      };
+
+      const r=await fetch(`${DST}/data`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
+      });
+      if(!r.ok) throw new Error(`Data HTTP ${r.status} for ${navn}`);
+      const d=await r.json();
+      RAW[navn]=sumByTid(d.dataset);
+
+      if(i<KOM_LIST.length-1) await sleep(350);
+    }
+
+    // 3. Opdater dynamiske labels
+    const latestStr=`2026U${String(LATEST.wk).padStart(2,'0')}`;
+    document.getElementById('hdr-sub').textContent=
+      `Hvidovre og sammenligningskommuner \u00B7 DST VAN1UGE \u00B7 Seneste: ${latestStr}`;
+    document.getElementById('kilde-tid').textContent=
+      `Seneste data: ${latestStr} \u00B7 Opdateret: ${new Date().toLocaleDateString('da-DK')}`;
+    document.getElementById('bar-sub').textContent=
+      `Begge \u00e5r som % af 2025 \u00B7 uge 1\u2013${LATEST.wk} er sammenlignet`;
+    document.getElementById('bar-note').textContent=
+      `M\u00f8rk s\u00f8jle = 2025 u1\u2013${LATEST.wk} \u00B7 Lys s\u00f8jle = 2026 u1\u2013${LATEST.wk} \u00B7 begge som % af kommunens 2025-\u00e5rstotal`;
+    document.getElementById('tbl-sub').textContent=
+      `2025 (hele \u00e5r) og 2026 \u00c5TD (u1\u2013${LATEST.wk}) sammenlignet med samme periode 2025`;
+    document.getElementById('mdr-note').textContent=
+      `Uger kortlagt til m\u00e5neder via ISO-standard. 2026-serie vises t.o.m. uge ${LATEST.wk}, ${LATEST.yr} \u2014 forel\u00f8bige tal.`;
+
+    // 4. Render
+    buildKPI(); buildBar(); buildTable(); rfC();
+    if(tab==='mdr') updMdr();
+    if(tab==='kum') updKum();
+
+    setStatus('ok',`Data hentet fra DST VAN1UGE \u00B7 Seneste: ${latestStr} \u00B7 Opdateret ${new Date().toLocaleTimeString('da-DK')}`);
+
+  }catch(e){
+    setStatus('error','Fejl ved datahentning: '+e.message);
+    console.error(e);
+  }
+
+  setOverlay(false);
+}
+
+// ══════════════════════════════════════════
+//  KPI
+// ══════════════════════════════════════════
+function buildKPI(){
+  const hv25=tot('Hvidovre',2025),y26hv=ytd26('Hvidovre'),y25hv=ytd25same('Hvidovre');
+  const dk25=tot('Hele landet',2025),y26dk=ytd26('Hele landet'),y25dk=ytd25same('Hele landet');
+  const dYhv=dPct(y26hv,y25hv),dYdk=dPct(y26dk,y25dk);
+  document.getElementById('kpi-row').innerHTML=[
+    {l:`Hvidovre 2025 \u2014 hele \u00e5ret`,    v:hv25,                            d:'Uge 1\u201352, 2025',c:'neu'},
+    {l:`Hvidovre 2026 \u00c5TD (u1\u2013${LATEST.wk})`,  v:y26hv,  d:`2025 u1\u2013${LATEST.wk}: ${y25hv} \u00B7 \u0394 ${dStr(dYhv)}`,c:dC(dYhv)},
+    {l:'Hele landet 2025',                        v:dk25.toLocaleString('da-DK'),    d:'Uge 1\u201352, 2025',c:'neu'},
+    {l:`Hele landet 2026 \u00c5TD (u1\u2013${LATEST.wk})`,v:y26dk.toLocaleString('da-DK'),d:`2025 u1\u2013${LATEST.wk}: ${y25dk.toLocaleString('da-DK')} \u00B7 \u0394 ${dStr(dYdk)}`,c:dC(dYdk)}
+  ].map(o=>`<div class="kpi-card"><div class="kpi-lbl">${o.l}</div><div class="kpi-val">${o.v}</div><div class="kpi-d ${o.c}">${o.d}</div></div>`).join('');
+}
+
+// ══════════════════════════════════════════
+//  BAR — begge år, % af 2025-årstotal
+// ══════════════════════════════════════════
+function barToggle(yr){
+  if(yr===25) sB25=!sB25;
+  else        sB26=!sB26;
+  document.getElementById('bpill25')?.classList.toggle('on',sB25);
+  document.getElementById('bpill26')?.classList.toggle('on',sB26);
+  buildBar();
+}
+
+function buildBar(){
+  if(barC){barC.destroy();barC=null;}
+  const seq=['Hvidovre',null,'Brøndby','Rødovre','Ballerup','Gladsaxe','Herlev',null,'Hele landet'];
+  const dispLabs=seq.map(k=>!k?'':k==='Hele landet'?'DK total':k);
+
+  function pct(k,yr){
+    if(!k) return null;
+    const base=tot(k,2025);
+    const v=yr===2025?ytdW(k,2025,LATEST.wk):ytd26(k);
+    return base>0?Math.round(v/base*1000)/10:0;
+  }
+
+  const datasets=[];
+  if(sB25) datasets.push({
+    label:`2025 u1\u2013${LATEST.wk}`,
+    data:seq.map(k=>pct(k,2025)),
+    backgroundColor:seq.map(k=>k?COL[k]+'BB':'transparent'),
+    borderColor:seq.map(k=>k?COL[k]:'transparent'),
+    borderWidth:1.5,borderRadius:4,borderSkipped:false,order:2
+  });
+  if(sB26) datasets.push({
+    label:`2026 u1\u2013${LATEST.wk}`,
+    data:seq.map(k=>pct(k,2026)),
+    backgroundColor:seq.map(k=>k?COL[k]+'44':'transparent'),
+    borderColor:seq.map(k=>k?COL[k]:'transparent'),
+    borderWidth:1.5,borderRadius:4,borderSkipped:false,order:1
+  });
+
+  barC=new Chart(document.getElementById('barChart').getContext('2d'),{
+    type:'bar',
+    data:{labels:dispLabs,datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'bottom',labels:{font:{family:'DM Sans',size:11},boxWidth:14,padding:14}},
+        tooltip:{
+          backgroundColor:'#1C1C1A',titleFont:{family:'DM Sans',size:13,weight:'600'},
+          bodyFont:{family:'DM Sans',size:12},padding:11,cornerRadius:6,
+          callbacks:{
+            title:([c])=>seq[c.dataIndex]||null,
+            label:c=>{
+              const k=seq[c.dataIndex];
+              if(!k||c.raw===null) return null;
+              const yr=c.dataset.label.includes('2025')?2025:2026;
+              const abs=yr===2025?ytdW(k,2025,LATEST.wk):ytd26(k);
+              return `  ${c.dataset.label}: ${abs} pers. (${c.parsed.y}% af 2025-\u00e5rstotal)`;
+            }
+          }
+        }
+      },
+      scales:{
+        x:{ticks:{font:{family:'DM Sans',size:11},color:ctx=>{const k=seq[ctx.index];return k==='Hvidovre'?'#1A4D2E':'#3D4A41';},maxRotation:25},grid:{display:false}},
+        y:{beginAtZero:true,title:{display:true,text:'% af 2025-\u00e5rstotal',font:{family:'DM Sans',size:11},color:'#8A8A7E'},
+          ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>v+'%'},
+          grid:{color:'rgba(0,0,0,0.05)'}}
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════
+//  TABEL
+// ══════════════════════════════════════════
+function buildTable(){
+  const srt=[...KOM].sort((a,b)=>tot(b,2025)-tot(a,2025));
+  let h=`<table><thead><tr>
+    <th>Kommune</th><th>2025 (hele \u00e5r)</th>
+    <th>2026 u1\u2013${LATEST.wk}</th><th>2025 u1\u2013${LATEST.wk}</th><th>\u0394 YTD</th>
+  </tr></thead><tbody>`;
+  srt.forEach(k=>{
+    const t25=tot(k,2025),y26=ytd26(k),y25=ytd25same(k);
+    const isHv=k==='Hvidovre';
+    h+=`<tr class="${isHv?'hv':''}">
+      <td>${k==='Hele landet'?'\ud83c\udde9\ud83c\uddf0 Hele landet':k}</td>
+      <td class="mn"><strong>${t25.toLocaleString('da-DK')}</strong></td>
+      <td class="mn">${y26}</td><td class="mn">${y25}</td>
+      <td class="mn ${dC(dPct(y26,y25))}">${dStr(dPct(y26,y25))}</td>
+    </tr>`;
+  });
+  document.getElementById('tbl-overview').innerHTML=h+'</tbody></table>';
+}
+
+// ══════════════════════════════════════════
+//  KORT-SAMLER
+// ══════════════════════════════════════════
+function buildCards(id){
+  const el=document.getElementById(id);if(!el)return;
+  el.innerHTML=KOM.map(k=>{
+    const t25=tot(k,2025),y26=ytd26(k),y25=ytd25same(k);
+    const d=dPct(y26,y25),on=aktiv.has(k),c=COL[k];
+    return `<div class="kk ${on?'on':''}" style="border-left-color:${on?c:'transparent'}" onclick="tgl('${k}')">
+      <div class="kk-top"><span class="kk-name">${k}</span><span class="kk-chk">\u2713</span></div>
+      <div class="kk-val" style="color:${c}">${t25}</div>
+      <div class="kk-meta">2025 \u2014 hele \u00e5ret</div>
+      <div class="kk-d ${dC(d)}">2026 \u00c5TD: ${y26} (${dStr(d)} vs 2025)</div>
+    </div>`;
+  }).join('');
+}
+function rfC(){buildCards('cards-mdr');buildCards('cards-kum');}
+function tgl(k){aktiv.has(k)?aktiv.delete(k):aktiv.add(k);rfC();updMdr();updKum();}
+function grp(l){aktiv=new Set(l);rfC();updMdr();updKum();}
+function grpAll(){aktiv=new Set(KOM);rfC();updMdr();updKum();}
+function grpClear(){aktiv.clear();rfC();updMdr();updKum();}
+
+// ══════════════════════════════════════════
+//  MÅNEDLIG CHART
+// ══════════════════════════════════════════
+function updMdr(){
+  if(tab!=='mdr')return;
+  if(mdrC){mdrC.destroy();mdrC=null;}
+  const ds=[];
+  const lastMdr2026=w2m(LATEST.wk); // seneste måned med 2026-data
+
+  [...aktiv].forEach(k=>{
+    const c=COL[k],hv=k==='Hvidovre';
+    const d26=getMdr(k,2026).map((v,i)=>i<=lastMdr2026?v:null);
+    ds.push({label:k+' 2026',data:d26,borderColor:c,backgroundColor:c+'10',
+      borderWidth:hv?2.5:1.8,tension:0.35,
+      pointRadius:4,pointHoverRadius:6,pointStyle:'rectRot',
+      pointBackgroundColor:c,pointBorderColor:'#fff',pointBorderWidth:1.5,fill:false});
+    if(mdr25) ds.push({label:k+' 2025',data:getMdr(k,2025),borderColor:c+'80',
+      backgroundColor:'transparent',borderWidth:1.5,borderDash:[5,4],tension:0.35,pointRadius:2,fill:false});
+  });
+
+  mdrC=new Chart(document.getElementById('mdrChart').getContext('2d'),{
+    type:'line',data:{labels:MDR,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom',labels:{font:{family:'DM Sans',size:11},boxWidth:14,padding:12}},
+        tooltip:{backgroundColor:'#1C1C1A',titleFont:{family:'DM Sans',size:13,weight:'600'},bodyFont:{family:'DM Sans',size:12},padding:11,cornerRadius:6}},
+      scales:{x:{ticks:{font:{family:'DM Sans',size:11},color:'#6A6A60'},grid:{color:'rgba(0,0,0,0.04)'}},
+        y:{beginAtZero:true,ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E'},grid:{color:'rgba(0,0,0,0.05)'}}}}
+  });
+}
+
+// ══════════════════════════════════════════
+//  KUMULATIV CHART
+// ══════════════════════════════════════════
+const WLBL=(()=>{const r=new Array(52).fill('');MB.slice(0,-1).forEach((b,m)=>{r[b]=MDR[m];});return r;})();
+
+function updKum(){
+  if(tab!=='kum')return;
+  if(kumC){kumC.destroy();kumC=null;}
+  const isPct=kumTyp==='pct',ds=[];
+  [...aktiv].forEach(k=>{
+    const c=COL[k],hv=k==='Hvidovre';
+    const g=(y,mW)=>isPct?getCumPct(k,y,mW):getCum(k,y,mW);
+    ds.push({label:k+' 2026 \u00c5TD',data:g(2026,LATEST.wk),borderColor:c,
+      borderWidth:hv?2.5:2,borderDash:[4,3],tension:0.2,pointRadius:0,pointHoverRadius:4,fill:false,backgroundColor:'transparent'});
+    if(kum25) ds.push({label:k+' 2025',data:g(2025,52),borderColor:c+'70',
+      borderWidth:hv?2:1.4,tension:0.2,pointRadius:0,pointHoverRadius:3,fill:false,backgroundColor:'transparent'});
+  });
+  const yL=isPct?'% af 2025-\u00e5rstotal':'Akkumuleret antal';
+  kumC=new Chart(document.getElementById('kumChart').getContext('2d'),{
+    type:'line',data:{labels:WLBL,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom',labels:{font:{family:'DM Sans',size:11},boxWidth:14,padding:12}},
+        tooltip:{backgroundColor:'#1C1C1A',titleFont:{family:'DM Sans',size:13,weight:'600'},bodyFont:{family:'DM Sans',size:12},padding:11,cornerRadius:6,
+          callbacks:{title:([i])=>`Uge ${i.dataIndex+1}`,
+            label:c=>c.raw!=null?`  ${c.dataset.label}: ${isPct?c.raw+'%':c.raw}`:null}}},
+      scales:{x:{ticks:{font:{family:'DM Sans',size:11},color:'#6A6A60',maxRotation:0,callback:(v,i)=>WLBL[i]||null},grid:{color:'rgba(0,0,0,0.03)'}},
+        y:{beginAtZero:true,title:{display:true,text:yL,font:{family:'DM Sans',size:11},color:'#8A8A7E'},
+          ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>isPct?v+'%':v},grid:{color:'rgba(0,0,0,0.05)'}}}}
+  });
+  document.getElementById('kum-note').textContent=isPct
+    ?'Normaliseret: viser % af kommunens 2025-\u00e5rstotal akkumuleret. 2026-linje (stiklet) ender ved uge '+LATEST.wk+'. Perfekt til sammenligning p\u00e5 tv\u00e6rs af kommuner og Hele landet.'
+    :'Absolut: akkumuleret antal pr. uge siden 1. januar. Stiklet = 2026 \u00c5TD (stopper uge '+LATEST.wk+'). Brug "% af 2025-total" for sammenligning p\u00e5 tv\u00e6rs af st\u00f8rrelser.';
+}
+
+// ══════════════════════════════════════════
+//  TOGGLE / TAB
+// ══════════════════════════════════════════
+function setTab(t){
+  tab=t;
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tab-'+t).classList.add('on');
+  document.querySelectorAll('.tab-btn').forEach(b=>{if(b.dataset.tab===t)b.classList.add('on');});
+  if(t==='mdr') updMdr();
+  if(t==='kum') updKum();
+}
+function mdrToggle25(v){mdr25=v;document.getElementById('mp25j').classList.toggle('on',v);document.getElementById('mp25n').classList.toggle('on',!v);updMdr();}
+function kumTypSet(t){kumTyp=t;document.getElementById('ka').classList.toggle('on',t==='abs');document.getElementById('kp').classList.toggle('on',t==='pct');updKum();}
+function kumToggle25(v){kum25=v;document.getElementById('kp25j').classList.toggle('on',v);document.getElementById('kp25n').classList.toggle('on',!v);updKum();}
+
+function dl(){
+  const b=new Blob([document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='nepal-tilflytning.html';a.click();
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+window.addEventListener('load',()=>{
+  if(window.location.protocol==='file:'){
+    setStatus('error','Lokal fil: CORS-begr\u00e6nsning. \u00c5bn via GitHub Pages: https://henrikastrup.github.io/hvidovre-analyser/nepal-tilflytning.html');
+    setOverlay(false);
+    return;
+  }
+  loadData();
+});
+</script>
+</body>
+</html>
