@@ -1,6 +1,6 @@
 {
-  "genereret": "2026-05-12",
-  "senesteLabel": "Mar 26",
+  "genereret": "2026-05-19",
+  "senesteLabel": "Apr 26",
   "data": {
     "y01a02": {
       "navn": "A-dagpenge",
@@ -417,61 +417,112 @@
     },
     "y10a02": {
       "navn": "Førtidspension",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
+      "labels": [
+        "Maj 25",
+        "Jun 25",
+        "Jul 25",
+        "Aug 25",
+        "Sep 25",
+        "Okt 25",
+        "Nov 25",
+        "Dec 25",
+        "Jan 26",
+        "Feb 26",
+        "Mar 26",
+        "Apr 26"
+      ],
+      "ftp": [
+        2176,
+        2185,
+        2213,
+        2200,
+        2218,
+        2226,
+        2246,
+        2251,
+        2268,
+        2283,
+        2293,
+        2294
+      ],
+      "forrigeLabels": [
+        "Maj 24",
+        "Jun 24",
+        "Jul 24",
+        "Aug 24",
+        "Sep 24",
+        "Okt 24",
+        "Nov 24",
+        "Dec 24",
+        "Jan 25",
+        "Feb 25",
+        "Mar 25",
+        "Apr 25"
+      ],
+      "forrigeFtp": [
+        2023,
+        2056,
+        2080,
+        2063,
+        2079,
+        2088,
+        2097,
+        2113,
+        2121,
+        2133,
+        2148,
+        2150
+      ]
     }
   },
   "analyse": {
     "y01a02": {
-      "overskrift": "A-dagpenge falder til 748 i marts efter stigning i starten af året",
-      "tekst": "Antallet af modtagere af A-dagpenge udgør 748 fuldtidspersoner i marts 2026. Dette er et fald på 8 personer i forhold til februar, men en stigning på 22 personer sammenlignet med januar. Set over det seneste år er niveauet samlet set steget med 22 personer, hvilket indikerer en flad til svagt stigende tendens over en 12-måneders periode. Den kortsigtede udvikling viser en stabilisering efter de foregående måneders bevægelser. Der observeres ingen markante sæsonudsving i marts udover den mindre korrektion efter vinterperioden. Den overordnede retning vurderes som værende stabil på det nuværende niveau."
+      "overskrift": "A-dagpenge falder til 748 i marts efter stigning tidligere på året",
+      "tekst": "Antallet af modtagere af A-dagpenge udgør 748 fuldtidspersoner i marts, hvilket er et fald på 8 personer sammenlignet med februar. Niveauet ligger dog fortsat 22 personer højere end for to måneder siden, hvor tallet var 726. Set over det seneste år er der tale om en moderat stigning på i alt 22 helårspersoner. Den seneste måneds fald bryder den opadgående tendens, der blev observeret i starten af året. Udviklingen tyder på en stabilisering af ledigheden efter vinterperioden. Den overordnede retning for A-dagpenge vurderes som værende på et stabilt niveau med en svagt stigende tendens på årsbasis."
     },
     "y60a02": {
-      "overskrift": "Kontanthjælpsmodtagere stiger til 698 i marts trods fald over det seneste år",
-      "tekst": "For kontanthjælp er antallet af helårspersoner opgjort til 698 i marts 2026. Det svarer til en stigning på 14 personer siden februar og en vækst på 33 personer over de seneste to måneder. På trods af den aktuelle stigning ligger niveauet 34 personer lavere end på samme tidspunkt sidste år. Udviklingen i de seneste to måneder bryder med den ellers langsigtede nedadgående trend for denne ydelsestype. Der ses et mønster med øget tilgang i det tidlige forår sammenlignet med de foregående vintermåneder. Den aktuelle retning i marts peger mod en kortsigtet stigning i sagsstammen."
+      "overskrift": "Kontanthjælp stiger til 698 i marts men ligger under sidste års niveau",
+      "tekst": "Der er registreret 698 modtagere af kontanthjælp i marts, hvilket markerer en stigning på 14 personer siden februar. Sammenlignet med niveauet for to måneder siden er der tale om en tilvækst på 33 fuldtidspersoner. På trods af den kortsigtede stigning ligger det nuværende niveau 34 personer lavere end på samme tidspunkt sidste år. Stigningen i de første måneder af året indikerer en kortsigtet opadgående trend i gruppen. Denne tendens modvirker det ellers faldende forløb, der har præget det seneste år. Retningen for kontanthjælp er aktuelt opadgående på kort sigt, mens årsnormen fortsat er faldende."
     },
     "y07a02": {
-      "overskrift": "Markant fald i sygedagpenge til 759 fuldtidspersoner i marts",
-      "tekst": "Antallet af personer på sygedagpenge er opgjort til 759 i marts 2026, hvilket er 29 færre end i februar. Sammenlignet med januar er der tale om et fald på 32 personer i sagsstammen. Over det seneste år er antallet reduceret markant med 109 helårspersoner, svarende til et fald på cirka 10 procent. Dette understøtter en vedvarende nedadgående tendens gennem hele den rullende 12-måneders periode. Faldet i marts er større end de foregående måneders justeringer og indikerer en forstærket bevægelse. Udviklingen vurderes som fortsat nedadgående."
+      "overskrift": "Markant fald i sygedagpenge til 759 personer i marts måned",
+      "tekst": "Antallet af sygedagpengemodtagere er faldet til 759 fuldtidspersoner i marts, hvilket er en reduktion på 29 i forhold til februar. Faldet er endnu tydeligere over en to-måneders periode, hvor antallet er reduceret med 32 personer. I et 12-måneders perspektiv er der tale om en betydelig nedgang på 109 helårspersoner, svarende til et fald på cirka 10 procent. Reduktionen i marts følger en længerevarende tendens med faldende sygefravær gennem det seneste år. Der ses ikke tegn på sæsonbetingede stigninger i den aktuelle periode. Udviklingen i sygedagpenge peger på en fortsat og stabil nedadgående retning."
     },
     "y11a02": {
-      "overskrift": "Ressourceforløb reduceret til 180 personer i marts efter jævnt fald",
-      "tekst": "Der var 180 fuldtidspersoner i ressourceforløb i marts 2026, hvilket er en nedgang på 6 personer fra februar. I forhold til januar er faldet på 17 personer, hvilket viser en tydelig reduktion i årets første kvartal. Set over det seneste år er antallet af modtagere faldet med 13 personer i alt. Data indikerer en stabil afgang fra ordningen, der har taget fart i begyndelsen af året efter en mere stabil periode. Der ses ingen tegn på pludselige stigninger eller ændrede mønstre i tilgangen. Retningen vurderes som værende moderat nedadgående."
+      "overskrift": "Ressourceforløb fortsætter faldet til 180 fuldtidspersoner i marts",
+      "tekst": "Niveauet for ressourceforløb er opgjort til 180 personer i marts, hvilket er 6 færre end i den foregående måned. Siden januar er antallet faldet med 17 personer, hvilket markerer en tydelig kortsigtet reduktion. Set over det seneste år er bestanden mindsket med 13 personer, hvilket svarer til et fald på 10 procent. Udviklingen i marts understøtter den jævne nedgang, der har præget ydelsesområdet i de seneste måneder. Der er ikke observeret væsentlige afvigelser fra den etablerede trend i de foreliggende data. Retningen for ressourceforløb vurderes som værende i en stabil nedadgående bevægelse."
     },
     "y09a02": {
-      "overskrift": "Ledighedsydelsen stiger til 67 personer i marts efter stabil periode",
-      "tekst": "Antallet af modtagere af ledighedsydelse udgjorde 67 personer i marts 2026. Dette repræsenterer en stigning på 7 personer sammenlignet med februar og 4 flere end i januar. Over det seneste år er niveauet stort set uændret med et marginalt fald på kun én person. Den månedlige ændring i marts er relativt stor for denne ydelsestype, men skal ses i lyset af det lave samlede antal modtagere. Udviklingen viser en mindre forskydning inden for et ellers meget stabilt og fastlåst leje gennem det seneste år. Den aktuelle retning er svagt stigende."
+      "overskrift": "Ledighedsydelse stiger til 67 personer i marts efter stabil periode",
+      "tekst": "I marts modtog 67 fuldtidspersoner ledighedsydelse, hvilket er en stigning på 7 personer sammenlignet med februar. Niveauet er 4 personer højere end for to måneder siden, hvor tallet lå på 63. På årsbasis er antallet stort set uændret med et marginalt fald på én person sammenlignet med sidste år. Den månedlige stigning er relativt stor for denne ydelsestype, som normalt udviser stor stabilitet i volumen. Der er tale om den højeste notering inden for det seneste kvartal i Hvidovre Kommune. Den overordnede retning for ledighedsydelse vurderes på denne baggrund som værende svagt stigende på kort sigt."
     },
     "y08a02": {
-      "overskrift": "Fleksjob fortsætter stigning til 739 fuldtidspersoner i marts",
-      "tekst": "Antallet af personer i fleksjob er opgjort til 739 i marts 2026. Det er en stigning på 2 personer siden februar og en samlet vækst på 10 personer siden januar. Set over det seneste år er der sket en tilgang på 34 helårspersoner til ordningen, hvilket svarer til den generelle udvikling på området. Udviklingen afspejler en langsigtet og jævn vækst i antallet af visiterede til fleksjob i kommunen. Der er ikke tegn på sæsonmæssige udsving, men derimod en vedvarende strukturel trend. Retningen vurderes som værende fortsat svagt opadgående."
+      "overskrift": "Fleksjob stiger marginalt til 739 i marts med positiv årsudvikling",
+      "tekst": "Antallet af personer i fleksjob er opgjort til 739 i marts, hvilket er en stigning på 2 personer siden februar. Sammenlignet med niveauet for to måneder siden er der tale om en vækst på 10 fuldtidspersoner. Set over de seneste 12 måneder er der sket en samlet tilgang på 34 helårspersoner til ordningen. Udviklingen afspejler en jævn og stabil tilvækst i antallet af fleksjobbere gennem hele det forgangne år. Der ses ingen pludselige udsving i data, hvilket tyder på en fast forankret struktur i visitationerne. Retningen for fleksjobområdet vurderes fortsat som værende jævnt og stabilt stigende."
     },
     "y12a02": {
-      "overskrift": "Færre i jobafklaringsforløb med et fald til 188 i marts",
-      "tekst": "I marts 2026 var der 188 fuldtidspersoner i jobafklaringsforløb, hvilket er 4 færre end måneden før. Sammenlignet med januar er faldet på 22 personer, hvilket markerer en tydelig reduktion i årets første kvartal. Over det seneste år er antallet af forløb faldet med 25 personer, hvilket svarer til en reduktion på 10 procent. Denne udvikling følger tendensen for de øvrige sygeopfølgningsydelser i Hvidovre Kommune. Der observeres en accelererende afgang i de seneste måneder sammenlignet med det foregående halve år. Den overordnede retning er nedadgående."
+      "overskrift": "Jobafklaringsforløb falder til 188 personer og fortsætter årets tendens",
+      "tekst": "I marts var 188 personer i jobafklaringsforløb, hvilket er et fald på 4 personer i forhold til måneden før. Sammenlignet med januar er der tale om en markant reduktion på 22 fuldtidspersoner i kommunen. På årsbasis er antallet af forløb faldet med 25 personer, svarende til en nedgang på cirka 10 procent. Det jævne fald i de seneste to måneder bekræfter den overordnede tendens mod færre personer i ordningen. Der observeres ingen tegn på opbremsning i denne udvikling i de seneste månedlige opgørelser. Retningen for jobafklaringsforløb vurderes som fortsat værende tydeligt nedadgående."
     },
     "y10a02": {
-      "overskrift": "Førtidspension marts 2026",
-      "tekst": ": Data ikke tilgængeligt for denne periode."
+      "overskrift": "Førtidspension stiger til 2294 i april med markant vækst over året",
+      "tekst": "Antallet af førtidspensionister er opgjort til 2294 personer i april, hvilket er en marginal stigning på én person siden marts. Niveauet ligger 11 personer højere end for to måneder siden, hvilket indikerer en fortsat tilvækst til ordningen. Set over det seneste år er der tale om en betydelig stigning på 144 helårspersoner, svarende til en vækst på cirka 10 procent. Denne langsigtede trend er den mest markante ændring blandt alle de analyserede ydelsestyper i perioden. Udviklingen i april understøtter billedet af en stabil, men vedvarende tilgang af nye modtagere. Retningen for førtidspension vurderes entydigt som fortsat stigende."
     },
     "y85a02": {
-      "overskrift": "Øvrige ydelser marts 2026",
-      "tekst": ": Data ikke tilgængeligt for denne periode."
+      "overskrift": "Data ikke tilgængeligt",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y13a02": {
-      "overskrift": "Øvrige ydelser marts 2026",
-      "tekst": ": Data ikke tilgængeligt for denne periode."
+      "overskrift": "Data ikke tilgængeligt",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y40a02": {
-      "overskrift": "Øvrige ydelser marts 2026",
-      "tekst": ": Data ikke tilgængeligt for denne periode."
+      "overskrift": "Data ikke tilgængeligt",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y28a02": {
-      "overskrift": "Øvrige ydelser marts 2026",
-      "tekst": ": Data ikke tilgængeligt for denne periode."
+      "overskrift": "Data ikke tilgængeligt",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     }
   }
 }
