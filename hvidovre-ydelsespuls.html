@@ -790,6 +790,77 @@ function byggTabel() {
   }
 
   const d0       = data.data[vis[0]] || {};
+  const labels   = d0.labels        || [];
+  const fyLabels = d0.forrigeLabels || [];
+  const visForrige = visForrigeAar && fyLabels.length > 0;
+
+  // Header: kun månedsnavn uden årstal (fx "Apr 25" → "Apr")
+  const mdrHeaders = labels.map(l => '<th>' + l.split(' ')[0] + '</th>').join('');
+  document.getElementById('tblHead').innerHTML =
+    '<tr><th>Ydelse</th>' + mdrHeaders + '<th>Ændring</th></tr>';
+
+  document.getElementById('tblBody').innerHTML = vis.map(id => {
+    const m     = TABEL_META[id];
+    const d     = data.data[id] || {};
+    const ftp   = d.ftp        || [];
+    const fyFtp = d.forrigeFtp || [];
+    const n     = ftp.length;
+    const lv    = ftp[n-1];
+    const fv    = ftp.find(v => v != null);
+    const diff  = lv != null && fv != null ? lv - fv : null;
+    const pct   = diff != null && fv ? Math.round(diff/fv*100) : null;
+    const dcl   = diff == null ? '' : diff < 0 ? 'pos' : diff > 0 ? 'neg' : '';
+    const dtxt  = diff == null ? '—' :
+      (diff > 0 ? '▲ +' : '▼ ') + Math.abs(diff).toLocaleString('da-DK')
+      + (pct != null ? ' (' + (pct > 0 ? '+' : '') + pct + '%)' : '');
+
+    const fmt = v => v != null ? v.toLocaleString('da-DK') : '—';
+
+    if (!visForrige) {
+      // Kun aktuel periode — én række
+      return '<tr>'
+        + '<td style="color:' + m.farve + ';font-weight:600">' + m.navn + '</td>'
+        + ftp.map(v => '<td>' + fmt(v) + '</td>').join('')
+        + '<td class="' + dcl + '">' + dtxt + '</td>'
+        + '</tr>';
+    }
+
+    // To rækker: forrige år øverst (normal), aktuel år nederst (fed)
+    const rowForrige = '<tr>'
+      + '<td style="color:' + m.farve + ';border-bottom:none">' + m.navn + '</td>'
+      + fyFtp.map(v => '<td style="border-bottom:none">' + fmt(v) + '</td>').join('')
+      + '<td style="border-bottom:none"></td>'
+      + '</tr>';
+
+    const rowAktuel = '<tr style="font-weight:600">'
+      + '<td style="color:' + m.farve + '"></td>'
+      + ftp.map(v => '<td>' + fmt(v) + '</td>').join('')
+      + '<td class="' + dcl + '">' + dtxt + '</td>'
+      + '</tr>';
+
+    return rowForrige + rowAktuel;
+  }).join('');
+}
+
+function skiftVisning(v) {
+  aktivVisning = v;
+  document.getElementById('btnGraf').classList.toggle('active', v === 'graf');
+  document.getElementById('btnTabel').classList.toggle('active', v === 'tabel');
+  document.getElementById('grafArea').style.display  = v === 'graf'  ? '' : 'none';
+  document.getElementById('tabelArea').style.display = v === 'tabel' ? '' : 'none';
+  if (v === 'tabel') byggTabel();
+}
+
+function byggTabel() {
+  const vis = TABEL_IDS.filter(id => aktive.has(id));
+  if (!vis.length || !data) {
+    document.getElementById('tblHead').innerHTML = '';
+    document.getElementById('tblBody').innerHTML =
+      '<tr><td colspan="99" style="color:var(--muted);padding:20px">Vælg en ydelsestype for at se data</td></tr>';
+    return;
+  }
+
+  const d0       = data.data[vis[0]] || {};
   const labels   = d0.labels   || [];   // ["Apr 25", "Maj 25", ...]
   const fyLabels = d0.forrigeLabels || []; // ["Apr 24", "Maj 24", ...]
   const visForrige = visForrigeAar && fyLabels.length > 0;
