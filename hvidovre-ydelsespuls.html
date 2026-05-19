@@ -101,6 +101,16 @@ main{padding:22px 48px 40px;max-width:1140px;}
 .tsep{width:1px;height:20px;background:var(--border);margin:0 3px;flex-shrink:0;}
 
 /* TABEL */
+.tbl-legende {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  padding: 8px 12px; margin-bottom: 10px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 7px; font-size: 12px; color: var(--mid);
+}
+.tbl-legende-item { display: flex; align-items: center; gap: 8px; }
+.tbl-legende-linje {
+  width: 28px; height: 3px; border-radius: 2px; flex-shrink: 0;
+}
 .tbl-wrap{overflow-x:auto;margin-top:4px;}
 .data-tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
 .data-tbl th{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.07em;
@@ -280,6 +290,16 @@ main{padding:22px 48px 40px;max-width:1140px;}
     </div>
     <!-- TABEL -->
     <div id="tabelArea" style="display:none">
+      <div class="tbl-legende" id="tblLegende" style="display:none">
+        <div class="tbl-legende-item">
+          <div class="tbl-legende-linje" style="background:var(--muted);opacity:.4"></div>
+          <span>Forrige år</span>
+        </div>
+        <div class="tbl-legende-item">
+          <div class="tbl-legende-linje" style="background:var(--green)"></div>
+          <span><strong>Seneste år</strong></span>
+        </div>
+      </div>
       <div class="tbl-wrap">
         <table class="data-tbl"><thead id="tblHead"></thead><tbody id="tblBody"></tbody></table>
       </div>
@@ -798,6 +818,7 @@ function byggTabel() {
   const mdrHeaders = labels.map(l => '<th>' + l.split(' ')[0] + '</th>').join('');
   document.getElementById('tblHead').innerHTML =
     '<tr><th>Ydelse</th>' + mdrHeaders + '<th>Ændring</th></tr>';
+  document.getElementById('tblLegende').style.display = visForrige ? 'flex' : 'none';
 
   document.getElementById('tblBody').innerHTML = vis.map(id => {
     const m     = TABEL_META[id];
@@ -825,15 +846,16 @@ function byggTabel() {
         + '</tr>';
     }
 
-    // To rækker: forrige år øverst (normal), aktuel år nederst (fed)
-    const rowForrige = '<tr>'
-      + '<td style="color:' + m.farve + ';border-bottom:none">' + m.navn + '</td>'
+    // Forrige år øverst — nedtonet
+    const rowForrige = '<tr style="opacity:.55">'
+      + '<td style="color:' + m.farve + ';border-bottom:none;font-style:italic">' + m.navn + '</td>'
       + fyFtp.map(v => '<td style="border-bottom:none">' + fmt(v) + '</td>').join('')
       + '<td style="border-bottom:none"></td>'
       + '</tr>';
 
-    const rowAktuel = '<tr style="font-weight:600">'
-      + '<td style="color:' + m.farve + '"></td>'
+    // Seneste år nederst — fed med svag grøn baggrund
+    const rowAktuel = '<tr style="font-weight:600;background:rgba(26,77,46,0.04)">'
+      + '<td style="color:' + m.farve + '">' + m.navn + '</td>'
       + ftp.map(v => '<td>' + fmt(v) + '</td>').join('')
       + '<td class="' + dcl + '">' + dtxt + '</td>'
       + '</tr>';
