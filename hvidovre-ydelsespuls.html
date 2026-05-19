@@ -789,29 +789,49 @@ function byggTabel() {
     return;
   }
 
-  // Hent labels fra første aktive ydelse
-  const labels = data.data[vis[0]]?.labels || [];
+  const d0      = data.data[vis[0]] || {};
+  const labels  = d0.labels || [];
+  const fyLabels = d0.forrigeLabels || [];
+  const visForrige = visForrigeAar && fyLabels.length > 0;
 
-  // Header
-  document.getElementById('tblHead').innerHTML =
-    '<tr><th>Ydelse</th>' + labels.map(l => `<th>${l}</th>`).join('') + '<th>Ændring</th></tr>';
+  // Header — to rækker med ydelse og periode-labels
+  const thAktuel  = labels.map(l => `<th>${l}</th>`).join('');
+  const thForrige = visForrige ? fyLabels.map(l => `<th style="opacity:.55">${l}</th>`).join('') : '';
+
+  document.getElementById('tblHead').innerHTML = visForrige
+    ? `<tr>
+        <th rowspan="2">Ydelse</th>
+        <th colspan="${labels.length}" style="text-align:center;border-bottom:1px solid var(--border)">Seneste 12 mdr.</th>
+        <th colspan="${fyLabels.length}" style="text-align:center;border-bottom:1px solid var(--border);opacity:.6">Forrige år</th>
+        <th rowspan="2">Ændring</th>
+       </tr>
+       <tr>${thAktuel}${thForrige}</tr>`
+    : `<tr><th>Ydelse</th>${thAktuel}<th>Ændring</th></tr>`;
 
   // Rækker
   document.getElementById('tblBody').innerHTML = vis.map(id => {
-    const m   = TABEL_META[id];
-    const ftp = data.data[id]?.ftp || [];
-    const n   = ftp.length;
-    const lv  = ftp[n-1];
-    const fv  = ftp.find(v => v != null);
-    const diff = lv != null && fv != null ? lv - fv : null;
-    const pct  = diff != null && fv ? Math.round(diff/fv*100) : null;
-    const dcl  = diff == null ? '' : diff < 0 ? 'pos' : diff > 0 ? 'neg' : '';
-    const dtxt = diff == null ? '—' :
+    const m      = TABEL_META[id];
+    const d      = data.data[id] || {};
+    const ftp    = d.ftp || [];
+    const fyFtp  = d.forrigeFtp || [];
+    const n      = ftp.length;
+    const lv     = ftp[n-1];
+    const fv     = ftp.find(v => v != null);
+    const diff   = lv != null && fv != null ? lv - fv : null;
+    const pct    = diff != null && fv ? Math.round(diff/fv*100) : null;
+    const dcl    = diff == null ? '' : diff < 0 ? 'pos' : diff > 0 ? 'neg' : '';
+    const dtxt   = diff == null ? '—' :
       (diff > 0 ? '▲ +' : '▼ ') + Math.abs(diff).toLocaleString('da-DK')
       + (pct != null ? ` (${pct > 0 ? '+' : ''}${pct}%)` : '');
+
+    const aktuelCeller  = ftp.map(v =>
+      `<td>${v != null ? v.toLocaleString('da-DK') : '—'}</td>`).join('');
+    const forrrigeCeller = visForrige ? fyFtp.map(v =>
+      `<td style="opacity:.55;background:rgba(201,151,58,0.04)">${v != null ? v.toLocaleString('da-DK') : '—'}</td>`).join('') : '';
+
     return `<tr>
       <td style="color:${m.farve};font-weight:600">${m.navn}</td>
-      ${ftp.map(v => `<td>${v != null ? v.toLocaleString('da-DK') : '—'}</td>`).join('')}
+      ${aktuelCeller}${forrrigeCeller}
       <td class="${dcl}">${dtxt}</td>
     </tr>`;
   }).join('');
