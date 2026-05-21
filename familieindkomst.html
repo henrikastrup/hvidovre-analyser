@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Familiers lønindkomst efter familietype · Hvidovre Kommune</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:#F8F7F2; --surface:#FFFFFF; --border:#E5E4DC;
+    --dark:#1C1C1A; --mid:#4A4A42; --muted:#8A8A7E;
+    --green:#1A4D2E; --green-mid:#2E6B47; --green-light:#EBF2ED;
+    --amber:#E8C06A; --red:#C84B31;
+  }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--dark); }
+
+  .ap-navbar{all:unset;display:flex!important;align-items:center;background:#0E1612;border-bottom:1px solid rgba(255,255,255,0.08);padding:0 28px;height:40px;font-family:'DM Mono',monospace,sans-serif;position:relative;z-index:9999;box-sizing:border-box;width:100%;}
+  .ap-back{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.55);font-size:11.5px;letter-spacing:0.04em;text-decoration:none;transition:color 0.18s;}
+  .ap-back:hover{color:#E8C06A;}
+  .ap-back svg{flex-shrink:0;transition:transform 0.18s;}
+  .ap-back:hover svg{transform:translateX(-3px);}
+  .ap-brand{font-size:11.5px;letter-spacing:0.08em;color:#E8C06A;margin-left:4px;}
+  .ap-sep{width:1px;height:18px;background:rgba(255,255,255,0.1);margin:0 16px;}
+  .ap-domain{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.25);}
+  .ap-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:rgba(201,151,58,0.6);margin-right:8px;vertical-align:middle;}
+
+  .hdr { background:var(--green); padding:32px 48px 28px; }
+  .hdr-top { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+  .hdr-badge { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); border-radius:4px; font-family:'DM Mono',monospace; font-size:10px; color:rgba(255,255,255,0.75); padding:3px 8px; letter-spacing:0.1em; }
+  .hdr h1 { font-family:'DM Serif Display',serif; font-size:26px; color:#fff; font-weight:400; line-height:1.25; }
+  .hdr-sub { font-size:13px; color:rgba(255,255,255,0.65); margin-top:6px; }
+
+  .metode-note { background:#FFF8E8; border:1px solid #E8C06A; border-radius:8px; padding:14px 18px; margin:24px 48px 0; display:flex; gap:12px; align-items:flex-start; }
+  .metode-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+  .metode-note h3 { font-size:13px; font-weight:600; color:#7A5000; margin-bottom:4px; }
+  .metode-note p { font-size:12.5px; color:#7A5000; line-height:1.6; }
+
+  main { padding:24px 48px 40px; max-width:1180px; }
+
+  .sec-hdr { font-family:'DM Serif Display',serif; font-size:18px; color:var(--green); font-weight:400; margin-bottom:4px; }
+  .sec-sub { font-size:12px; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:16px; }
+  .section { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:22px; margin-bottom:24px; }
+
+  .kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+  .kpi { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:16px 18px; }
+  .kpi-label { font-size:11px; color:var(--muted); font-family:'DM Mono',monospace; letter-spacing:0.05em; margin-bottom:6px; }
+  .kpi-val { font-family:'DM Mono',monospace; font-size:22px; font-weight:500; color:var(--green); }
+  .kpi-unit { font-size:11px; color:var(--muted); margin-top:2px; }
+  .kpi-delta { font-size:11.5px; margin-top:5px; font-family:'DM Mono',monospace; }
+  .kpi-delta.pos { color:#2E7D32; }
+
+  .fam-pills { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .fam-pill { display:flex; align-items:center; gap:6px; padding:5px 11px; border-radius:20px; font-size:11.5px; font-family:'DM Mono',monospace; border:1.5px solid transparent; cursor:pointer; transition:all .15s; }
+
+  .canvas-wrap { height:400px; position:relative; }
+  .canvas-wrap-xl { height:460px; position:relative; }
+
+  /* Farvelegend */
+  .legend-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:6px; margin-top:14px; }
+  .leg-item { display:flex; align-items:center; gap:7px; font-size:12px; }
+  .leg-swatch { width:14px; height:14px; border-radius:3px; flex-shrink:0; }
+  .leg-item.hv .leg-swatch { outline:2px solid currentColor; outline-offset:1px; }
+
+  /* PL-faktortabel */
+  .pl-tbl { display:flex; gap:0; margin-bottom:16px; border:1px solid var(--border); border-radius:6px; overflow:hidden; font-family:'DM Mono',monospace; font-size:11px; }
+  .pl-col { flex:1; }
+  .pl-col .pl-hd { background:var(--green); color:#fff; padding:5px 10px; text-align:center; font-weight:500; }
+  .pl-col .pl-val { padding:5px 10px; text-align:center; border-top:1px solid var(--border); color:var(--mid); }
+  .pl-col .pl-val.hv { background:var(--green-light); color:var(--green); font-weight:600; }
+
+  /* Bench tabel */
+  .bench-tbl { width:100%; border-collapse:collapse; font-size:12.5px; }
+  .bench-tbl th { background:var(--green); color:#fff; font-family:'DM Mono',monospace; font-size:11px; font-weight:500; padding:8px 12px; text-align:right; }
+  .bench-tbl th:first-child { text-align:left; }
+  .bench-tbl td { padding:8px 12px; text-align:right; border-bottom:1px solid var(--border); font-family:'DM Mono',monospace; }
+  .bench-tbl td:first-child { text-align:left; font-family:'DM Sans',sans-serif; font-weight:500; }
+  .bench-tbl tr.hvidovre td { background:var(--green-light); font-weight:600; color:var(--green); }
+  .bench-tbl tr.hvidovre td:first-child { border-left:3px solid var(--green); padding-left:9px; }
+  .bench-tbl .land-avg td { color:var(--muted); font-style:italic; }
+
+  .analyse { background:var(--green-light); border:1px solid #C5DCC9; border-radius:8px; padding:18px 22px; margin-top:16px; }
+  .analyse h4 { font-family:'DM Serif Display',serif; font-size:15px; color:var(--green); font-weight:400; margin-bottom:10px; }
+  .analyse p { font-size:13px; color:var(--mid); line-height:1.7; margin-bottom:8px; }
+  .analyse p:last-child { margin-bottom:0; }
+  .analyse strong { color:var(--green); }
+
+  .kilde { font-family:'DM Mono',monospace; font-size:10.5px; color:var(--muted); padding:16px 48px 24px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .dl-btn { display:inline-flex; align-items:center; gap:5px; padding:6px 13px; background:transparent; border:1.5px solid var(--border); border-radius:6px; font-family:'DM Mono',monospace; font-size:11px; color:var(--mid); cursor:pointer; transition:all .15s; }
+  .dl-btn:hover { border-color:var(--green); color:var(--green); }
+
+  @media(max-width:700px){
+    .hdr,.metode-note,main,.kilde{padding-left:20px;padding-right:20px;}
+    .kpi-row{grid-template-columns:1fr 1fr;}
+    .pl-tbl{flex-wrap:wrap;}
+  }
+</style>
+</head>
+<body>
+
+<div class="ap-navbar">
+  <a class="ap-back" href="https://analyse.astrup.org">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    <span class="ap-brand">analyse.astrup.org</span>
+  </a>
+  <div class="ap-sep"></div>
+  <span class="ap-domain"><span class="ap-dot"></span>Analyseportal</span>
+</div>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <span class="hdr-badge">INDKF111 · DST</span>
+    <span class="hdr-badge">2020–2024 · 2026-PRISER</span>
+    <span class="hdr-badge">PL-OMREGNET</span>
+  </div>
+  <h1>Lønindkomst fordelt på familietype</h1>
+  <div class="hdr-sub">Hvidovre Kommune · Benchmarkgruppe · Hele landet · Gennemsnit kr./familie · Faste 2026-priser (PL)</div>
+</div>
+
+<div class="metode-note">
+  <div class="metode-icon">⚠️</div>
+  <div>
+    <h3>Metodisk note — hvad viser denne analyse?</h3>
+    <p>
+      Danmarks Statistik har <strong>ingen offentlig tabel der kombinerer tilflytterstatus, indkomst og familietype</strong> på kommuneniveau. Analysen viser i stedet <strong>gennemsnitlig lønindkomst (post "Løn") for alle familier bosiddende i kommunen</strong>, opdelt efter familietype (INDKF111). Lønindkomst er den dominerende komponent af a-indkomst for erhvervsaktive familier.
+      Udviklingsgrafen viser <strong>faste 2026-priser</strong> omregnet via KL's PL-tabel (opgjort juni 2025).
+    </p>
+  </div>
+</div>
+
+<main>
+
+<!-- KPI -->
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="kpi-label">FAMILIER MED BØRN · 2024</div>
+    <div class="kpi-val">873.155</div>
+    <div class="kpi-unit">kr./familie · løbende priser</div>
+    <div class="kpi-delta pos">▲ +6,7 % realt siden 2020</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">ENLIGE MED BØRN · 2024</div>
+    <div class="kpi-val">419.087</div>
+    <div class="kpi-unit">kr./familie · løbende priser</div>
+    <div class="kpi-delta pos">▲ +8,3 % realt siden 2020</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">PAR UDEN BØRN · 2024</div>
+    <div class="kpi-val">481.257</div>
+    <div class="kpi-unit">kr./familie · løbende priser</div>
+    <div class="kpi-delta pos">▲ +1,9 % realt siden 2020</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">ENLIGE UDEN BØRN · 2024</div>
+    <div class="kpi-val">191.366</div>
+    <div class="kpi-unit">kr./familie · løbende priser</div>
+    <div class="kpi-delta pos">▲ +8,6 % realt siden 2020</div>
+  </div>
+</div>
+
+<!-- DEL 1: Benchmark 2024 (løbende priser) -->
+<div class="section">
+  <div class="sec-hdr">Benchmark 2024 — alle kommuner</div>
+  <div class="sec-sub">Løbende priser · Vælg familietype</div>
+
+  <div class="fam-pills" id="famPills">
+    <div class="fam-pill aktiv" data-fam="0" style="border-color:#1A4D2E;background:#EBF2ED;color:#1A4D2E"><span style="width:9px;height:9px;border-radius:50%;background:#1A4D2E;display:inline-block"></span>Familier med børn</div>
+    <div class="fam-pill" data-fam="1" style="color:#6B4C9A"><span style="width:9px;height:9px;border-radius:50%;background:#6B4C9A;display:inline-block"></span>Enlige med børn</div>
+    <div class="fam-pill" data-fam="2" style="color:#1D6E7A"><span style="width:9px;height:9px;border-radius:50%;background:#1D6E7A;display:inline-block"></span>Par uden børn</div>
+    <div class="fam-pill" data-fam="3" style="color:#8A2C4A"><span style="width:9px;height:9px;border-radius:50%;background:#8A2C4A;display:inline-block"></span>Enlige uden børn</div>
+  </div>
+  <div class="canvas-wrap"><canvas id="benchChart"></canvas></div>
+  <div style="margin-top:18px;overflow-x:auto;">
+    <table class="bench-tbl">
+      <thead><tr><th>Kommune</th><th>Fam. m. børn</th><th>Enl. m. børn</th><th>Par u. børn</th><th>Enl. u. børn</th></tr></thead>
+      <tbody id="benchTbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- DEL 2: Udvikling 2020–2024, faste 2026-priser, søjlediagram -->
+<div class="section">
+  <div class="sec-hdr">Udvikling 2020–2024 — faste 2026-priser (PL)</div>
+  <div class="sec-sub">Alle kommuner og hele landet som søjler · Hvidovre fremhævet · Vælg familietype</div>
+
+  <!-- PL-faktorer -->
+  <div style="margin-bottom:14px;">
+    <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:6px;">PL-FAKTORER (fra årets priser → 2026-priser · KL PL-tabel, juni 2025):</div>
+    <div class="pl-tbl">
+      <div class="pl-col"><div class="pl-hd">2020</div><div class="pl-val">× 1,205</div></div>
+      <div class="pl-col"><div class="pl-hd">2021</div><div class="pl-val">× 1,185</div></div>
+      <div class="pl-col"><div class="pl-hd">2022</div><div class="pl-val">× 1,143</div></div>
+      <div class="pl-col"><div class="pl-hd">2023</div><div class="pl-val">× 1,112</div></div>
+      <div class="pl-col"><div class="pl-hd">2024</div><div class="pl-val">× 1,069</div></div>
+    </div>
+  </div>
+
+  <!-- Familietype pills til trend -->
+  <div class="fam-pills" id="trendFamPills">
+    <div class="fam-pill aktiv" data-tf="0" style="border-color:#1A4D2E;background:#EBF2ED;color:#1A4D2E"><span style="width:9px;height:9px;border-radius:50%;background:#1A4D2E;display:inline-block"></span>Familier med børn</div>
+    <div class="fam-pill" data-tf="1" style="color:#6B4C9A"><span style="width:9px;height:9px;border-radius:50%;background:#6B4C9A;display:inline-block"></span>Enlige med børn</div>
+    <div class="fam-pill" data-tf="2" style="color:#1D6E7A"><span style="width:9px;height:9px;border-radius:50%;background:#1D6E7A;display:inline-block"></span>Par uden børn</div>
+    <div class="fam-pill" data-tf="3" style="color:#8A2C4A"><span style="width:9px;height:9px;border-radius:50%;background:#8A2C4A;display:inline-block"></span>Enlige uden børn</div>
+  </div>
+
+  <div class="canvas-wrap-xl"><canvas id="trendChart"></canvas></div>
+
+  <!-- Farvelegend -->
+  <div class="legend-grid" id="trendLegend"></div>
+</div>
+
+<!-- DEL 3: Analyse -->
+<div class="section">
+  <div class="sec-hdr">Kommentar og analyse</div>
+  <div class="analyse">
+    <h4>Reale lønstigninger — beskednere end de nominelle tal antyder</h4>
+    <p>
+      I <strong>løbende priser</strong> steg lønindkomsten for familier med børn i Hvidovre med +20,3 % fra 2020 til 2024. I <strong>faste 2026-priser</strong> reduceres billedet markant: den reale stigning var kun <strong>+6,7 %</strong> — svarende til en gennemsnitlig realvækst på ca. 1,6 % om året. Det afspejler, at inflation og PL-korrektionen opsluger en betydelig del af de nominelle lønstigninger i perioden (særligt 2022–2023).
+    </p>
+    <p>
+      Den svageste realvækst ses for <strong>par uden børn</strong>, der realt kun steg <strong>+1,9 %</strong> over fem år — nærmest stagnation. Gladsaxe er eneste kommune i gruppen der for denne familietype har en realstigning over 5 %. For <strong>enlige uden børn</strong> (+8,6 %) og <strong>enlige med børn</strong> (+8,3 %) ser billedet en smule bedre ud, men stadig beskedent.
+    </p>
+    <p>
+      <strong>Hvidovres position i benchmarkgruppen</strong> er konsistent over hele perioden i faste priser: kommunen ligger i midterfeltet — under Gladsaxe og Ballerup (familier med børn), men over Brøndby på alle kategorier. <strong>Gladsaxe skiller sig ud</strong> som den klare topscorer med en realindkomst for familier med børn der i 2024 ligger ca. <strong>11 % over Hvidovres</strong> niveau (1.039.381 kr. mod 933.403 kr. i 2026-priser).
+    </p>
+    <p>
+      <strong>Hele landet</strong> (stiplet linje i trend) befinder sig tæt på Hvidovres niveau for alle familietyper — de to kurver er svære at skelne, hvilket bekræfter at Hvidovre er en gennemsnitlig dansk kommune på lønindkomst for de fleste familietyper.
+    </p>
+  </div>
+</div>
+
+</main>
+
+<div class="kilde">
+  Kilde: Danmarks Statistik, INDKF111 · Indkomstpost: Løn · Faste 2026-priser via KL PL-tabel (juni 2025) · Hvidovre Kommune (167) + benchmarkgruppe
+  <button class="dl-btn" onclick="downloadRapport()">↓ Download rapport</button>
+</div>
+
+<script>
+const KOMMUNER = ["Hvidovre","Brøndby","Rødovre","Ballerup","Gladsaxe","Herlev","Hele landet"];
+const AARENE = ["2020","2021","2022","2023","2024"];
+const FAMTYPER = ["Familier med børn","Enlige med børn","Par uden børn","Enlige uden børn"];
+const FAM_FARVER = ["#1A4D2E","#6B4C9A","#1D6E7A","#8A2C4A"];
+const FAM_LIGHT = ["#EBF2ED","#F0EBF8","#E8F3F5","#F5EBF0"];
+
+// Løbende priser (til benchmark 2024 og tabel)
+const RÅ_DATA = {
+  "Hvidovre":{"Familier med børn":{"2020":725712,"2021":753921,"2022":783010,"2023":826918,"2024":873155},"Enlige med børn":{"2020":343211,"2021":354603,"2022":379153,"2023":402536,"2024":419087},"Par uden børn":{"2020":418992,"2021":433126,"2022":448929,"2023":464839,"2024":481257},"Enlige uden børn":{"2020":156395,"2021":162547,"2022":173062,"2023":183920,"2024":191366}},
+  "Brøndby":{"Familier med børn":{"2020":584540,"2021":606064,"2022":629499,"2023":668430,"2024":700935},"Enlige med børn":{"2020":288741,"2021":300484,"2022":320386,"2023":344143,"2024":360991},"Par uden børn":{"2020":363533,"2021":375820,"2022":396157,"2023":421574,"2024":443380},"Enlige uden børn":{"2020":151498,"2021":158014,"2022":167660,"2023":179041,"2024":187856}},
+  "Rødovre":{"Familier med børn":{"2020":720440,"2021":748024,"2022":780523,"2023":823220,"2024":858555},"Enlige med børn":{"2020":325494,"2021":335971,"2022":354609,"2023":381074,"2024":400592},"Par uden børn":{"2020":427832,"2021":445088,"2022":466183,"2023":494988,"2024":516881},"Enlige uden børn":{"2020":166459,"2021":173484,"2022":183941,"2023":196025,"2024":203839}},
+  "Ballerup":{"Familier med børn":{"2020":735193,"2021":759093,"2022":786505,"2023":831344,"2024":871848},"Enlige med børn":{"2020":347918,"2021":362119,"2022":383282,"2023":406898,"2024":426882},"Par uden børn":{"2020":412093,"2021":426428,"2022":444741,"2023":474164,"2024":500547},"Enlige uden børn":{"2020":154636,"2021":160648,"2022":170648,"2023":181601,"2024":190114}},
+  "Gladsaxe":{"Familier med børn":{"2020":818327,"2021":852272,"2022":887843,"2023":934494,"2024":972293},"Enlige med børn":{"2020":373456,"2021":390272,"2022":413451,"2023":440697,"2024":459164},"Par uden børn":{"2020":454416,"2021":474060,"2022":496264,"2023":526302,"2024":547878},"Enlige uden børn":{"2020":169963,"2021":177680,"2022":189205,"2023":201855,"2024":211116}},
+  "Herlev":{"Familier med børn":{"2020":714530,"2021":742011,"2022":772039,"2023":817264,"2024":856814},"Enlige med børn":{"2020":344993,"2021":358461,"2022":381427,"2023":405726,"2024":424759},"Par uden børn":{"2020":411208,"2021":426614,"2022":446155,"2023":474178,"2024":499843},"Enlige uden børn":{"2020":157697,"2021":164527,"2022":174963,"2023":186428,"2024":195994}},
+  "Hele landet":{"Familier med børn":{"2020":712424,"2021":738682,"2022":767513,"2023":811447,"2024":850148},"Enlige med børn":{"2020":326855,"2021":340256,"2022":361237,"2023":386041,"2024":407356},"Par uden børn":{"2020":389625,"2021":404199,"2022":420838,"2023":450025,"2024":475470},"Enlige uden børn":{"2020":151640,"2021":158044,"2022":167986,"2023":179449,"2024":187906}}
+};
+
+// PL-justerede værdier, 2026-priser
+const PL_DATA = {
+  "Hvidovre":{"Familier med børn":{"2020":874483,"2021":893396,"2022":894980,"2023":919533,"2024":933403},"Enlige med børn":{"2020":413569,"2021":420205,"2022":433372,"2023":447620,"2024":448004},"Par uden børn":{"2020":504885,"2021":513254,"2022":513126,"2023":516901,"2024":514464},"Enlige uden børn":{"2020":188456,"2021":192618,"2022":197810,"2023":204519,"2024":204570}},
+  "Brøndby":{"Familier med børn":{"2020":704371,"2021":718186,"2022":719517,"2023":743294,"2024":749300},"Enlige med børn":{"2020":347933,"2021":356074,"2022":366201,"2023":382687,"2024":385899},"Par uden børn":{"2020":438057,"2021":445347,"2022":452807,"2023":468790,"2024":473973},"Enlige uden børn":{"2020":182555,"2021":187247,"2022":191635,"2023":199094,"2024":200818}},
+  "Rødovre":{"Familier med børn":{"2020":868130,"2021":886408,"2022":892138,"2023":915421,"2024":917795},"Enlige med børn":{"2020":392220,"2021":398126,"2022":405318,"2023":423754,"2024":428233},"Par uden børn":{"2020":515538,"2021":527429,"2022":532847,"2023":550427,"2024":552546},"Enlige uden børn":{"2020":200583,"2021":205579,"2022":210245,"2023":217980,"2024":217904}},
+  "Ballerup":{"Familier med børn":{"2020":885908,"2021":899525,"2022":898975,"2023":924455,"2024":932006},"Enlige med børn":{"2020":419241,"2021":429111,"2022":438091,"2023":452471,"2024":456337},"Par uden børn":{"2020":496572,"2021":505317,"2022":508339,"2023":527270,"2024":535085},"Enlige uden børn":{"2020":186336,"2021":190368,"2022":195051,"2023":201940,"2024":203232}},
+  "Gladsaxe":{"Familier med børn":{"2020":986084,"2021":1009942,"2022":1014805,"2023":1039157,"2024":1039381},"Enlige med børn":{"2020":450014,"2021":462472,"2022":472574,"2023":490055,"2024":490846},"Par uden børn":{"2020":547571,"2021":561761,"2022":567230,"2023":585248,"2024":585682},"Enlige uden børn":{"2020":204805,"2021":210551,"2022":216261,"2023":224463,"2024":225683}},
+  "Herlev":{"Familier med børn":{"2020":861009,"2021":879283,"2022":882441,"2023":908798,"2024":915934},"Enlige med børn":{"2020":415717,"2021":424776,"2022":435971,"2023":451167,"2024":454067},"Par uden børn":{"2020":495506,"2021":505538,"2022":509955,"2023":527286,"2024":534332},"Enlige uden børn":{"2020":190025,"2021":194964,"2022":199983,"2023":207308,"2024":209518}},
+  "Hele landet":{"Familier med børn":{"2020":858471,"2021":875338,"2022":877267,"2023":902329,"2024":908808},"Enlige med børn":{"2020":393860,"2021":403203,"2022":412894,"2023":429278,"2024":435464},"Par uden børn":{"2020":469498,"2021":478976,"2022":481018,"2023":500428,"2024":508277},"Enlige uden børn":{"2020":182726,"2021":187282,"2022":192008,"2023":199547,"2024":200872}}
+};
+
+// Farver pr. kommune — fast palette
+const KOM_FARVER_BENCH = {
+  "Hvidovre":   null,                // sættes dynamisk fra FAM_FARVER
+  "Brøndby":    "#D97B56",
+  "Rødovre":    "#4A7EC4",
+  "Ballerup":   "#3DA882",
+  "Gladsaxe":   "#8E5BAA",
+  "Herlev":     "#C4923A",
+  "Hele landet":"#555555"
+};
+
+let aktivFam = 0;
+let aktivTrendFam = 0;
+let benchChart = null;
+let trendChart = null;
+
+// ── BENCH CHART (2024, løbende priser) ──────────────────────────────────────
+function buildBenchChart() {
+  const fam = FAMTYPER[aktivFam];
+  const vals = KOMMUNER.map(k => RÅ_DATA[k][fam]["2024"]);
+  const farver = KOMMUNER.map(k =>
+    k === "Hvidovre" ? FAM_FARVER[aktivFam] :
+    k === "Hele landet" ? "#888888" : "#BACEC5"
+  );
+  const ctx = document.getElementById("benchChart").getContext("2d");
+  if (benchChart) benchChart.destroy();
+  benchChart = new Chart(ctx, {
+    type:"bar",
+    data:{ labels:KOMMUNER, datasets:[{
+      data:vals, backgroundColor:farver, borderRadius:5, borderSkipped:false
+    }]},
+    options:{
+      indexAxis:"y", responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:c=>`  ${c.parsed.x.toLocaleString("da-DK")} kr.`},
+          backgroundColor:"#1C1C1A",titleFont:{family:"DM Sans",size:13,weight:"600"},
+          bodyFont:{family:"DM Mono",size:12},padding:11,cornerRadius:6}
+      },
+      scales:{
+        x:{beginAtZero:false,min:100000,
+           ticks:{font:{family:"DM Mono",size:11},color:"#8A8A7E",callback:v=>(v/1000).toFixed(0)+"k"},
+           grid:{color:"rgba(0,0,0,0.05)"}},
+        y:{ticks:{font:{family:"DM Sans",size:13,weight:"500"},color:"#1C1C1A"},grid:{display:false}}
+      }
+    }
+  });
+}
+
+function buildBenchTabel() {
+  const tbody = document.getElementById("benchTbody");
+  const rows = [...KOMMUNER].sort((a,b) =>
+    RÅ_DATA[b]["Familier med børn"]["2024"] - RÅ_DATA[a]["Familier med børn"]["2024"]
+  );
+  tbody.innerHTML = rows.map(k => {
+    const cls = k==="Hvidovre"?"hvidovre":k==="Hele landet"?"land-avg":"";
+    return `<tr class="${cls}"><td>${k}</td>${FAMTYPER.map(f=>`<td>${RÅ_DATA[k][f]["2024"].toLocaleString("da-DK")}</td>`).join("")}</tr>`;
+  }).join("");
+}
+
+// ── TREND SØJLEDIAGRAM (faste 2026-priser) ──────────────────────────────────
+function buildTrendChart() {
+  const fam = FAMTYPER[aktivTrendFam];
+  const hvFarve = FAM_FARVER[aktivTrendFam];
+
+  // Datasets: én per kommune, data = 5 år
+  const datasets = KOMMUNER.map(k => {
+    const isHv = k === "Hvidovre";
+    const isLand = k === "Hele landet";
+    const farve = isHv ? hvFarve : isLand ? "#888888" :
+      {"Brøndby":"#D97B56","Rødovre":"#4A7EC4","Ballerup":"#3DA882","Gladsaxe":"#8E5BAA","Herlev":"#C4923A"}[k];
+    return {
+      label: k,
+      data: AARENE.map(y => PL_DATA[k][fam][y]),
+      backgroundColor: farve + (isHv ? "FF" : "BB"),
+      borderColor: farve,
+      borderWidth: isHv ? 2 : 1,
+      borderRadius: 3,
+      borderSkipped: false
+    };
+  });
+
+  const ctx = document.getElementById("trendChart").getContext("2d");
+  if (trendChart) trendChart.destroy();
+  trendChart = new Chart(ctx, {
+    type:"bar",
+    data:{ labels:AARENE, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:"index",intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            title: items => `År ${items[0].label}`,
+            label: c => `  ${c.dataset.label}: ${c.parsed.y.toLocaleString("da-DK")} kr.`
+          },
+          backgroundColor:"#1C1C1A",
+          titleFont:{family:"DM Sans",size:13,weight:"600"},
+          bodyFont:{family:"DM Mono",size:12},padding:11,cornerRadius:6
+        }
+      },
+      scales:{
+        x:{
+          ticks:{font:{family:"DM Sans",size:11,weight:"500"},color:"#1C1C1A"},
+          grid:{color:"rgba(0,0,0,0.04)"}
+        },
+        y:{
+          beginAtZero:false,
+          min: fam === "Enlige uden børn" ? 150000 :
+               fam === "Enlige med børn"  ? 300000 :
+               fam === "Par uden børn"    ? 380000 : 600000,
+          ticks:{font:{family:"DM Mono",size:11},color:"#8A8A7E",
+                 callback:v=>v>=1000000?(v/1000000).toFixed(2)+"m":(v/1000).toFixed(0)+"k"},
+          grid:{color:"rgba(0,0,0,0.05)"}
+        }
+      }
+    }
+  });
+
+  // Byg legend
+  buildTrendLegend(hvFarve);
+}
+
+function buildTrendLegend(hvFarve) {
+  const legendEl = document.getElementById("trendLegend");
+  const FARVER_LEGEND = {
+    "Hvidovre": hvFarve,
+    "Brøndby":"#D97B56","Rødovre":"#4A7EC4","Ballerup":"#3DA882",
+    "Gladsaxe":"#8E5BAA","Herlev":"#C4923A","Hele landet":"#888888"
+  };
+  legendEl.innerHTML = KOMMUNER.map(k =>
+    `<div class="leg-item${k==="Hvidovre"?" hv":""}">
+      <span class="leg-swatch" style="background:${FARVER_LEGEND[k]};color:${FARVER_LEGEND[k]}"></span>
+      <span style="font-size:12px;color:${k==="Hvidovre"?"var(--green)":"var(--mid)"};font-weight:${k==="Hvidovre"?"600":"400"}">${k}</span>
+    </div>`
+  ).join("");
+}
+
+// ── PILL-handlers ────────────────────────────────────────────────────────────
+function aktiverPills(containerId, aktivIdx, farver, lights) {
+  document.querySelectorAll(`#${containerId} .fam-pill`).forEach((p, i) => {
+    const aktiv = i === aktivIdx;
+    p.classList.toggle("aktiv", aktiv);
+    p.style.borderColor = aktiv ? farver[i] : "transparent";
+    p.style.background  = aktiv ? lights[i] : "transparent";
+    p.style.color = farver[i];
+    p.style.fontWeight = aktiv ? "600" : "400";
+  });
+}
+
+document.getElementById("famPills").addEventListener("click", e => {
+  const pill = e.target.closest("[data-fam]");
+  if (!pill) return;
+  aktivFam = parseInt(pill.dataset.fam);
+  aktiverPills("famPills", aktivFam, FAM_FARVER, FAM_LIGHT);
+  buildBenchChart();
+});
+
+document.getElementById("trendFamPills").addEventListener("click", e => {
+  const pill = e.target.closest("[data-tf]");
+  if (!pill) return;
+  aktivTrendFam = parseInt(pill.dataset.tf);
+  aktiverPills("trendFamPills", aktivTrendFam, FAM_FARVER, FAM_LIGHT);
+  buildTrendChart();
+});
+
+function downloadRapport() {
+  const blob = new Blob([document.documentElement.outerHTML], {type:"text/html;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "familieindkomst-analyse.html";
+  a.click();
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+buildBenchChart();
+buildBenchTabel();
+buildTrendChart();
+</script>
+</body>
+</html>
