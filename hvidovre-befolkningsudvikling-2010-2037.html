@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hvidovres befolkningsudvikling 2010-2037 — Analyse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3"></script>
+<style>
+:root{
+  --green:#1A4D2E;--green-mid:#2E7D54;--gold:#C9973A;--red:#C0392B;
+  --bg:#F9F6F0;--card:#FFFFFF;--text:#1C1C1A;--mid:#4A4A44;
+  --muted:#8A8A7E;--border:#E2DDD4;--shadow:0 2px 20px rgba(26,77,46,0.07);
+  --pyramide-m:#1A4D2E;--pyramide-k:#C9973A;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased}
+
+/* ap-navbar */
+.ap-navbar{all:unset;display:flex!important;align-items:center;background:#0E1612;border-bottom:1px solid rgba(255,255,255,0.08);padding:0 28px;height:40px;font-family:'DM Mono',monospace,sans-serif;position:relative;z-index:9999;box-sizing:border-box;width:100%;}
+.ap-back{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.55);font-size:11.5px;letter-spacing:0.04em;text-decoration:none;transition:color 0.18s;}
+.ap-back:hover{color:#E8C06A;}
+.ap-back svg{flex-shrink:0;transition:transform 0.18s;}
+.ap-back:hover svg{transform:translateX(-3px);}
+.ap-brand{font-size:11.5px;letter-spacing:0.08em;color:#E8C06A;margin-left:4px;}
+.ap-sep{width:1px;height:18px;background:rgba(255,255,255,0.1);margin:0 16px;}
+.ap-domain{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.25);}
+.ap-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:rgba(201,151,58,0.6);margin-right:8px;vertical-align:middle;}
+
+/* Header */
+.hdr{background:var(--green);color:#fff;padding:32px 48px 26px;position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;right:-60px;bottom:-60px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.03);pointer-events:none}
+.hdr-eye{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px}
+.hdr h1{font-family:'DM Serif Display',serif;font-size:clamp(22px,2.8vw,32px);font-weight:400;line-height:1.2;margin-bottom:8px}
+.hdr h1 em{font-style:italic;color:#E8C06A}
+.hdr p{font-size:13px;color:rgba(255,255,255,.7);font-weight:300;line-height:1.65;max-width:720px}
+
+/* Sektionsbjælke */
+.section-bar{background:#fff;border-bottom:1px solid var(--border);padding:14px 48px;display:flex;align-items:center;gap:14px}
+.section-label{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);background:rgba(26,77,46,.06);padding:5px 11px;border-radius:4px;font-weight:500}
+.section-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text)}
+
+main{padding:0;max-width:none}
+.section{padding:32px 48px 28px;max-width:1200px;margin:0 auto}
+.section-intro{font-size:14.5px;color:var(--mid);line-height:1.7;max-width:780px;margin-bottom:24px}
+.section-intro strong{color:var(--text);font-weight:500}
+
+/* KPI-kort */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:18px}
+.kpi{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--green);border-radius:10px;padding:15px 18px;box-shadow:var(--shadow)}
+.kpi.gld{border-left-color:var(--gold)}
+.kpi.mid{border-left-color:var(--green-mid)}
+.kpi.red{border-left-color:var(--red)}
+.kpi-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.kpi-val{font-family:'DM Serif Display',serif;font-size:30px;line-height:1.05;color:var(--text);margin-bottom:4px}
+.kpi-delta{font-family:'DM Mono',monospace;font-size:11.5px;margin-bottom:3px}
+.kpi-delta.pos{color:var(--green-mid)}
+.kpi-delta.neg{color:var(--red)}
+.kpi-delta.neu{color:var(--muted)}
+.kpi-desc{font-size:11.5px;color:var(--mid);line-height:1.4}
+
+/* Kommune-kort til klikinteraktion */
+.kort-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.gruppe-btn{padding:6px 13px;border:1.5px solid var(--border);background:#fff;font-family:'DM Sans',sans-serif;font-size:12.5px;color:var(--mid);cursor:pointer;border-radius:18px;transition:all .15s}
+.gruppe-btn:hover{border-color:var(--green);color:var(--green)}
+.gruppe-btn.active{background:var(--green);border-color:var(--green);color:#fff}
+.clear-btn{margin-left:auto;padding:6px 13px;border:1.5px solid var(--border);background:transparent;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);cursor:pointer;border-radius:18px;transition:all .15s}
+.clear-btn:hover{border-color:var(--red);color:var(--red)}
+.kort-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:10px;margin-bottom:22px}
+.kort{background:#fff;border:1.5px solid var(--border);border-left:4px solid var(--kort-farve);border-radius:9px;padding:10px 13px 11px;cursor:pointer;transition:all .15s;position:relative;user-select:none}
+.kort:hover{border-color:var(--kort-farve);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.04)}
+.kort.aktiv{background:var(--kort-bg);border-color:var(--kort-farve);border-left-color:var(--kort-farve)}
+.kort.aktiv::after{content:'✓';position:absolute;top:8px;right:10px;font-size:13px;color:var(--kort-farve);font-weight:700}
+.kort-navn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px}
+.kort-vaerdi{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px}
+.kort-aendring{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.04em}
+.kort-aendring.pos{color:var(--red)}
+.kort-aendring.neg{color:var(--green-mid)}
+
+/* Chart-kort */
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;box-shadow:var(--shadow);margin-bottom:22px;position:relative}
+.chart-header{margin-bottom:16px}
+.chart-title{font-family:'DM Serif Display',serif;font-size:19px;font-weight:400;color:var(--text);margin-bottom:5px}
+.chart-desc{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace}
+.canvas-wrap{position:relative;height:430px}
+.empty-state{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);font-style:italic;pointer-events:none}
+
+/* Pyramide-grid */
+.pyramide-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px}
+.pyramide-cell{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--shadow)}
+.pyramide-cell .chart-title{font-size:17px;margin-bottom:4px}
+.pyramide-cell .canvas-wrap{height:480px}
+.pyramide-legend{display:flex;justify-content:center;gap:18px;margin-top:6px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--mid)}
+.pyramide-legend span{display:inline-flex;align-items:center;gap:6px}
+.pyramide-legend i{display:inline-block;width:11px;height:11px;border-radius:2px}
+.legend-m i{background:var(--pyramide-m)}
+.legend-k i{background:var(--pyramide-k)}
+@media (max-width:880px){.pyramide-grid{grid-template-columns:1fr}.pyramide-cell .canvas-wrap{height:380px}}
+
+/* Datatabel */
+.data-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.data-tbl th{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 14px;text-align:left;border-bottom:2px solid var(--border);white-space:nowrap}
+.data-tbl th.right,.data-tbl td.right{text-align:right}
+.data-tbl td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text)}
+.data-tbl tr:last-child td{border-bottom:none}
+.data-tbl tr:hover td{background:rgba(26,77,46,.025)}
+.data-tbl td.kom{font-weight:500}
+.data-tbl td.num{font-family:'DM Mono',monospace;font-weight:500;font-size:13.5px}
+.data-tbl tr.hvidovre td{background:rgba(26,77,46,.045);font-weight:500}
+.data-tbl tr.hvidovre:hover td{background:rgba(26,77,46,.07)}
+.data-tbl .kilde-cell{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.farve-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
+
+/* Pointer-boks (vurdering) */
+.pointer{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:18px 0 8px}
+.pointer-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px 18px;border-top:3px solid var(--green-mid)}
+.pointer-card.gold{border-top-color:var(--gold)}
+.pointer-card.red{border-top-color:var(--red)}
+.pointer-card h4{font-family:'DM Serif Display',serif;font-size:15px;font-weight:400;color:var(--text);margin-bottom:8px}
+.pointer-card p{font-size:13px;color:var(--mid);line-height:1.6}
+
+/* Note */
+.metode-note{background:rgba(201,151,58,.07);border-left:3px solid var(--gold);padding:14px 18px;border-radius:0 6px 6px 0;margin:14px 0 18px;font-size:13px;color:var(--mid);line-height:1.65}
+.metode-note strong{color:var(--text);font-weight:500}
+
+/* Kilde-footer */
+.kilde{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--muted);padding:18px 48px 28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;border-top:1px solid var(--border);background:#fff}
+.kilde-tekst{flex:1;line-height:1.7}
+.dl-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;background:transparent;border:1.5px solid var(--border);border-radius:6px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);cursor:pointer;transition:all .15s}
+.dl-btn:hover{border-color:var(--green);color:var(--green)}
+
+@media (max-width:760px){
+  .hdr,.section,.kilde,.section-bar{padding-left:22px;padding-right:22px}
+  .section{padding-top:24px;padding-bottom:20px}
+  .kort-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .canvas-wrap{height:340px}
+}
+</style>
+</head>
+<body>
+
+<div class="ap-navbar">
+  <a class="ap-back" href="https://analyse.astrup.org">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12"/>
+      <polyline points="12 19 5 12 12 5"/>
+    </svg>
+    <span class="ap-brand">analyse.astrup.org</span>
+  </a>
+  <div class="ap-sep"></div>
+  <span class="ap-domain"><span class="ap-dot"></span>Analyseportal</span>
+</div>
+
+<header class="hdr">
+  <div class="hdr-eye">Hvidovre Kommune · Center for Økonomi og Personale · Demografi-analyse</div>
+  <h1>Befolkningsudvikling 2010-2037 <em>— Hvidovre i et benchmark-perspektiv</em></h1>
+  <p>Sammenstilling af 16 års historisk udvikling og 12 års prognose, indekseret til basisåret 2026. Hvidovre Kommune sammenlignes med fem peer-kommuner: Brøndby, Rødovre, Ballerup, Gladsaxe og Herlev. Hvidovres egen befolkningsprognose anvendes for kommunen selv, mens DST's FRKM125 anvendes for peer-kommunerne.</p>
+</header>
+
+<!-- ============================================ -->
+<!-- SEKTION 1 — SAMMENFATNING -->
+<!-- ============================================ -->
+<div class="section-bar">
+  <span class="section-label">01 — Sammenfatning</span>
+  <span class="section-title">Hovedtal</span>
+</div>
+<div class="section">
+  <p class="section-intro">
+    Hvidovres befolkning har vokset støt fra <strong>49.724 indbyggere i 2010</strong> til <strong>53.760 i 2025</strong>. Kommunens egen prognose forventer fortsat vækst frem mod 2037, hvor folketallet ifølge prognosen når <strong>56.897 indbyggere</strong> — en samlet stigning på 2.654 personer eller 4,9 % i prognoseperioden. Sammenholdt med peer-kommunerne ligger Hvidovre i den nedre halvdel af vækstforventningerne.
+  </p>
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-lbl">Folketal 1. januar 2026</div>
+      <div class="kpi-val">54.243</div>
+      <div class="kpi-delta neu">basisår</div>
+      <div class="kpi-desc">Hvidovres egen prognose (basisår)</div>
+    </div>
+    <div class="kpi mid">
+      <div class="kpi-lbl">Folketal 1. januar 2037</div>
+      <div class="kpi-val">56.897</div>
+      <div class="kpi-delta pos">▲ +2.654</div>
+      <div class="kpi-desc">Forventet folketal ved prognosens udløb</div>
+    </div>
+    <div class="kpi gld">
+      <div class="kpi-lbl">Samlet vækst 2026→2037</div>
+      <div class="kpi-val">+4,9 %</div>
+      <div class="kpi-delta neu">indeks 104,9</div>
+      <div class="kpi-desc">Næstlaveste vækst blandt de seks kommuner</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">Historisk vækst 2010-2025</div>
+      <div class="kpi-val">+8,1 %</div>
+      <div class="kpi-delta pos">▲ +4.036</div>
+      <div class="kpi-desc">Realiseret udvikling før prognoseperioden</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- SEKTION 2 — BAGGRUND OG METODE -->
+<!-- ============================================ -->
+<div class="section-bar">
+  <span class="section-label">02 — Baggrund</span>
+  <span class="section-title">Datagrundlag og metode</span>
+</div>
+<div class="section">
+  <p class="section-intro">
+    Analysen kombinerer realiserede folketal med fremskrivninger og indekserer alle kommuner til basisåret 2026, så vækstforløb kan sammenlignes direkte uanset kommunestørrelse. <strong>Den historiske del</strong> trækker på Danmarks Statistiks FOLK1A med folketal pr. 1. januar (kvartal K1) for alle seks kommuner. <strong>Den prognoseprægede del</strong> er metodisk to-sporet: For Hvidovre anvendes kommunens egen befolkningsprognose, som indregner konkrete boligbyggeprogrammer og lokale flyttemønstre, mens der for de fem peer-kommuner anvendes Danmarks Statistiks seneste fremskrivning, FRKM125 (Befolkningsfremskrivning 2025).
+  </p>
+  <div class="metode-note">
+    <strong>Metodisk note om kildeforskellen:</strong> Hvidovres egen prognose og FRKM125 er ikke fuldt sammenlignelige. Hvidovres prognose forventer for kommunens vedkommende i 2037 et folketal på 56.897, mens FRKM125 for Hvidovre alene forudser 53.906 — en forskel på næsten 3.000 personer. Forskellen afspejler, at kommunens egen prognose lægger konkrete byggeprogrammer ind, som DST's modellering ikke kender til. I sammenligningen er Hvidovres tal hentet fra den egne prognose, mens peer-kommunernes tal er FRKM125, og indekseringen til 2026=100 sker for hver kommune individuelt med dens respektive basisårsværdi. Befolkningspyramiderne for Hvidovre anvender ligeledes egen prognose for de samlede aldersgrupper, men kønsfordelingen pr. aldersgruppe er tilskrevet fra FRKM125, da egen prognose ikke er kønsopdelt.
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- SEKTION 3 — ANALYSE -->
+<!-- ============================================ -->
+<div class="section-bar">
+  <span class="section-label">03 — Analyse</span>
+  <span class="section-title">Udvikling, alderssammensætning og vækst</span>
+</div>
+<div class="section">
+
+  <!-- 3a) Indeks-linjegraf 2010-2037 -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <div class="chart-title">3.1 — Samlet folketal indekseret, 2026 = 100</div>
+      <div class="chart-desc">Klik på kommunekort nedenfor for at tilføje serier til grafen · 2010-2025 = realiseret (FOLK1A) · 2026-2037 = prognose</div>
+    </div>
+    <div class="kort-toolbar">
+      <button class="gruppe-btn" id="grpAlle" onclick="aktiverGruppe('alle')">Vis alle 6</button>
+      <button class="gruppe-btn" id="grpHvid" onclick="aktiverGruppe('hvidovre')">Kun Hvidovre</button>
+      <button class="gruppe-btn" id="grpVest" onclick="aktiverGruppe('vest')">Vestegns-naboerne</button>
+      <button class="clear-btn" onclick="ryd()">✕ Ryd</button>
+    </div>
+    <div class="kort-grid" id="kortGrid"></div>
+    <div class="canvas-wrap">
+      <canvas id="indeksChart"></canvas>
+      <div class="empty-state" id="emptyState">Klik på et kommunekort for at tilføje en kurve</div>
+    </div>
+  </div>
+
+  <!-- 3b) Befolkningspyramider Hvidovre 2026 vs 2037 -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <div class="chart-title">3.2 — Befolkningspyramider for Hvidovre: 2026 mod 2037</div>
+      <div class="chart-desc">5-årige aldersgrupper · mænd til venstre, kvinder til højre · samme x-akse for direkte sammenligning</div>
+    </div>
+    <div class="pyramide-grid">
+      <div class="pyramide-cell">
+        <div class="chart-title" style="text-align:center">2026 — basisår</div>
+        <div class="chart-desc" style="text-align:center;margin-bottom:6px">Folketal: 54.243</div>
+        <div class="canvas-wrap"><canvas id="pyramide2026"></canvas></div>
+      </div>
+      <div class="pyramide-cell">
+        <div class="chart-title" style="text-align:center">2037 — prognoseår</div>
+        <div class="chart-desc" style="text-align:center;margin-bottom:6px">Folketal: 56.897 (+2.654)</div>
+        <div class="canvas-wrap"><canvas id="pyramide2037"></canvas></div>
+      </div>
+    </div>
+    <div class="pyramide-legend">
+      <span class="legend-m"><i></i>Mænd</span>
+      <span class="legend-k"><i></i>Kvinder</span>
+    </div>
+  </div>
+
+  <!-- 3c) Tabel: absolut vækst 2026→2037 -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <div class="chart-title">3.3 — Absolut og relativ vækst 2026 → 2037</div>
+      <div class="chart-desc">Sorteret efter procentvis vækst · Hvidovre er fremhævet</div>
+    </div>
+    <table class="data-tbl">
+      <thead>
+        <tr>
+          <th>Kommune</th>
+          <th class="right">Folketal 2026</th>
+          <th class="right">Folketal 2037</th>
+          <th class="right">Absolut vækst</th>
+          <th class="right">Procentvis vækst</th>
+          <th>Kilde for prognose</th>
+        </tr>
+      </thead>
+      <tbody id="vaekstTabel"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ============================================ -->
+<!-- SEKTION 4 — VURDERING -->
+<!-- ============================================ -->
+<div class="section-bar">
+  <span class="section-label">04 — Vurdering</span>
+  <span class="section-title">Nøglefund</span>
+</div>
+<div class="section">
+  <p class="section-intro">
+    Sammenstilling af de tre visualiseringer i sektion 3 peger på fire centrale observationer for Hvidovres demografiske udvikling i forhold til peer-kommunerne.
+  </p>
+  <div class="pointer">
+    <div class="pointer-card">
+      <h4>Stabil historisk vækst, dæmpet fremtidig vækst</h4>
+      <p>Hvidovre har i perioden 2010-2025 oplevet en jævn vækst på cirka 8 %. Egen prognose forudser en yderligere vækst på 4,9 % i prognoseperioden, hvilket er en klar opbremsning sammenlignet med Brøndby (+14,4 %) og Ballerup (+9,2 %), men markant højere end Gladsaxes næsten flade udvikling (+1,2 %).</p>
+    </div>
+    <div class="pointer-card gold">
+      <h4>Brøndby er det demografiske udviklingscenter</h4>
+      <p>Brøndby har siden ca. 2022 oplevet en kraftig vækst, der ifølge FRKM125 fortsætter i prognoseperioden. Kommunen passerer Ballerup-niveau allerede i 2027 og indtager den klare førsteplads i procentvis vækst frem mod 2037. Denne udvikling kan have afsmittende effekt på pendlings- og bosætningsmønstre i hele Vestegnen.</p>
+    </div>
+    <div class="pointer-card">
+      <h4>Aldersforskydning mod den ældre del af befolkningen</h4>
+      <p>Befolkningspyramiderne viser en tydelig forskydning fra 2026 til 2037. Antallet af 65+ stiger fra 9.808 til 11.233 personer (+1.425, +14,5 %), og andelen af de plejetunge 85+ vokser fra 1.254 (2,3 % af folketallet) til 1.726 (3,0 %). Den dybeste vækst sker i gruppen 70-74-årige (+550 personer), som rykker op fra de allerede store 60-64-årige.</p>
+    </div>
+    <div class="pointer-card gold">
+      <h4>Børnegrundlaget er stabilt — let forskydning</h4>
+      <p>Den samlede gruppe af 0-19 årige ændrer sig kun marginalt (-61 personer over 12 år). Antallet af 0-4 årige er stort set uændret (2.893 mod 2.931), mens 5-9 årige falder med 224 personer (-6 %). Det indebærer, at presset på dagtilbud og skoler forventes at være stabilt på det samlede niveau, men med en let forskydning fra de tidlige folkeskoleår mod de yngste aldersgrupper.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- SEKTION 5 — KONKLUSION -->
+<!-- ============================================ -->
+<div class="section-bar">
+  <span class="section-label">05 — Konklusion</span>
+  <span class="section-title">Opsamling</span>
+</div>
+<div class="section">
+  <p class="section-intro">
+    Hvidovre står over for en periode med moderat befolkningsvækst, der i absolutte tal udgør cirka 2.650 personer over 12 år. Væksten ligger under Vestegnens øvrige kommuner, men er klart over Gladsaxes næsten stagnerende udvikling. Den indre forskydning af alderssammensætningen mod den ældre del af befolkningen er en mere markant trend end den samlede vækst, og det er den, der har de største implikationer for den kommunale planlægning.
+  </p>
+  <p class="section-intro">
+    Det forhold, at Hvidovres egen prognose ligger næsten 3.000 personer over FRKM125 for samme år, understreger betydningen af, at kommunen anvender sin egen, byggeprogram-informerede prognose som planlægningsgrundlag for kapacitet, anlægsbehov og dimensionering af velfærdsservice. Direktionen anbefales at lade analysen indgå i den løbende ressourceplanlægning, særligt omkring ældreområdet og folkeskolens kapacitet i den anden halvdel af prognoseperioden.
+  </p>
+</div>
+
+<div class="kilde">
+  <div class="kilde-tekst">
+    <strong>Kilder:</strong> Hvidovre Kommunes egen befolkningsprognose 2026-2037 (Hvidovre) · Danmarks Statistik, FOLK1A (historik 2010-2025) · Danmarks Statistik, FRKM125 Befolkningsfremskrivning 2025 (prognose for peer-kommuner og kønsfordeling for pyramiderne). Hvidovres egen prognose og DST's FRKM125 er ikke fuldt sammenlignelige.
+  </div>
+  <button class="dl-btn" onclick="downloadRapport()">↓ Download rapport</button>
+</div>
+
+<script>
+const DATA = {"kommuner": ["167", "153", "175", "151", "159", "163"], "navne": {"167": "Hvidovre", "153": "Brøndby", "175": "Rødovre", "151": "Ballerup", "159": "Gladsaxe", "163": "Herlev"}, "farver": {"167": "#1A4D2E", "153": "#D4A574", "175": "#2E7D54", "151": "#4A9B7F", "159": "#C18A3E", "163": "#6EB9A0"}, "aar": [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037], "samlet": {"167": {"2010": 49724, "2011": 50081, "2012": 50600, "2013": 51341, "2014": 51842, "2015": 52380, "2016": 52831, "2017": 52964, "2018": 53282, "2019": 53416, "2020": 53527, "2021": 53451, "2022": 53267, "2023": 53443, "2024": 53760, "2025": 53760, "2026": 54243.0, "2027": 54740.5, "2028": 54769.6, "2029": 55207.7, "2030": 55835.3, "2031": 56340.6, "2032": 56531.2, "2033": 56616.6, "2034": 56699.8, "2035": 56782.0, "2036": 56810.6, "2037": 56896.8}, "153": {"2010": 33795, "2011": 34021, "2012": 34084, "2013": 34210, "2014": 34580, "2015": 35050, "2016": 35322, "2017": 35594, "2018": 35538, "2019": 35397, "2020": 35090, "2021": 35232, "2022": 35651, "2023": 37128, "2024": 39067, "2025": 40401, "2026": 41311, "2027": 41593, "2028": 42296, "2029": 42971, "2030": 43611, "2031": 44222, "2032": 44800, "2033": 45347, "2034": 45861, "2035": 46347, "2036": 46808, "2037": 47243}, "175": {"2010": 36233, "2011": 36524, "2012": 36883, "2013": 37351, "2014": 37552, "2015": 37743, "2016": 38002, "2017": 38492, "2018": 39343, "2019": 40052, "2020": 40652, "2021": 41113, "2022": 41382, "2023": 42563, "2024": 44328, "2025": 44734, "2026": 45403, "2027": 45418, "2028": 45921, "2029": 46399, "2030": 46855, "2031": 47285, "2032": 47696, "2033": 48082, "2034": 48454, "2035": 48806, "2036": 49141, "2037": 49455}, "151": {"2010": 47652, "2011": 47930, "2012": 47994, "2013": 48211, "2014": 48514, "2015": 48355, "2016": 48224, "2017": 48231, "2018": 48295, "2019": 48458, "2020": 48602, "2021": 49310, "2022": 49274, "2023": 50039, "2024": 51237, "2025": 52939, "2026": 53602, "2027": 53669, "2028": 54207, "2029": 54733, "2030": 55244, "2031": 55750, "2032": 56244, "2033": 56725, "2034": 57195, "2035": 57656, "2036": 58100, "2037": 58523}, "159": {"2010": 64102, "2011": 64951, "2012": 65303, "2013": 66030, "2014": 66656, "2015": 67347, "2016": 67914, "2017": 68775, "2018": 69484, "2019": 69681, "2020": 69262, "2021": 69200, "2022": 69259, "2023": 70001, "2024": 70600, "2025": 70958, "2026": 71257, "2027": 70716, "2028": 70868, "2029": 71025, "2030": 71176, "2031": 71323, "2032": 71467, "2033": 71603, "2034": 71734, "2035": 71863, "2036": 71992, "2037": 72123}, "163": {"2010": 26556, "2011": 26597, "2012": 26608, "2013": 26958, "2014": 27706, "2015": 28148, "2016": 28423, "2017": 28406, "2018": 28572, "2019": 28786, "2020": 28953, "2021": 28913, "2022": 28867, "2023": 29215, "2024": 29876, "2025": 30784, "2026": 31107, "2027": 31069, "2028": 31314, "2029": 31553, "2030": 31781, "2031": 32000, "2032": 32211, "2033": 32411, "2034": 32600, "2035": 32782, "2036": 32956, "2037": 33124}}, "indeks": {"167": {"2010": 91.669, "2011": 92.327, "2012": 93.284, "2013": 94.65, "2014": 95.574, "2015": 96.565, "2016": 97.397, "2017": 97.642, "2018": 98.228, "2019": 98.475, "2020": 98.68, "2021": 98.54, "2022": 98.201, "2023": 98.525, "2024": 99.11, "2025": 99.11, "2026": 100.0, "2027": 100.917, "2028": 100.971, "2029": 101.778, "2030": 102.935, "2031": 103.867, "2032": 104.218, "2033": 104.376, "2034": 104.529, "2035": 104.681, "2036": 104.734, "2037": 104.892}, "153": {"2010": 81.806, "2011": 82.353, "2012": 82.506, "2013": 82.811, "2014": 83.707, "2015": 84.844, "2016": 85.503, "2017": 86.161, "2018": 86.026, "2019": 85.684, "2020": 84.941, "2021": 85.285, "2022": 86.299, "2023": 89.874, "2024": 94.568, "2025": 97.797, "2026": 100.0, "2027": 100.683, "2028": 102.384, "2029": 104.018, "2030": 105.568, "2031": 107.047, "2032": 108.446, "2033": 109.77, "2034": 111.014, "2035": 112.19, "2036": 113.306, "2037": 114.359}, "175": {"2010": 79.803, "2011": 80.444, "2012": 81.235, "2013": 82.265, "2014": 82.708, "2015": 83.129, "2016": 83.699, "2017": 84.779, "2018": 86.653, "2019": 88.214, "2020": 89.536, "2021": 90.551, "2022": 91.144, "2023": 93.745, "2024": 97.632, "2025": 98.527, "2026": 100.0, "2027": 100.033, "2028": 101.141, "2029": 102.194, "2030": 103.198, "2031": 104.145, "2032": 105.05, "2033": 105.9, "2034": 106.72, "2035": 107.495, "2036": 108.233, "2037": 108.925}, "151": {"2010": 88.9, "2011": 89.418, "2012": 89.538, "2013": 89.943, "2014": 90.508, "2015": 90.211, "2016": 89.967, "2017": 89.98, "2018": 90.099, "2019": 90.403, "2020": 90.672, "2021": 91.993, "2022": 91.926, "2023": 93.353, "2024": 95.588, "2025": 98.763, "2026": 100.0, "2027": 100.125, "2028": 101.129, "2029": 102.11, "2030": 103.063, "2031": 104.007, "2032": 104.929, "2033": 105.826, "2034": 106.703, "2035": 107.563, "2036": 108.391, "2037": 109.181}, "159": {"2010": 89.959, "2011": 91.15, "2012": 91.644, "2013": 92.665, "2014": 93.543, "2015": 94.513, "2016": 95.309, "2017": 96.517, "2018": 97.512, "2019": 97.788, "2020": 97.2, "2021": 97.113, "2022": 97.196, "2023": 98.237, "2024": 99.078, "2025": 99.58, "2026": 100.0, "2027": 99.241, "2028": 99.454, "2029": 99.674, "2030": 99.886, "2031": 100.093, "2032": 100.295, "2033": 100.486, "2034": 100.669, "2035": 100.85, "2036": 101.031, "2037": 101.215}, "163": {"2010": 85.37, "2011": 85.502, "2012": 85.537, "2013": 86.662, "2014": 89.067, "2015": 90.488, "2016": 91.372, "2017": 91.317, "2018": 91.851, "2019": 92.539, "2020": 93.076, "2021": 92.947, "2022": 92.799, "2023": 93.918, "2024": 96.043, "2025": 98.962, "2026": 100.0, "2027": 99.878, "2028": 100.665, "2029": 101.434, "2030": 102.167, "2031": 102.871, "2032": 103.549, "2033": 104.192, "2034": 104.8, "2035": 105.385, "2036": 105.944, "2037": 106.484}}, "vaekst": {"167": {"navn": "Hvidovre", "kode": "167", "tal_2026": 54243.0, "tal_2037": 56896.8, "absolut": 2653.8, "procent": 4.89, "kilde": "Egen prognose"}, "153": {"navn": "Brøndby", "kode": "153", "tal_2026": 41311, "tal_2037": 47243, "absolut": 5932, "procent": 14.36, "kilde": "FRKM125"}, "175": {"navn": "Rødovre", "kode": "175", "tal_2026": 45403, "tal_2037": 49455, "absolut": 4052, "procent": 8.92, "kilde": "FRKM125"}, "151": {"navn": "Ballerup", "kode": "151", "tal_2026": 53602, "tal_2037": 58523, "absolut": 4921, "procent": 9.18, "kilde": "FRKM125"}, "159": {"navn": "Gladsaxe", "kode": "159", "tal_2026": 71257, "tal_2037": 72123, "absolut": 866, "procent": 1.22, "kilde": "FRKM125"}, "163": {"navn": "Herlev", "kode": "163", "tal_2026": 31107, "tal_2037": 33124, "absolut": 2017, "procent": 6.48, "kilde": "FRKM125"}}, "pyramide": {"2026": [{"gruppe": "0-4", "total": 2893.0, "mænd": 1510.8, "kvinder": 1382.2}, {"gruppe": "5-9", "total": 3478.0, "mænd": 1779.6, "kvinder": 1698.4}, {"gruppe": "10-14", "total": 3370.0, "mænd": 1733.3, "kvinder": 1636.7}, {"gruppe": "15-19", "total": 3442.0, "mænd": 1775.0, "kvinder": 1667.0}, {"gruppe": "20-24", "total": 3161.0, "mænd": 1665.9, "kvinder": 1495.1}, {"gruppe": "25-29", "total": 3079.0, "mænd": 1560.4, "kvinder": 1518.6}, {"gruppe": "30-34", "total": 3412.0, "mænd": 1733.4, "kvinder": 1678.6}, {"gruppe": "35-39", "total": 3946.0, "mænd": 1940.2, "kvinder": 2005.8}, {"gruppe": "40-44", "total": 3763.0, "mænd": 1841.5, "kvinder": 1921.5}, {"gruppe": "45-49", "total": 3810.0, "mænd": 1926.1, "kvinder": 1883.9}, {"gruppe": "50-54", "total": 3646.0, "mænd": 1794.8, "kvinder": 1851.2}, {"gruppe": "55-59", "total": 3278.0, "mænd": 1631.9, "kvinder": 1646.1}, {"gruppe": "60-64", "total": 3157.0, "mænd": 1515.2, "kvinder": 1641.8}, {"gruppe": "65-69", "total": 2731.0, "mænd": 1327.9, "kvinder": 1403.1}, {"gruppe": "70-74", "total": 2211.0, "mænd": 1030.7, "kvinder": 1180.3}, {"gruppe": "75-79", "total": 2036.0, "mænd": 915.6, "kvinder": 1120.4}, {"gruppe": "80-84", "total": 1576.0, "mænd": 665.5, "kvinder": 910.5}, {"gruppe": "85-89", "total": 833.0, "mænd": 326.3, "kvinder": 506.7}, {"gruppe": "90-94", "total": 310.0, "mænd": 95.2, "kvinder": 214.8}, {"gruppe": "95+", "total": 111.0, "mænd": 21.1, "kvinder": 89.9}], "2037": [{"gruppe": "0-4", "total": 2931.2, "mænd": 1533.1, "kvinder": 1398.1}, {"gruppe": "5-9", "total": 3254.3, "mænd": 1697.7, "kvinder": 1556.6}, {"gruppe": "10-14", "total": 3337.8, "mænd": 1739.8, "kvinder": 1598.0}, {"gruppe": "15-19", "total": 3599.0, "mænd": 1860.2, "kvinder": 1738.8}, {"gruppe": "20-24", "total": 3274.7, "mænd": 1731.9, "kvinder": 1542.9}, {"gruppe": "25-29", "total": 3236.8, "mænd": 1690.1, "kvinder": 1546.8}, {"gruppe": "30-34", "total": 3550.8, "mænd": 1815.4, "kvinder": 1735.4}, {"gruppe": "35-39", "total": 3937.4, "mænd": 1992.3, "kvinder": 1945.1}, {"gruppe": "40-44", "total": 4048.4, "mænd": 2050.8, "kvinder": 1997.6}, {"gruppe": "45-49", "total": 4060.8, "mænd": 2020.8, "kvinder": 2040.0}, {"gruppe": "50-54", "total": 3694.4, "mænd": 1801.1, "kvinder": 1893.3}, {"gruppe": "55-59", "total": 3508.7, "mænd": 1712.2, "kvinder": 1796.5}, {"gruppe": "60-64", "total": 3229.9, "mænd": 1549.8, "kvinder": 1680.1}, {"gruppe": "65-69", "total": 2785.2, "mænd": 1340.3, "kvinder": 1444.8}, {"gruppe": "70-74", "total": 2761.3, "mænd": 1303.3, "kvinder": 1458.0}, {"gruppe": "75-79", "total": 2243.8, "mænd": 1042.4, "kvinder": 1201.4}, {"gruppe": "80-84", "total": 1716.1, "mænd": 767.2, "kvinder": 948.9}, {"gruppe": "85-89", "total": 1076.8, "mænd": 447.9, "kvinder": 628.9}, {"gruppe": "90-94", "total": 523.4, "mænd": 188.9, "kvinder": 334.5}, {"gruppe": "95+", "total": 126.0, "mænd": 30.1, "kvinder": 95.9}]}, "kilder": {"historik": "Danmarks Statistik, FOLK1A (1. januar hvert år)", "hvidovre_prognose": "Hvidovre Kommunes egen befolkningsprognose 2026-2037", "peer_prognose": "Danmarks Statistik, FRKM125 (Befolkningsfremskrivning 2025)"}};
+
+// ===== Hjælpefunktioner =====
+const fmt = n => Math.round(n).toLocaleString('da-DK');
+const fmt1 = n => n.toLocaleString('da-DK', {minimumFractionDigits:1, maximumFractionDigits:1});
+const fmt2 = n => n.toLocaleString('da-DK', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+// ===== State =====
+let aktiveKommuner = new Set();  // tomt = ingen kurver
+let indeksChart = null;
+
+// ===== Kommunekort =====
+function byggKort() {
+  const grid = document.getElementById('kortGrid');
+  const html = DATA.kommuner.map(kode => {
+    const navn = DATA.navne[kode];
+    const farve = DATA.farver[kode];
+    const v2026 = DATA.samlet[kode]['2026'];
+    const v2037 = DATA.samlet[kode]['2037'];
+    const aendring = v2037 - v2026;
+    const aendringPct = (v2037/v2026 - 1) * 100;
+    // Stigende befolkning = stigning (rød i tråd med standard fra skill) — men her er stigning positivt
+    // Vi bruger neutral konvention: vækst i procent
+    const aendringKlasse = aendring > 0 ? 'pos' : 'neg';
+    const aendringPrefix = aendring > 0 ? '+' : '';
+    const bgFarve = farve + '15'; // alpha hex append (8% opacity)
+    return `<div class="kort" data-kode="${kode}" onclick="toggleKort('${kode}')"
+       style="--kort-farve:${farve};--kort-bg:${bgFarve}">
+      <div class="kort-navn">${navn}</div>
+      <div class="kort-vaerdi">${fmt(v2037)} i 2037</div>
+      <div class="kort-aendring ${aendringKlasse}">${aendringPrefix}${fmt(aendring)} (${aendringPct >= 0 ? '+' : ''}${aendringPct.toFixed(1)} %)</div>
+    </div>`;
+  }).join('');
+  grid.innerHTML = html;
+}
+
+function toggleKort(kode) {
+  if (aktiveKommuner.has(kode)) aktiveKommuner.delete(kode);
+  else aktiveKommuner.add(kode);
+  opdaterKort();
+  opdaterIndeksGraf();
+  opdaterGruppeKnapper();
+}
+
+function opdaterKort() {
+  document.querySelectorAll('.kort').forEach(el => {
+    const kode = el.dataset.kode;
+    el.classList.toggle('aktiv', aktiveKommuner.has(kode));
+  });
+}
+
+function aktiverGruppe(g) {
+  if (g === 'alle') aktiveKommuner = new Set(DATA.kommuner);
+  else if (g === 'hvidovre') aktiveKommuner = new Set(['167']);
+  else if (g === 'vest') aktiveKommuner = new Set(['167','153','175']);  // Hvidovre + Brøndby + Rødovre
+  opdaterKort();
+  opdaterIndeksGraf();
+  opdaterGruppeKnapper();
+}
+
+function ryd() {
+  aktiveKommuner.clear();
+  opdaterKort();
+  opdaterIndeksGraf();
+  opdaterGruppeKnapper();
+}
+
+function opdaterGruppeKnapper() {
+  const alle = aktiveKommuner.size === DATA.kommuner.length;
+  const kunHvid = aktiveKommuner.size === 1 && aktiveKommuner.has('167');
+  const vest = aktiveKommuner.size === 3 && aktiveKommuner.has('167') && aktiveKommuner.has('153') && aktiveKommuner.has('175');
+  document.getElementById('grpAlle').classList.toggle('active', alle);
+  document.getElementById('grpHvid').classList.toggle('active', kunHvid);
+  document.getElementById('grpVest').classList.toggle('active', vest);
+}
+
+// ===== Indeks-graf =====
+function opdaterIndeksGraf() {
+  const empty = document.getElementById('emptyState');
+  empty.style.display = aktiveKommuner.size === 0 ? 'flex' : 'none';
+
+  const aktive = DATA.kommuner.filter(k => aktiveKommuner.has(k));
+  const datasets = aktive.map(kode => ({
+    label: DATA.navne[kode],
+    data: DATA.aar.map(y => DATA.indeks[kode][y]),
+    borderColor: DATA.farver[kode],
+    backgroundColor: 'transparent',
+    borderWidth: kode === '167' ? 2.8 : 2,
+    tension: 0.25,
+    pointRadius: 2.5,
+    pointHoverRadius: 6,
+    pointBackgroundColor: DATA.farver[kode],
+    pointBorderColor: '#fff',
+    pointBorderWidth: 1.2,
+    segment: {
+      borderDash: ctx => ctx.p0DataIndex >= 16 ? [4,4] : undefined  // 2026 og fremad = stiplet (prognose)
+    }
+  }));
+
+  if (indeksChart) {
+    indeksChart.data.datasets = datasets;
+    indeksChart.update();
+    return;
+  }
+
+  const ctx = document.getElementById('indeksChart').getContext('2d');
+  indeksChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels: DATA.aar, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1C1C1A',
+          titleFont: { family: 'DM Sans', size: 13, weight: '600' },
+          bodyFont: { family: 'DM Sans', size: 12 },
+          padding: 11, cornerRadius: 6,
+          callbacks: {
+            title: items => items[0].label + (parseInt(items[0].label) >= 2026 ? ' (prognose)' : ' (realiseret)'),
+            label: ctx => {
+              const kode = DATA.kommuner.find(k => DATA.navne[k] === ctx.dataset.label);
+              const absVal = DATA.samlet[kode][ctx.label];
+              return `  ${ctx.dataset.label}: indeks ${ctx.parsed.y.toFixed(1)}  (${fmt(absVal)} indb.)`;
+            }
+          }
+        },
+        annotation: {
+          annotations: {
+            prognoseLinje: {
+              type: 'line', xMin: '2026', xMax: '2026',
+              borderColor: 'rgba(0,0,0,0.18)', borderWidth: 1, borderDash: [3,3],
+              label: { display: true, content: 'Prognose →', position: 'start',
+                backgroundColor: 'rgba(26,77,46,0.85)', color: '#fff',
+                font: { family: 'DM Mono', size: 10 }, padding: 4, yAdjust: -8 }
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { font: { family: 'DM Sans', size: 11 }, color: '#6A6A60', maxRotation: 0, autoSkip: true, maxTicksLimit: 14 },
+          grid: { color: 'rgba(0,0,0,0.04)' }
+        },
+        y: {
+          beginAtZero: false,
+          ticks: { font: { family: 'DM Mono', size: 11 }, color: '#8A8A7E', callback: v => v.toFixed(0) },
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          title: { display: true, text: 'Indeks (2026 = 100)', font: { family: 'DM Sans', size: 11, weight: '500' }, color: '#4A4A44' }
+        }
+      }
+    }
+  });
+}
+
+// ===== Befolkningspyramider =====
+function byggPyramide(canvasId, aar) {
+  const data = DATA.pyramide[aar];
+  const labels = data.map(d => d.gruppe);
+  // For befolkningspyramide: mænd som NEGATIVE værdier (venstre side), kvinder positive (højre side)
+  const maend = data.map(d => -d.mænd);
+  const kvinder = data.map(d => d.kvinder);
+  
+  // Find fælles max for at sikre samme skala mellem 2026 og 2037
+  const allValues = [];
+  ['2026','2037'].forEach(y => {
+    DATA.pyramide[y].forEach(g => { allValues.push(g.mænd); allValues.push(g.kvinder); });
+  });
+  const maxVal = Math.ceil(Math.max(...allValues) / 200) * 200;
+  
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  return new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        { label: 'Mænd', data: maend, backgroundColor: 'rgba(26,77,46,0.85)', borderColor: '#1A4D2E', borderWidth: 0.5, categoryPercentage: 0.92, barPercentage: 0.95 },
+        { label: 'Kvinder', data: kvinder, backgroundColor: 'rgba(201,151,58,0.85)', borderColor: '#C9973A', borderWidth: 0.5, categoryPercentage: 0.92, barPercentage: 0.95 }
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1C1C1A',
+          titleFont: { family: 'DM Sans', size: 13, weight: '600' },
+          bodyFont: { family: 'DM Sans', size: 12 },
+          padding: 11, cornerRadius: 6,
+          callbacks: {
+            title: items => `${items[0].label} år`,
+            label: ctx => `  ${ctx.dataset.label}: ${fmt(Math.abs(ctx.parsed.x))} personer`
+          }
+        }
+      },
+      scales: {
+        x: {
+          min: -maxVal, max: maxVal,
+          ticks: {
+            font: { family: 'DM Mono', size: 10 }, color: '#8A8A7E',
+            callback: v => fmt(Math.abs(v))
+          },
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          stacked: false
+        },
+        y: {
+          reverse: true,  // ældste øverst
+          ticks: { font: { family: 'DM Sans', size: 10.5 }, color: '#4A4A44' },
+          grid: { display: false },
+          stacked: true
+        }
+      }
+    }
+  });
+}
+
+// ===== Vækst-tabel =====
+function byggVaekstTabel() {
+  // Sortér efter procentvis vækst, faldende
+  const rows = Object.values(DATA.vaekst).sort((a,b) => b.procent - a.procent);
+  const tbody = document.getElementById('vaekstTabel');
+  tbody.innerHTML = rows.map(r => {
+    const cls = r.kode === '167' ? 'hvidovre' : '';
+    const farve = DATA.farver[r.kode];
+    return `<tr class="${cls}">
+      <td class="kom"><span class="farve-dot" style="background:${farve}"></span>${r.navn}</td>
+      <td class="num right">${fmt(r.tal_2026)}</td>
+      <td class="num right">${fmt(r.tal_2037)}</td>
+      <td class="num right">${r.absolut > 0 ? '+' : ''}${fmt(r.absolut)}</td>
+      <td class="num right">${r.procent > 0 ? '+' : ''}${r.procent.toFixed(2).replace('.',',')} %</td>
+      <td class="kilde-cell">${r.kilde}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ===== Download =====
+function downloadRapport() {
+  const blob = new Blob([document.documentElement.outerHTML], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'hvidovre-befolkningsudvikling-2010-2037.html';
+  a.click();
+}
+
+// ===== Skjul ap-navbar hvis i iframe =====
+if (window.self !== window.top) {
+  const nav = document.querySelector('.ap-navbar');
+  if (nav) nav.style.display = 'none';
+}
+
+// ===== Init =====
+window.addEventListener('load', () => {
+  byggKort();
+  opdaterIndeksGraf();
+  byggPyramide('pyramide2026', '2026');
+  byggPyramide('pyramide2037', '2037');
+  byggVaekstTabel();
+});
+</script>
+
+</body>
+</html>
