@@ -1,5 +1,5 @@
 {
-  "genereret": "2026-05-19",
+  "genereret": "2026-05-26",
   "senesteUge": "2026U18",
   "senesteUgeDisplay": "Uge 18, 2026",
   "latestYear": "2026",
@@ -805,9 +805,9 @@
     }
   },
   "analyse": {
-    "overskrift": "Indvandring til Hvidovre faldt til 26 personer i uge 15-18.",
-    "periode4uAnalyse": "I perioden uge 15-18, 2026, registrerede Hvidovre Kommune en indvandring på 26 personer. Dette er et fald på 16 personer sammenlignet med de foregående fire uger, hvor tallet var 42. De lande, der bidrog med flest nye borgere, var Rumænien og Ukraine, begge med 5 personer. Indvandringen fra Rumænien steg med 5 personer fra den forrige periode, mens Ukraine oplevede et fald på 6 personer.",
-    "ytdAnalyse": "År-til-dato, fra uge 1 til 18 i 2026, har Hvidovre Kommune registreret 195 indvandringer, hvilket er lavere end de 230 indvandringer i samme periode sidste år. Ukraine er fortsat det land, der har bidraget med flest indvandrere med 46 personer, en stigning på 24 sammenlignet med 2025. Kina ligger på andenpladsen med 16 personer, hvilket er en mindre stigning på 1 person. Sverige, som i 2025 var en af de større bidragsydere, har i år oplevet et fald på 13 indvandringer til 14 personer.",
-    "trendAnalyse": "Den rullende 4-ugers trend viser et samlet fald i indvandringen fra 42 til 26 personer i den seneste periode (uge 15-18). For top-landene ses forskellige tendenser: Indvandringen fra Rumænien er steget markant med 5 personer i denne rullende periode, mens Ukraine oplever et fald på 6 personer. Detaljerede ugentlige data viser for eksempel, at de 5 ukrainske indvandrere alle ankom i uge 15, hvorefter der ikke har været yderligere i de efterfølgende tre uger. Dette mønster kan indikere, at indvandringen fra visse lande i øjeblikket er præget af enkelte større ankomster snarere end en stabil strøm."
+    "overskrift": "Indvandring til Hvidovre faldt til 26 i uge 15-18; Ukraine og Rumænien i top.",
+    "periode4uAnalyse": "I perioden uge 15-18, 2026, registreredes 26 indvandringer til Hvidovre Kommune. Dette er et markant fald på 16 personer sammenlignet med de foregående fire uger, hvor 42 personer kom til kommunen. Rumænien og Ukraine var de lande, der bidrog med flest indvandrere i denne periode, begge med 5 personer. For Ukraine udgør dette et fald fra 11 i den forrige periode, mens Rumænien steg fra 0. Kina bidrog med 4 indvandrere, et fald fra 6 i den forrige periode, og Thailand med 3 nye indvandrere.",
+    "ytdAnalyse": "År-til-dato, frem til og med uge 18, 2026, er den samlede indvandring til Hvidovre Kommune på 195 personer. Dette er 35 færre end de 230 indvandringer, der blev registreret i samme periode sidste år. Ukraine er fortsat det mest repræsenterede land med 46 indvandrere, hvilket er en stigning på 24 fra de 22 i 2025. Kina bidrog med 16 indvandrere, en lille stigning fra 15, mens Sverige med 14 indvandrere oplevede et fald fra 27 i samme periode af 2025.",
+    "trendAnalyse": "Den rullende 4-ugers trend for de dominerende oprindelseslande viser en uregelmæssig udvikling i den seneste tid. Ukraine oplevede en tilgang på 5 personer i uge 15, men har ikke haft yderligere indvandringer i ugerne 16-18, hvilket kunne indikere en midlertidig aftagende tendens. Kina havde en spids på 4 indvandringer i uge 16, men ellers ingen i de omkringliggende uger, hvilket peger på en mere sporadisk tilgang. Andre lande som Sverige, Tyrkiet og Italien har kun bidraget med enkelte indvandringer i de seneste uger, hvilket tyder på en generelt lav og uregelmæssig tilstrømning fra disse lande for tiden."
   }
 }
