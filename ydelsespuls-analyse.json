@@ -1,27 +1,10 @@
 {
-  "genereret": "2026-05-25",
+  "genereret": "2026-05-26",
   "senesteLabel": "Apr 26",
   "data": {
     "y01a02": {
       "navn": "A-dagpenge",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
-    },
-    "y60a02": {
-      "navn": "Kontanthjælp",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
-    },
-    "y07a02": {
-      "navn": "Sygedagpenge",
       "labels": [
-        "Apr 25",
         "Maj 25",
         "Jun 25",
         "Jul 25",
@@ -32,24 +15,24 @@
         "Dec 25",
         "Jan 26",
         "Feb 26",
-        "Mar 26"
+        "Mar 26",
+        "Apr 26"
       ],
       "ftp": [
-        811,
-        767,
-        752,
-        730,
-        711,
-        724,
-        762,
-        756,
-        771,
-        791,
-        788,
-        759
+        693,
+        699,
+        716,
+        700,
+        687,
+        675,
+        639,
+        607,
+        725,
+        755,
+        759,
+        730
       ],
       "forrigeLabels": [
-        "Apr 24",
         "Maj 24",
         "Jun 24",
         "Jul 24",
@@ -60,30 +43,149 @@
         "Dec 24",
         "Jan 25",
         "Feb 25",
-        "Mar 25"
+        "Mar 25",
+        "Apr 25"
       ],
       "forrigeFtp": [
-        788,
-        778,
-        765,
+        655,
+        655,
+        644,
+        692,
+        650,
+        636,
+        622,
+        609,
+        714,
         711,
-        746,
-        738,
-        802,
-        831,
-        827,
-        844,
-        862,
-        868
+        726,
+        715
       ]
     },
-    "y11a02": {
-      "navn": "Ressourceforløb",
+    "y60a02": {
+      "navn": "Kontanthjælp",
+      "labels": [
+        "Maj 25",
+        "Jun 25",
+        "Jul 25",
+        "Aug 25",
+        "Sep 25",
+        "Okt 25",
+        "Nov 25",
+        "Dec 25",
+        "Jan 26",
+        "Feb 26",
+        "Mar 26",
+        "Apr 26"
+      ],
+      "ftp": [
+        697,
+        668,
+        653,
+        634,
+        637,
+        648,
+        665,
+        674,
+        665,
+        684,
+        702,
+        704
+      ],
+      "forrigeLabels": [
+        "Maj 24",
+        "Jun 24",
+        "Jul 24",
+        "Aug 24",
+        "Sep 24",
+        "Okt 24",
+        "Nov 24",
+        "Dec 24",
+        "Jan 25",
+        "Feb 25",
+        "Mar 25",
+        "Apr 25"
+      ],
+      "forrigeFtp": [
+        786,
+        762,
+        740,
+        738,
+        730,
+        732,
+        731,
+        730,
+        721,
+        732,
+        732,
+        723
+      ]
+    },
+    "y07a02": {
+      "navn": "Sygedagpenge",
       "labels": [],
       "ftp": [],
       "forrigeLabels": [],
       "forrigeFtp": [],
       "fejl": true
+    },
+    "y11a02": {
+      "navn": "Ressourceforløb",
+      "labels": [
+        "Maj 25",
+        "Jun 25",
+        "Jul 25",
+        "Aug 25",
+        "Sep 25",
+        "Okt 25",
+        "Nov 25",
+        "Dec 25",
+        "Jan 26",
+        "Feb 26",
+        "Mar 26",
+        "Apr 26"
+      ],
+      "ftp": [
+        201,
+        199,
+        195,
+        201,
+        193,
+        197,
+        202,
+        198,
+        197,
+        186,
+        181,
+        178
+      ],
+      "forrigeLabels": [
+        "Maj 24",
+        "Jun 24",
+        "Jul 24",
+        "Aug 24",
+        "Sep 24",
+        "Okt 24",
+        "Nov 24",
+        "Dec 24",
+        "Jan 25",
+        "Feb 25",
+        "Mar 25",
+        "Apr 25"
+      ],
+      "forrigeFtp": [
+        179,
+        175,
+        171,
+        174,
+        178,
+        184,
+        184,
+        193,
+        196,
+        198,
+        193,
+        190
+      ]
     },
     "y09a02": {
       "navn": "Ledighedsydelse",
@@ -324,36 +426,36 @@
   },
   "analyse": {
     "y01a02": {
-      "overskrift": "Data ikke tilgængeligt",
-      "tekst": "Data ikke tilgængeligt for denne periode."
+      "overskrift": "A-dagpenge falder til 730 fuldtidspersoner i april efter mindre stigning",
+      "tekst": "I april 2026 var der 730 helårspersoner på A-dagpenge, hvilket markerer et fald på 29 personer sammenlignet med måneden før. Dette fald følger efter en mindre stigning i de foregående måneder, hvor tallet lå på 755 for to måneder siden og 759 i marts. Ser man på udviklingen over det seneste år, er antallet af dagpagemodtagere dog steget med 15 fuldtidspersoner. Den seneste måneds fald kan indikere en sæsonbetinget forbedring på arbejdsmarkedet, som det ofte ses i forårsmånederne. Den overordnede årlige tendens viser dog en svagt stigende eller stabiliserende bundlinje for denne ydelsesgruppe. Udviklingen vurderes samlet set at være stabil med normale sæsonudsving."
     },
     "y60a02": {
-      "overskrift": "Data ikke tilgængeligt",
-      "tekst": "Data ikke tilgængeligt for denne periode."
+      "overskrift": "Kontanthjælp stiger svagt til 704 i april, men er lavere end sidste år",
+      "tekst": "Antallet af helårspersoner på kontanthjælp udgjorde 704 i april 2026, hvilket er en mindre stigning på 2 personer i forhold til måneden før. Over en to-måneders periode er der tale om en stigning på 20 personer, idet niveauet i februar lå på 684. Modsat den kortsigtede stigning viser det årlige perspektiv et fald på 19 fuldtidspersoner sammenlignet med samme tidspunkt sidste år. Denne udvikling peger på en vis kortsigtet tilgang til ydelsen, mens den langsigtede trend fortsat er nedadgående. Aktiviteten på området bør overvåges for at afgøre, om den seneste stigning over to måneder er midlertidig. Samlet set vurderes niveauet at ligge inden for det forventede interval, omend med en svagt opadgående tendens de seneste måneder."
     },
     "y07a02": {
-      "overskrift": "Sygedagpenge falder til 759 fuldtidspersoner i marts efter faldende tendens",
-      "tekst": "Antallet af modtagere af sygedagpenge udgør 759 fuldtidspersoner i marts 2026, hvilket er et fald på 29 personer i forhold til måneden før. Sammenlignet med situationen for to måneder siden er der tale om en reduktion på 32 helårspersoner. Over en længere 12-måneders periode tegner der sig et markant fald, idet visitationstoppen er reduceret med 109 personer i forhold til samme tidspunkt sidste år. Denne udvikling afspejler en stabil nedadgående trend over det seneste år, hvor visitationen løbende er blevet reduceret. Sæsonbetingede udsving kan have spillet en mindre rolle, men det overordnede billede peger primært på en varig strukturel nedgang. Det vurderes på denne baggrund, at retningen for sygedagpengeområdet i Hvidovre Kommune fortsat er svagt faldende til stabil."
-    },
-    "y11a02": {
       "overskrift": "Data ikke tilgængeligt",
       "tekst": "Data ikke tilgængeligt for denne periode."
     },
+    "y11a02": {
+      "overskrift": "Antallet af borgere i ressourceforløb falder til 178 i april",
+      "tekst": "I april 2026 var der 178 fuldtidspersoner i ressourceforløb, hvilket er et fald på 3 personer i forhold til marts. Udviklingen over de seneste to måneder viser en reduktion på i alt 8 personer fra 186 i februar. Sammenlignet med for et år siden er der tale om et fald på 12 helårspersoner, hvilket understøtter en jævn, nedadgående tendens. Denne tilbagegang over det seneste år indikerer et stabilt flow ud af ressourceforløb til andre ydelser eller selvforsørgelse. Der ses ingen pludselige udsving i månedstallene, hvilket tyder på en kontrolleret visitation og sagsbehandling. Retningen vurderes at være fortsat svagt nedadgående i overensstemmelse med den langsigtede trend."
+    },
     "y09a02": {
-      "overskrift": "Ledighedsydelse stiger svagt til 72 personer i april 2026",
-      "tekst": "Antallet af modtagere af ledighedsydelse udgør 72 fuldtidspersoner i april 2026, hvilket repræsenterer en stigning på 4 personer sammenlignet med måneden før. Set i forhold til niveauet for to måneder siden er der tale om en stigning på 12 fuldtidspersoner. På trods af den kortsigtede stigning ligger det samlede niveau stort set på linje med situationen for et år siden, hvor der var 2 personer flere på ydelsen. Den seneste tids stigning afbryder dermed en periode med relativt stabile eller svagt faldende tal over det seneste år. Denne kortsigtede stigning kan indikere midlertidige forskydninger i visitation eller visitationstakt til fleksjobområdet. Den fremadrettede retning vurderes som stabil med tendens til mindre månedlige fluktuationer omkring det nuværende niveau."
+      "overskrift": "Ledighedsydelse stiger til 72 i april efter stigning over to måneder",
+      "tekst": "Modtagere af ledighedsydelse udgjorde 72 fuldtidspersoner i april 2026, hvilket er en stigning på 4 personer i forhold til måneden før. Set over de seneste to måneder er antallet steget med 12 personer fra et niveau på 60 i februar. I forhold til samme måned sidste år er der dog tale om et minimalt fald på 2 fuldtidspersoner. Den kortsigtede stigning over de seneste to måneder adskiller sig således fra den ellers flade årlige udvikling. Udviklingen kan afspejle midlertidige forskydninger i visitationer eller overgange fra afsluttede forløb. Den overordnede retning vurderes fortsat at være stabil på trods af den mindre stigning de seneste to måneder."
     },
     "y08a02": {
-      "overskrift": "Antallet af personer i fleksjob ligger stabilt på 739 i april",
-      "tekst": "I april 2026 var der registreret 739 fuldtidspersoner i fleksjob, hvilket er en marginal reduktion på 2 personer sammenlignet med marts. Sammenlignet med situationen for to måneder siden er niveauet helt uændret på 739 personer. Betragtes hele den seneste 12-måneders periode, ses en stigning på 29 personer i forhold til samme måned sidste år. Dette mønster understøtter en langsigtet, jævn tilgang til ordningen, som dog er fladet ud i de allerseneste måneder. Udviklingen peger på en stabilisering af visitationstakten efter en længere periode med moderat vækst. Retningen for fleksjobområdet vurderes aktuelt som stabil på et fortsat højt niveau."
+      "overskrift": "Fleksjob svagt faldende til 739 i april, men højere end sidste år",
+      "tekst": "I april 2026 var der 739 fuldtidspersoner i fleksjob, hvilket udgør et marginalt fald på 2 personer sammenlignet med marts. Niveauet er uændret i forhold til for to måneder siden, hvor der ligeledes var registreret 739 personer. Over en 12-måneders periode er der derimod registreret en stigning på 29 personer i fleksjobordningen. Den langsigtede stigning afspejler en generel tendens til, at flere borgere visiteres til og fastholdes i fleksjob. De seneste måneders flade udvikling tyder på en midlertidig stabilisering af tilgangen til ordningen. Retningen vurderes på kort sigt at være stabil, mens den langsigtede trend fortsat er svagt stigende."
     },
     "y12a02": {
-      "overskrift": "Jobafklaringsforløb falder yderligere til 191 personer i april 2026",
-      "tekst": "Antallet af borgere i jobafklaringsforløb udgør 191 fuldtidspersoner i april 2026, svarende til et fald på 6 personer siden marts. Sammenlignet med niveauet for to måneder siden er der tale om en reduktion på 14 personer. Gennem det seneste år har der været en konsekvent nedadgående tendens, og målgruppen er reduceret med 30 personer i forhold til april sidste år. Dette jævne fald over de seneste 12 måneder tyder på en effektiv afklaring og et velfungerende flow igennem forløbene. Der ses ingen markante sæsonudsving, men derimod en vedvarende strukturel reduktion i antallet af igangværende forløb. Retningen for området vurderes fortsat at være svagt nedadgående til stabil."
+      "overskrift": "Jobafklaringsforløb fortsætter faldet til 191 helårspersoner i april",
+      "tekst": "Antallet af borgere i jobafklaringsforløb faldt til 191 i april 2026, hvilket er 6 færre end i den foregående måned. Reduktionen er mere markant over en to-måneders periode med et fald på 14 personer sammenlignet med februar. Sammenlignet med april sidste år er antallet af personer i jobafklaringsforløb faldet med 30 fuldtidspersoner. Dette konstante fald over både kort og lang sigt indikerer en stabil afvikling af forløb og progression mod arbejdsmarkedet eller andre ordninger. Udviklingen viser et stabilt fravær af opadgående udsving gennem den seneste 12-måneders periode. Retningen vurderes at være entydigt nedadgående og stabiliserende på et lavere niveau."
     },
     "y10a02": {
       "overskrift": "Antallet af førtidspensionister stabiliseres på 2.294 personer i april",
-      "tekst": "I april 2026 modtog 2.294 fuldtidspersoner førtidspension, hvilket er en minimal stigning på 1 person sammenlignet med måneden før. Sammenligner man med niveauet for to måneder siden, er der registreret en stigning på 11 personer. Set over hele det seneste år er der tale om en markant tilgang, idet der er 144 flere modtagere end på samme tidspunkt sidste år. Denne betydelige årlige stigning afspejler en længerevarende trend med et voksende antal modtagere af førtidspension i kommunen. Selvom den månedlige tilgang i april er stagneret, understøtter det samlede 12-måneders forløb et fortsat pres på området. Retningen for førtidspensionsområdet vurderes således fortsat at være svagt stigende på længere sigt, trods den øjeblikkelige stabilisering."
+      "tekst": "Der var 2.294 fuldtidspersoner på førtidspension i april 2026, hvilket er en minimal stigning på 1 person i forhold til marts. Set over de seneste to måneder er gruppen øget med 11 personer, idet antallet i februar var 2.283. På årsbasis ses en markant tilvækst med en stigning på 144 personer sammenlignet med samme tidspunkt sidste år. Den væsentlige årlige stigning afspejler den overordnede demografiske udvikling samt tidligere måneders visitationsmønstre i kommunen. Den meget beskedne stigning fra marts til april indikerer dog en opbremsning i den ellers opadgående månedlige tilgang. Retningen vurderes på lang sigt at være stigende, selvom de seneste tal viser tegn på kortsigtet stabilisering."
     },
     "y85a02": {
       "overskrift": "Data ikke tilgængeligt",
