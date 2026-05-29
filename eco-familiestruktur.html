@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hvad driver udgiftsbehovet? — Hvidovre Kommune</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+/* ── NAVBAR ── */
+.ap-navbar{all:unset;display:flex!important;align-items:center;background:#0E1612;border-bottom:1px solid rgba(255,255,255,0.08);padding:0 28px;height:40px;font-family:'DM Mono',monospace,sans-serif;position:relative;z-index:9999;box-sizing:border-box;width:100%;}
+.ap-back{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.55);font-size:11.5px;letter-spacing:0.04em;text-decoration:none;transition:color 0.18s;}
+.ap-back:hover{color:#E8C06A;}
+.ap-back svg{flex-shrink:0;transition:transform 0.18s;}
+.ap-back:hover svg{transform:translateX(-3px);}
+.ap-brand{font-size:11.5px;letter-spacing:0.08em;color:#E8C06A;margin-left:4px;}
+.ap-sep{width:1px;height:18px;background:rgba(255,255,255,0.1);margin:0 16px;}
+.ap-domain{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.25);}
+.ap-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:rgba(201,151,58,0.6);margin-right:8px;vertical-align:middle;}
+
+/* ── VARIABLER ── */
+:root {
+  --green:     #1A4D2E;
+  --green-mid: #2E7D54;
+  --gold:      #C9973A;
+  --gold-lt:   #E8C06A;
+  --red:       #C0392B;
+  --bg:        #F9F6F0;
+  --card:      #FFFFFF;
+  --text:      #1C1C1A;
+  --mid:       #4A4A44;
+  --muted:     #8A8A7E;
+  --border:    #E2DDD4;
+  --shadow:    0 2px 20px rgba(26,77,46,0.07);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); }
+
+/* ── HEADER ── */
+.hdr {
+  background: var(--green); color: #fff;
+  padding: 32px 48px 28px; position: relative; overflow: hidden;
+}
+.hdr::before { content:''; position:absolute; right:-60px; bottom:-60px; width:300px; height:300px; border-radius:50%; background:rgba(255,255,255,.03); pointer-events:none; }
+.hdr::after  { content:''; position:absolute; right:80px; top:-40px; width:180px; height:180px; border-radius:50%; background:rgba(232,192,106,.04); pointer-events:none; }
+.hdr-eye { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.45); margin-bottom:10px; }
+.hdr h1  { font-family:'DM Serif Display',serif; font-size:clamp(20px,2.8vw,32px); font-weight:400; line-height:1.2; margin-bottom:8px; }
+.hdr h1 em { font-style:italic; color:#E8C06A; }
+.hdr p   { font-size:13px; color:rgba(255,255,255,.6); font-weight:300; line-height:1.7; max-width:680px; margin-top:6px; }
+.hdr-tag { display:inline-block; margin-top:14px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; background:rgba(232,192,106,.15); border:1px solid rgba(232,192,106,.3); color:#E8C06A; padding:4px 11px; border-radius:20px; }
+
+/* ── MAIN ── */
+main { padding: 28px 48px 48px; max-width: 1140px; }
+
+/* ── INTRO-BOKS ── */
+.intro-box {
+  background: var(--card); border: 1px solid var(--border); border-left: 5px solid var(--gold);
+  border-radius: 10px; padding: 20px 24px; margin-bottom: 28px;
+  box-shadow: var(--shadow);
+}
+.intro-box h3 { font-family:'DM Serif Display',serif; font-size:15px; font-weight:400; color:var(--text); margin-bottom:8px; }
+.intro-box p { font-size:13.5px; color:var(--mid); line-height:1.75; }
+.intro-box strong { color: var(--text); font-weight:600; }
+
+/* ── KPI ── */
+.kpi-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:11px; margin-bottom:28px; }
+.kpi { background:var(--card); border:1px solid var(--border); border-left:4px solid var(--green); border-radius:10px; padding:16px 18px; box-shadow:var(--shadow); }
+.kpi.gld { border-left-color:var(--gold); }
+.kpi.mid { border-left-color:var(--green-mid); }
+.kpi.red { border-left-color:var(--red); }
+.kpi-lbl { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+.kpi-val { font-family:'DM Serif Display',serif; font-size:34px; line-height:1; color:var(--text); margin-bottom:4px; }
+.kpi-delta { font-family:'DM Mono',monospace; font-size:11.5px; margin-bottom:3px; }
+.kpi-delta.pos { color: var(--green-mid); }
+.kpi-delta.neg { color: var(--red); }
+.kpi-delta.neu { color: var(--muted); }
+.kpi-desc { font-size:11.5px; color:var(--mid); line-height:1.45; }
+
+/* ── SEKTION-LABEL ── */
+.section-label { font-family:'DM Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:16px; margin-top:36px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+
+/* ── CHART CARD ── */
+.chart-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:24px; box-shadow:var(--shadow); margin-bottom:24px; }
+.chart-title { font-family:'DM Serif Display',serif; font-size:19px; font-weight:400; color:var(--text); margin-bottom:4px; }
+.chart-desc  { font-size:12px; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:20px; }
+.canvas-wrap { position:relative; }
+.canvas-wrap.tall  { height:440px; }
+.canvas-wrap.med   { height:320px; }
+.canvas-wrap.short { height:260px; }
+
+/* ── TO-KORTS GRID ── */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:24px; }
+@media(max-width:780px){ .two-col { grid-template-columns:1fr; } }
+
+/* ── UDGIFTSBEHOV DEKOMPONERING ── */
+.decomp-wrap { display:flex; gap:14px; margin-bottom:24px; flex-wrap:wrap; }
+.decomp-item { flex:1; min-width:170px; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px 20px; box-shadow:var(--shadow); position:relative; overflow:hidden; }
+.decomp-item::after { content:''; position:absolute; bottom:0; left:0; right:0; height:4px; background: var(--border); }
+.decomp-item.active::after { background: var(--gold); }
+.decomp-item.total::after  { background: var(--green); }
+.decomp-lbl { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.decomp-val { font-family:'DM Serif Display',serif; font-size:40px; color:var(--text); line-height:1; margin-bottom:4px; }
+.decomp-val.highlight { color: var(--green); }
+.decomp-sub { font-size:12px; color:var(--mid); line-height:1.5; }
+.decomp-bar-track { background: #EEE; border-radius:4px; height:6px; margin-top:10px; }
+.decomp-bar-fill  { border-radius:4px; height:6px; transition: width .5s; }
+
+/* ── DRIVERE CARDS ── */
+.drivers-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; margin-bottom:24px; }
+.driver-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 16px; box-shadow:var(--shadow); }
+.driver-title { font-size:12.5px; font-weight:500; color:var(--text); margin-bottom:8px; line-height:1.4; }
+.driver-bar-wrap { display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+.driver-bar-track { flex:1; background:#F0EDE8; border-radius:4px; height:8px; position:relative; }
+.driver-bar-hv { border-radius:4px; height:8px; position:absolute; left:0; top:0; transition: width .6s; }
+.driver-bar-dk { position:absolute; top:-3px; width:2px; height:14px; background: #999; border-radius:2px; }
+.driver-vals { font-family:'DM Mono',monospace; font-size:10.5px; color:var(--muted); display:flex; justify-content:space-between; }
+.driver-delta { font-family:'DM Mono',monospace; font-size:11px; font-weight:500; }
+.driver-delta.pos { color:var(--red); }
+.driver-delta.neg { color:var(--green-mid); }
+
+/* ── DATATABEL ── */
+.data-tbl { width:100%; border-collapse:collapse; font-size:13px; }
+.data-tbl th { font-family:'DM Mono',monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding:10px 14px; text-align:left; border-bottom:2px solid var(--border); white-space:nowrap; }
+.data-tbl th.r, .data-tbl td.r { text-align:right; }
+.data-tbl td { padding:11px 14px; border-bottom:1px solid var(--border); color:var(--text); }
+.data-tbl tr:last-child td { border-bottom:none; }
+.data-tbl tr:hover td { background:rgba(26,77,46,.025); }
+.data-tbl td.num { font-family:'DM Mono',monospace; font-weight:500; }
+.data-tbl td.pos-cell { color:var(--red); font-family:'DM Mono',monospace; font-weight:500; }
+.data-tbl td.neg-cell { color:var(--green-mid); font-family:'DM Mono',monospace; font-weight:500; }
+.data-tbl td.hv-cell  { font-family:'DM Mono',monospace; font-weight:600; color:var(--green); }
+.tbl-section-hdr td { background:#F9F6F0; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:500; border-bottom:1px solid var(--border); }
+
+/* ── KILDE ── */
+.kilde { font-family:'DM Mono',monospace; font-size:10.5px; color:var(--muted); padding:16px 48px 28px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+.dl-btn { display:inline-flex; align-items:center; gap:5px; padding:6px 13px; background:transparent; border:1.5px solid var(--border); border-radius:6px; font-family:'DM Mono',monospace; font-size:11px; color:var(--mid); cursor:pointer; transition:all .15s; }
+.dl-btn:hover { border-color:var(--green); color:var(--green); }
+
+/* ── TOOLBAR ── */
+.toolbar { background:#fff; border-bottom:1px solid var(--border); padding:10px 48px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.btn { padding:7px 15px; border:1.5px solid var(--border); background:transparent; font-family:'DM Sans',sans-serif; font-size:13px; color:var(--mid); cursor:pointer; border-radius:6px; transition:all .15s; white-space:nowrap; }
+.btn:hover  { border-color:var(--green); color:var(--green); }
+.btn.active { background:var(--green); border-color:var(--green); color:#fff; }
+
+/* ── LEGEND ── */
+.legend { display:flex; gap:18px; flex-wrap:wrap; margin-bottom:6px; margin-top:-6px; }
+.leg-item { display:flex; align-items:center; gap:6px; font-family:'DM Sans',sans-serif; font-size:12px; color:var(--mid); }
+.leg-dot  { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.leg-line { width:22px; height:3px; flex-shrink:0; border-radius:2px; }
+
+@media(max-width:700px){
+  main, .kilde { padding-left:20px; padding-right:20px; }
+  .hdr { padding:24px 20px 20px; }
+  .toolbar { padding:10px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="ap-navbar">
+  <a class="ap-back" href="https://analyse.astrup.org">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+    </svg>
+    <span class="ap-brand">analyse.astrup.org</span>
+  </a>
+  <div class="ap-sep"></div>
+  <span class="ap-domain"><span class="ap-dot"></span>Analyseportal</span>
+</div>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-eye">Hvidovre Kommune · Center for Økonomi og Personale · ECO Nøgletalsrapport 2025</div>
+  <h1>Hvad driver udgiftsbehovet? <em>Familiestruktur og socioøkonomi</em></h1>
+  <p>Hvidovres udgiftsbehov er 6,7 % over landsgennemsnittet — men det er ikke alderen på borgerne, der er den afgørende forklaring. Analysen identificerer de socioøkonomiske faktorer der trækker behovet op: boligmassens sammensætning, familiestruktur og demografisk profil.</p>
+  <span class="hdr-tag">ECO Nøgletal 2025 · Tabel 1.10, 1.50, 2.40, 2.50, 2.70</span>
+</header>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <button class="btn active" onclick="skiftView('oversigt')">Oversigt</button>
+  <button class="btn" onclick="skiftView('drivere')">Drivere</button>
+  <button class="btn" onclick="skiftView('familier')">Familiestruktur</button>
+  <button class="btn" onclick="skiftView('tabel')">Datatabeller</button>
+  <span style="margin-left:auto; font-family:'DM Mono',monospace; font-size:10.5px; color:var(--muted)">Kilde: ECO Nøgletalsrapport 2025 · Budget 2025 / Regnskab 2024</span>
+</div>
+
+<main>
+
+<!-- ===== VIEW: OVERSIGT ===== -->
+<div id="view-oversigt">
+
+  <!-- INTRO -->
+  <div class="intro-box">
+    <h3>Analyse: To komponenter i udgiftsbehovet</h3>
+    <p>ECO-rapporten dekomponerer udgiftsbehovet i en <strong>aldersbestemt del</strong> (baseret på befolkningens aldersfordeling) og en <strong>socioøkonomisk del</strong> (baseret på sociale og demografiske faktorer). Hvidovres <strong>aldersbestemte behov</strong> er kun marginalt over landsgennemsnittet (101,4), mens det <strong>socioøkonomiske behov</strong> er markant forhøjet (117,6). Behovet er altså primært drevet af Hvidovres sociale og demografiske profil — ikke af, at vi har unusually mange ældre eller børn.</p>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-lbl">Udgiftsbehov i alt</div>
+      <div class="kpi-val">106,7</div>
+      <div class="kpi-delta pos">▲ +6,7 vs. DK=100</div>
+      <div class="kpi-desc">Budget 2025 · kr. 80.809 pr. indb.</div>
+    </div>
+    <div class="kpi gld">
+      <div class="kpi-lbl">Socioøk. udgiftsbehov</div>
+      <div class="kpi-val">117,6</div>
+      <div class="kpi-delta pos">▲ +17,6 vs. DK=100</div>
+      <div class="kpi-desc">Den primære driver bag det høje behov</div>
+    </div>
+    <div class="kpi mid">
+      <div class="kpi-lbl">Aldersbestemt behov</div>
+      <div class="kpi-val">101,4</div>
+      <div class="kpi-delta neu">▲ +1,4 vs. DK=100</div>
+      <div class="kpi-desc">Næsten identisk med landsgennemsnittet</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-lbl">Almene boliger</div>
+      <div class="kpi-val">37,1%</div>
+      <div class="kpi-delta pos">▲ +122% vs. DK 16,7%</div>
+      <div class="kpi-desc">Største enkeltfaktor i socioøk. behov</div>
+    </div>
+  </div>
+
+  <!-- DEKOMPONERING -->
+  <div class="section-label">Udgiftsbehovets sammensætning — aldersbestemt vs. socioøkonomisk</div>
+  <div class="decomp-wrap">
+    <div class="decomp-item total">
+      <div class="decomp-lbl">Udgiftsbehov i alt</div>
+      <div class="decomp-val highlight">106,7</div>
+      <div class="decomp-sub">Hvidovre vs. DK = 100<br>kr. 80.809 pr. indb.</div>
+      <div class="decomp-bar-track"><div class="decomp-bar-fill" style="width:67%;background:var(--green)"></div></div>
+    </div>
+    <div class="decomp-item">
+      <div class="decomp-lbl">Aldersbestemt</div>
+      <div class="decomp-val">101,4</div>
+      <div class="decomp-sub">Baseret på befolkningens aldersfordeling. Lille forskel — Hvidovre har relativt mange børn.</div>
+      <div class="decomp-bar-track"><div class="decomp-bar-fill" style="width:14%;background:var(--green-mid)"></div></div>
+    </div>
+    <div class="decomp-item active">
+      <div class="decomp-lbl">Socioøkonomisk</div>
+      <div class="decomp-val">117,6</div>
+      <div class="decomp-sub">Baseret på sociale indikatorer: bolig, etnicitet, familiestruktur m.fl. Stor forskel fra DK.</div>
+      <div class="decomp-bar-track"><div class="decomp-bar-fill" style="width:88%;background:var(--gold)"></div></div>
+    </div>
+    <div class="decomp-item">
+      <div class="decomp-lbl">Sammenligningsgruppe</div>
+      <div class="decomp-val">101,7</div>
+      <div class="decomp-sub">Kommuner med lignende profil. Hvidovres socioøk. behov er markant højere end gruppen.</div>
+      <div class="decomp-bar-track"><div class="decomp-bar-fill" style="width:17%;background:var(--muted)"></div></div>
+    </div>
+  </div>
+
+  <!-- TOP DRIVERE CHART -->
+  <div class="chart-card">
+    <div class="chart-title">De vigtigste socioøkonomiske faktorer</div>
+    <div class="chart-desc">Hvidovres afvigelse fra landsgennemsnittet (%) · Faktorer der indgår i ECO's udgiftsbehovsberegning · Tabel 1.50, side 16</div>
+    <div class="legend" style="margin-bottom:16px;">
+      <div class="leg-item"><div class="leg-dot" style="background:var(--red);opacity:.7"></div> Over landsgennemsnit (øger behov)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--green-mid);opacity:.7"></div> Under landsgennemsnit (reducerer behov)</div>
+    </div>
+    <div class="canvas-wrap tall"><canvas id="chart-drivere"></canvas></div>
+  </div>
+
+</div><!-- end view-oversigt -->
+
+
+<!-- ===== VIEW: DRIVERE ===== -->
+<div id="view-drivere" style="display:none">
+  <div class="section-label">Detaljeret gennemgang af socioøkonomiske faktorer</div>
+
+  <!-- DRIVERE CARDS -->
+  <div class="drivers-grid" id="driversGrid"></div>
+
+  <!-- BOLIG CHART -->
+  <div class="chart-card">
+    <div class="chart-title">Boligmassens sammensætning</div>
+    <div class="chart-desc">Fordeling af boligtyper og ejerforhold (pct. af egentlige boliger) · Tabel 2.40, side 52</div>
+    <div class="two-col" style="margin-bottom:0;gap:24px">
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:10.5px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.08em">Boligtype</div>
+        <div class="canvas-wrap short"><canvas id="chart-boligtype"></canvas></div>
+      </div>
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:10.5px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.08em">Ejerforhold</div>
+        <div class="canvas-wrap short"><canvas id="chart-ejer"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INDVANDRER CHART -->
+  <div class="chart-card">
+    <div class="chart-title">Indvandrere og efterkommere — aldersfordeling</div>
+    <div class="chart-desc">Andel ikke-vestlige indvandrere og efterkommere af aldersgruppen (%) · Tabel 2.70, side 58</div>
+    <div class="canvas-wrap med"><canvas id="chart-indv"></canvas></div>
+  </div>
+</div><!-- end view-drivere -->
+
+
+<!-- ===== VIEW: FAMILIER ===== -->
+<div id="view-familier" style="display:none">
+
+  <!-- ENLIGE FORSØRGERE CHART -->
+  <div class="chart-card">
+    <div class="chart-title">Andel børn af enlige forsørgere — per aldersgruppe</div>
+    <div class="chart-desc">Pct. af børn i aldersgruppen der bor hos en enlig forsørger · Tabel 2.50, side 54</div>
+    <div class="legend" style="margin-bottom:16px;">
+      <div class="leg-item"><div class="leg-line" style="background:var(--green)"></div> Hvidovre</div>
+      <div class="leg-item"><div class="leg-line" style="background:var(--gold);"></div> Sammenligningsgruppe</div>
+      <div class="leg-item"><div class="leg-line" style="background:#999;border:1px dashed #999;"></div> Hele landet</div>
+    </div>
+    <div class="canvas-wrap med"><canvas id="chart-enlige"></canvas></div>
+  </div>
+
+  <!-- FAMILIETYPER CHART -->
+  <div class="chart-card">
+    <div class="chart-title">Familietypefordeling 2025</div>
+    <div class="chart-desc">Andel af familier i pct. · Tabel 2.50, side 54</div>
+    <div class="canvas-wrap med"><canvas id="chart-familier"></canvas></div>
+  </div>
+
+  <!-- SAMMENHÆNG BOKS -->
+  <div class="intro-box" style="border-left-color:var(--green);">
+    <h3>Sammenhæng: Familiestruktur og udgiftsbehov</h3>
+    <p>Hvidovre har <strong>30 % flere familier med enlige forsørgere</strong> end landsgennemsnittet (7,8 % vs. 6,0 %). Denne gruppe er overrepræsenteret i ECO's beregning af udgiftsbehovet — enlige forsørgere er statistisk tilknyttet højere udgifter til bl.a. dagtilbud (søskendetilskud falder bort), folkeskole (øget PPR-behov) og sociale foranstaltninger. For de 0–2 årige er afvigelsen særlig markant: <strong>11,3 % vs. 9,1 %</strong> på landsplan (+24 %). Kombineret med den høje andel af almene boliger (37,1 %) og ikke-vestlige borgere (18,1 %) forklarer familiestrukturen en stor del af det socioøkonomiske udgiftsbehov på indeks 117,6.</p>
+  </div>
+</div><!-- end view-familier -->
+
+
+<!-- ===== VIEW: TABEL ===== -->
+<div id="view-tabel" style="display:none">
+
+  <div class="chart-card" style="padding:0;overflow:hidden;">
+    <div style="padding:20px 24px 4px">
+      <div class="chart-title">Udgiftsbehovets faktorer — komplet datatabel</div>
+      <div class="chart-desc">Hvidovre sammenlignet med sammenligningsgruppe og hele landet · ECO 2025</div>
+    </div>
+    <table class="data-tbl">
+      <thead>
+        <tr>
+          <th>Faktor</th>
+          <th class="r">Hvidovre</th>
+          <th class="r">Sammenl.gr.</th>
+          <th class="r">Hele landet</th>
+          <th class="r">Afv. DK %</th>
+          <th>Kilde</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="tbl-section-hdr"><td colspan="6">OVERORDNEDE NØGLETAL (tabel 1.10)</td></tr>
+        <tr><td>Udgiftsbehov pr. indb. (indeks)</td><td class="r hv-cell">106,7</td><td class="r num">101,7</td><td class="r num">100,0</td><td class="r pos-cell">+6,7 %</td><td>1.10 · s. 2</td></tr>
+        <tr><td>Socioøkonomisk udgiftsbehov (indeks)</td><td class="r hv-cell">117,6</td><td class="r num">101,2</td><td class="r num">100,0</td><td class="r pos-cell">+17,6 %</td><td>1.50 · s. 16</td></tr>
+        <tr><td>Aldersbestemt udgiftsbehov (indeks)</td><td class="r hv-cell">101,4</td><td class="r num">101,9</td><td class="r num">100,0</td><td class="r num">+1,4 %</td><td>1.50 · s. 16</td></tr>
+        <tr><td>Balanceindikator</td><td class="r hv-cell">97,7</td><td class="r num">99,9</td><td class="r num">100,0</td><td class="r neg-cell">−2,3 %</td><td>1.10 · s. 2</td></tr>
+
+        <tr class="tbl-section-hdr"><td colspan="6">SOCIOØKONOMISKE FAKTORER (tabel 1.50, side 16)</td></tr>
+        <tr><td>Almene familieboliger (% af boliger)</td><td class="r hv-cell">37,1 %</td><td class="r num">26,6 %</td><td class="r num">16,8 %</td><td class="r pos-cell">+120,8 %</td><td>1.50 · s. 16</td></tr>
+        <tr><td>Indvandrere og efterkommere (% bef.)</td><td class="r hv-cell">17,7 %</td><td class="r num">14,3 %</td><td class="r num">10,1 %</td><td class="r pos-cell">+75,2 %</td><td>1.50 · s. 16</td></tr>
+        <tr><td>Lav middellevetid (score)</td><td class="r hv-cell">3,0</td><td class="r num">2,5</td><td class="r num">2,5</td><td class="r pos-cell">+20,0 %</td><td>1.50 · s. 16</td></tr>
+        <tr><td>Forsikrede ledige (% af 18-64 årige)</td><td class="r hv-cell">2,2 %</td><td class="r num">1,8 %</td><td class="r num">1,9 %</td><td class="r pos-cell">+15,8 %</td><td>1.50 · s. 16</td></tr>
+        <tr><td>Andel 25-49 årige uden erhvervsudd.</td><td class="r hv-cell">13,8 %</td><td class="r num">13,6 %</td><td class="r num">12,3 %</td><td class="r pos-cell">+12,2 %</td><td>1.50 · s. 16</td></tr>
+        <tr><td>0-17 årige børn af enlige forsørgere</td><td class="r hv-cell">16,0 %</td><td class="r num">15,0 %</td><td class="r num">15,4 %</td><td class="r pos-cell">+3,9 %</td><td>1.50 · s. 16</td></tr>
+        <tr><td>Enlige over 65 år (% af 65+ årige)</td><td class="r hv-cell">47,8 %</td><td class="r num">43,5 %</td><td class="r num">43,9 %</td><td class="r pos-cell">+8,9 %</td><td>1.50 · s. 16</td></tr>
+        <tr><td>Psykiatriske patienter (% af indb.)</td><td class="r hv-cell">2,4 %</td><td class="r num">2,1 %</td><td class="r num">2,2 %</td><td class="r pos-cell">+9,1 %</td><td>1.50 · s. 16</td></tr>
+        <tr><td>Billige boliger i yderområder m.m.</td><td class="r hv-cell">2,2 %</td><td class="r num">5,0 %</td><td class="r num">8,6 %</td><td class="r neg-cell">−74,4 %</td><td>1.50 · s. 16</td></tr>
+
+        <tr class="tbl-section-hdr"><td colspan="6">ENLIGE FORSØRGERE PER ALDERSGRUPPE (tabel 2.50, side 54)</td></tr>
+        <tr><td>Børn 0–2 år af enlig forsørger</td><td class="r hv-cell">11,3 %</td><td class="r num">10,1 %</td><td class="r num">9,1 %</td><td class="r pos-cell">+24,2 %</td><td>2.50 · s. 54</td></tr>
+        <tr><td>Børn 3–5 år af enlig forsørger</td><td class="r hv-cell">15,4 %</td><td class="r num">14,2 %</td><td class="r num">14,2 %</td><td class="r pos-cell">+8,5 %</td><td>2.50 · s. 54</td></tr>
+        <tr><td>Børn 6–9 år af enlig forsørger</td><td class="r hv-cell">18,6 %</td><td class="r num">17,9 %</td><td class="r num">18,7 %</td><td class="r neg-cell">−0,5 %</td><td>2.50 · s. 54</td></tr>
+        <tr><td>Børn 10–13 år af enlig forsørger</td><td class="r hv-cell">23,1 %</td><td class="r num">22,0 %</td><td class="r num">22,6 %</td><td class="r pos-cell">+2,2 %</td><td>2.50 · s. 54</td></tr>
+        <tr><td>Børn 14–17 år af enlig forsørger</td><td class="r hv-cell">28,0 %</td><td class="r num">26,1 %</td><td class="r num">26,7 %</td><td class="r pos-cell">+4,9 %</td><td>2.50 · s. 54</td></tr>
+        <tr><td>Børn 0–17 år i alt af enlig forsørger</td><td class="r hv-cell">20,2 %</td><td class="r num">18,9 %</td><td class="r num">19,2 %</td><td class="r pos-cell">+5,2 %</td><td>2.50 · s. 54</td></tr>
+
+        <tr class="tbl-section-hdr"><td colspan="6">FAMILIETYPER (tabel 2.50, side 54)</td></tr>
+        <tr><td>Enlige med børn (% af familier)</td><td class="r hv-cell">7,8 %</td><td class="r num">6,9 %</td><td class="r num">6,0 %</td><td class="r pos-cell">+30,0 %</td><td>2.50 · s. 54</td></tr>
+        <tr><td>Par med børn (% af familier)</td><td class="r hv-cell">21,9 %</td><td class="r num">21,7 %</td><td class="r num">18,5 %</td><td class="r pos-cell">+18,4 %</td><td>2.50 · s. 54</td></tr>
+        <tr><td>Enlige uden børn (% af familier)</td><td class="r hv-cell">49,0 %</td><td class="r num">45,9 %</td><td class="r num">49,8 %</td><td class="r neg-cell">−1,6 %</td><td>2.50 · s. 54</td></tr>
+        <tr><td>Par uden børn (% af familier)</td><td class="r hv-cell">21,0 %</td><td class="r num">25,1 %</td><td class="r num">25,2 %</td><td class="r neg-cell">−16,7 %</td><td>2.50 · s. 54</td></tr>
+
+        <tr class="tbl-section-hdr"><td colspan="6">BOLIGFORHOLD (tabel 2.40, side 52)</td></tr>
+        <tr><td>Almene boliger (% af egentlige boliger)</td><td class="r hv-cell">37,1 %</td><td class="r num">26,2 %</td><td class="r num">16,7 %</td><td class="r pos-cell">+122,2 %</td><td>2.40 · s. 52</td></tr>
+        <tr><td>Etageboliger (% af egentlige boliger)</td><td class="r hv-cell">55,4 %</td><td class="r num">38,9 %</td><td class="r num">40,6 %</td><td class="r pos-cell">+36,5 %</td><td>2.40 · s. 52</td></tr>
+        <tr><td>Parcelhuse (% af egentlige boliger)</td><td class="r hv-cell">28,0 %</td><td class="r num">36,5 %</td><td class="r num">40,8 %</td><td class="r neg-cell">−31,4 %</td><td>2.40 · s. 52</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div><!-- end view-tabel -->
+
+</main>
+
+<div class="kilde">
+  Kilde: ECO Nøgletalsrapport 2025 · Tabel 1.10, 1.50, 2.40, 2.50, 2.70 · Budget 2025 og regnskab 2024 · KL / Indenrigs- og Sundhedsministeriet
+  <button class="dl-btn" onclick="downloadRapport()">↓ Download rapport</button>
+</div>
+
+<script>
+// ── DATA ──
+const FARVER = ['#1A4D2E','#C9973A','#2E7D54','#4A9B7F','#C0392B','#5DADE2','#8B6914','#8E44AD'];
+
+// Chart 1: Top drivere (afvigelse fra DK)
+const drivereLabels = [
+  'Almene familieboliger',
+  'Indv. og efterk. (ikke-vestl.)',
+  'Enlige med børn (familier)',
+  'Lav middellevetid',
+  'Forsikrede ledige',
+  'Psykiatriske patienter',
+  'Andel 25-49 u. erhvervsudd.',
+  'Enlige over 65 år',
+  'Enlige forsørgere 0-17 år',
+  'Andel 0-17 årige 3+ flytninger',
+  '6-16 årige (aldersandel)',
+  '0-5 årige (aldersandel)',
+  'Par uden børn (familier)',
+  'Billige boliger (yderområder)'
+];
+const drivereVals = [120.8, 75.2, 30.0, 20.0, 15.8, 9.1, 12.2, 8.9, 3.9, 15.4, 20.3, 11.5, -16.7, -74.4];
+const drivereColors = drivereVals.map(v => v > 0 ? 'rgba(192,57,43,0.75)' : 'rgba(46,125,84,0.75)');
+
+// Chart 2: Enlige forsørgere per alder
+const ensAlder   = ['0–2 år','3–5 år','6–9 år','10–13 år','14–17 år','0–17 år\ni alt'];
+const ensHv      = [11.3,15.4,18.6,23.1,28.0,20.2];
+const ensGrp     = [10.1,14.2,17.9,22.0,26.1,18.9];
+const ensDk      = [9.1,14.2,18.7,22.6,26.7,19.2];
+
+// Chart 3: Familietyper
+const famLabels  = ['Enlige\nuden børn','Par\nuden børn','Par\nmed børn','Enlige\nmed børn'];
+const famHv      = [49.0,21.0,21.9,7.8];
+const famDk      = [49.8,25.2,18.5,6.0];
+
+// Chart 4: Boligtype
+const boligLabels = ['Etageboliger','Parcelhuse','Rækkehuse','Øvrige'];
+const boligHv     = [55.4,28.0,13.2,3.4];
+const boligDk     = [40.6,40.8,15.2,3.3];
+
+// Chart 5: Ejerforhold
+const ejerLabels = ['Almene\nboligselskaber','Privatpersoner','Andelsboligforen.','Selskaber','Øvrige'];
+const ejerHv     = [39.2,40.6,10.4,3.4,6.4];
+const ejerDk     = [19.5,54.8,6.7,14.1,4.9];
+
+// Chart 6: Indvandrere aldersgrupper
+const indvLabels = ['0–5 år','6–15 år','16–24 år','25–39 år','40–66 år','67+ år'];
+const indvHv     = [12.52,14.39,21.52,27.77,18.99,7.52];
+const indvDk     = [9.71,11.95,12.31,15.87,10.37,3.13];
+
+// ── CHARTS ──
+let charts = {};
+
+function buildAll() {
+  buildDrivere();
+  buildEnlige();
+  buildFamilier();
+  buildBoligtype();
+  buildEjer();
+  buildIndv();
+  buildDriverCards();
+}
+
+function buildDrivere() {
+  const ctx = document.getElementById('chart-drivere');
+  if (!ctx) return;
+  // Sort by value (descending)
+  const sorted = drivereLabels
+    .map((l,i) => ({ l, v: drivereVals[i] }))
+    .sort((a,b) => a.v - b.v);
+  const lbls = sorted.map(x => x.l);
+  const vals = sorted.map(x => x.v);
+  const cols = vals.map(v => v > 0 ? 'rgba(192,57,43,0.78)' : 'rgba(46,125,84,0.78)');
+
+  charts.drivere = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: lbls,
+      datasets:[{
+        data: vals, backgroundColor: cols,
+        borderRadius:4, borderSkipped:false
+      }]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{label:c=>`  ${c.parsed.x>0?'+':''}${c.parsed.x.toLocaleString('da-DK')} % vs. DK`},
+          backgroundColor:'#1C1C1A', titleFont:{family:'DM Sans',size:13,weight:'600'},
+          bodyFont:{family:'DM Sans',size:12}, padding:11, cornerRadius:6
+        }
+      },
+      scales:{
+        x:{
+          ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>(v>0?'+':'')+v+'%'},
+          grid:{color:'rgba(0,0,0,0.04)'},
+          title:{display:true,text:'Afvigelse fra landsgennemsnit (%)',font:{family:'DM Sans',size:11},color:'#8A8A7E'}
+        },
+        y:{
+          ticks:{font:{family:'DM Sans',size:12,weight:'500'},color:'#1C1C1A'},
+          grid:{display:false}
+        }
+      }
+    }
+  });
+}
+
+function buildEnlige() {
+  const ctx = document.getElementById('chart-enlige');
+  if (!ctx) return;
+  charts.enlige = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: ensAlder,
+      datasets:[
+        {label:'Hvidovre', data:ensHv, backgroundColor:'rgba(26,77,46,0.85)', borderRadius:4, order:1},
+        {label:'Sammenligningsgruppe', data:ensGrp, backgroundColor:'rgba(201,151,58,0.75)', borderRadius:4, order:2},
+        {
+          label:'Hele landet', data:ensDk,
+          type:'line', borderColor:'#888', backgroundColor:'transparent',
+          borderWidth:2, borderDash:[5,4],
+          pointRadius:4, pointBackgroundColor:'#888', pointBorderColor:'#fff', pointBorderWidth:1.5,
+          order:0
+        }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:true, position:'top', labels:{font:{family:'DM Sans',size:11},boxWidth:14,padding:12}},
+        tooltip:{backgroundColor:'#1C1C1A',titleFont:{family:'DM Sans',size:13,weight:'600'},bodyFont:{family:'DM Sans',size:12},padding:10,cornerRadius:6,
+          callbacks:{label:c=>`  ${c.dataset.label}: ${c.parsed.y.toLocaleString('da-DK')} %`}
+        }
+      },
+      scales:{
+        x:{ticks:{font:{family:'DM Sans',size:12},color:'#4A4A44'},grid:{display:false}},
+        y:{beginAtZero:true, ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.04)'},
+          title:{display:true,text:'Andel børn hos enlig forsørger (%)',font:{family:'DM Sans',size:11},color:'#8A8A7E'}
+        }
+      }
+    }
+  });
+}
+
+function buildFamilier() {
+  const ctx = document.getElementById('chart-familier');
+  if (!ctx) return;
+  const lbls = ['Enlige u. børn','Par u. børn','Par m. børn','Enlige m. børn'];
+  charts.familier = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: lbls,
+      datasets:[
+        {label:'Hvidovre', data:famHv, backgroundColor:'rgba(26,77,46,0.85)', borderRadius:4},
+        {label:'Hele landet', data:famDk, backgroundColor:'rgba(201,151,58,0.7)', borderRadius:4}
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:true, position:'top', labels:{font:{family:'DM Sans',size:11},boxWidth:14,padding:12}},
+        tooltip:{backgroundColor:'#1C1C1A',titleFont:{family:'DM Sans',size:13,weight:'600'},bodyFont:{family:'DM Sans',size:12},padding:10,cornerRadius:6,
+          callbacks:{label:c=>`  ${c.dataset.label}: ${c.parsed.y.toLocaleString('da-DK')} %`}
+        }
+      },
+      scales:{
+        x:{ticks:{font:{family:'DM Sans',size:12},color:'#4A4A44'},grid:{display:false}},
+        y:{beginAtZero:true, ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.04)'},
+          title:{display:true,text:'Andel af familier (%)',font:{family:'DM Sans',size:11},color:'#8A8A7E'}
+        }
+      }
+    }
+  });
+}
+
+function buildBoligtype() {
+  const ctx = document.getElementById('chart-boligtype');
+  if (!ctx) return;
+  charts.boligtype = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: boligLabels,
+      datasets:[
+        {label:'Hvidovre', data:boligHv, backgroundColor:'rgba(26,77,46,0.85)', borderRadius:4},
+        {label:'Hele landet', data:boligDk, backgroundColor:'rgba(201,151,58,0.7)', borderRadius:4}
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{font:{family:'DM Sans',size:10},boxWidth:12,padding:10}},
+        tooltip:{backgroundColor:'#1C1C1A',bodyFont:{family:'DM Sans',size:12},padding:10,cornerRadius:6,callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y}%`}}},
+      scales:{x:{ticks:{font:{family:'DM Sans',size:11},color:'#4A4A44'},grid:{display:false}},
+        y:{beginAtZero:true,ticks:{font:{family:'DM Mono',size:10},color:'#8A8A7E',callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.04)'}}}
+    }
+  });
+}
+
+function buildEjer() {
+  const ctx = document.getElementById('chart-ejer');
+  if (!ctx) return;
+  charts.ejer = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: ejerLabels,
+      datasets:[
+        {label:'Hvidovre', data:ejerHv, backgroundColor:'rgba(26,77,46,0.85)', borderRadius:4},
+        {label:'Hele landet', data:ejerDk, backgroundColor:'rgba(201,151,58,0.7)', borderRadius:4}
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{font:{family:'DM Sans',size:10},boxWidth:12,padding:10}},
+        tooltip:{backgroundColor:'#1C1C1A',bodyFont:{family:'DM Sans',size:12},padding:10,cornerRadius:6,callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y}%`}}},
+      scales:{x:{ticks:{font:{family:'DM Sans',size:11},color:'#4A4A44'},grid:{display:false}},
+        y:{beginAtZero:true,ticks:{font:{family:'DM Mono',size:10},color:'#8A8A7E',callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.04)'}}}
+    }
+  });
+}
+
+function buildIndv() {
+  const ctx = document.getElementById('chart-indv');
+  if (!ctx) return;
+  charts.indv = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: indvLabels,
+      datasets:[
+        {label:'Hvidovre — ikke-vestl. indv.+efterk.', data:indvHv, backgroundColor:'rgba(26,77,46,0.85)', borderRadius:4},
+        {label:'Hele landet', data:indvDk, backgroundColor:'rgba(201,151,58,0.7)', borderRadius:4}
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:true,position:'top',labels:{font:{family:'DM Sans',size:11},boxWidth:14,padding:12}},
+        tooltip:{backgroundColor:'#1C1C1A',titleFont:{family:'DM Sans',size:13,weight:'600'},bodyFont:{family:'DM Sans',size:12},padding:10,cornerRadius:6,
+          callbacks:{label:c=>`  ${c.dataset.label}: ${c.parsed.y.toLocaleString('da-DK')} %`}
+        }
+      },
+      scales:{
+        x:{ticks:{font:{family:'DM Sans',size:12},color:'#4A4A44'},grid:{display:false}},
+        y:{beginAtZero:true,ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.04)'},
+          title:{display:true,text:'Andel af aldersgruppen (%)',font:{family:'DM Sans',size:11},color:'#8A8A7E'}
+        }
+      }
+    }
+  });
+}
+
+function buildDriverCards() {
+  const faktorer = [
+    { titel:'Almene familieboliger', hv:'37,1 %', dk:'16,8 %', pct:120.8, note:'Hvidovre har mere end dobbelt så mange almene boliger som landsgennemsnittet' },
+    { titel:'Ikke-vestlige indv. og efterk.', hv:'18,1 %', dk:'10,5 %', pct:72.8, note:'Andelen er 73 % over landsgennemsnittet og stiger særligt i 25-66 år' },
+    { titel:'Enlige med børn (% familier)', hv:'7,8 %', dk:'6,0 %', pct:30.0, note:'30 % flere familier med enlige forsørgere end på landsplan' },
+    { titel:'Enlige over 65 år', hv:'47,8 %', dk:'43,9 %', pct:8.9, note:'Næsten halvdelen af 65+ årige bor alene — 9 % over landsgennemsnit' },
+    { titel:'Lav middellevetid (score)', hv:'3,0', dk:'2,5', pct:20.0, note:'Indikerer lavere levetid end gennemsnittet, især for mænd' },
+    { titel:'Forsikrede ledige', hv:'2,2 %', dk:'1,9 %', pct:15.8, note:'Andelen af forsikrede ledige er 16 % over landsgennemsnittet' },
+    { titel:'Psykiatriske patienter', hv:'2,4 %', dk:'2,2 %', pct:9.1, note:'Marginalt flere psykiatriske patienter pr. 100 indb.' },
+    { titel:'Andel 25-49 u. erhvervsudd.', hv:'13,8 %', dk:'12,3 %', pct:12.2, note:'Lavere erhvervsuddannelsesniveau trækker behovet op' },
+  ];
+  const grid = document.getElementById('driversGrid');
+  const maxPct = 121;
+  faktorer.forEach(f => {
+    const isPos = f.pct > 0;
+    const barPct = Math.min(100, Math.abs(f.pct) / maxPct * 100);
+    const barColor = isPos ? 'rgba(192,57,43,0.7)' : 'rgba(46,125,84,0.7)';
+    const dkPct = 50; // DK always at 50% of bar as reference
+    grid.innerHTML += `
+      <div class="driver-card">
+        <div class="driver-title">${f.titel}</div>
+        <div class="driver-bar-wrap">
+          <div class="driver-bar-track">
+            <div class="driver-bar-hv" style="width:${barPct}%;background:${barColor}"></div>
+          </div>
+          <span class="driver-delta ${isPos?'pos':'neg'}">${isPos?'+':''}${f.pct.toFixed(1)} %</span>
+        </div>
+        <div class="driver-vals">
+          <span>Hvidovre: ${f.hv}</span>
+          <span>DK: ${f.dk}</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:7px;line-height:1.5">${f.note}</div>
+      </div>`;
+  });
+}
+
+// ── NAVIGATION ──
+let aktivView = 'oversigt';
+function skiftView(view) {
+  ['oversigt','drivere','familier','tabel'].forEach(v => {
+    document.getElementById('view-'+v).style.display = (v===view) ? '' : 'none';
+  });
+  document.querySelectorAll('.toolbar .btn').forEach((b,i) => {
+    b.classList.toggle('active', ['oversigt','drivere','familier','tabel'][i] === view);
+  });
+  aktivView = view;
+}
+
+// ── DOWNLOAD ──
+function downloadRapport() {
+  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'hvidovre-eco-familiestruktur.html'; a.click();
+}
+
+// ── INIT ──
+window.addEventListener('load', buildAll);
+</script>
+</body>
+</html>
