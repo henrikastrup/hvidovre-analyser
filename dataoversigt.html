@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dataoversigt — Hvidovre Kommune</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #1A4D2E; --green-mid: #2E6B45; --gold: #C9973A; --gold-light: #E8C06A;
+    --cream: #F7F4EF; --cream-dark: #EDE8DF; --text: #1C1C1C; --text-muted: #5A5A5A;
+    --white: #FFFFFF; --border: rgba(26,77,46,0.12); --shadow: 0 2px 16px rgba(26,77,46,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); line-height: 1.6; }
+
+  .ap-navbar { all: unset; display: flex !important; align-items: center; background: #0E1612; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 0 28px; height: 40px; font-family: 'DM Mono', monospace; position: relative; z-index: 9999; box-sizing: border-box; width: 100%; }
+  .ap-back { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.55); font-size: 11.5px; letter-spacing: 0.04em; text-decoration: none; transition: color 0.18s; }
+  .ap-back:hover { color: #E8C06A; }
+  .ap-back:hover svg { transform: translateX(-3px); }
+  .ap-back svg { flex-shrink: 0; transition: transform 0.18s; }
+  .ap-brand { font-size: 11.5px; letter-spacing: 0.08em; color: #E8C06A; margin-left: 4px; }
+  .ap-sep { width: 1px; height: 18px; background: rgba(255,255,255,0.1); margin: 0 16px; }
+  .ap-domain { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.25); }
+  .ap-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: rgba(201,151,58,0.6); margin-right: 8px; vertical-align: middle; }
+
+  .page-header { background: var(--green-dark); padding: 52px 48px 44px; color: #fff; position: relative; overflow: hidden; }
+  .page-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 320px; height: 320px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.06); }
+  .header-label { font-family: 'DM Mono', monospace; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 12px; }
+  .header-title { font-family: 'DM Serif Display', serif; font-size: 36px; font-weight: 400; line-height: 1.18; margin-bottom: 12px; }
+  .header-sub { font-size: 15px; font-weight: 300; color: rgba(255,255,255,0.65); max-width: 620px; }
+  .header-meta { margin-top: 28px; display: flex; gap: 32px; flex-wrap: wrap; }
+  .meta-item { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 0.06em; }
+  .meta-val { color: rgba(255,255,255,0.75); font-weight: 500; }
+
+  .container { max-width: 1160px; margin: 0 auto; padding: 48px 32px 80px; }
+
+  .source-tabs { display: flex; gap: 0; margin-bottom: 36px; border-bottom: 2px solid var(--border); flex-wrap: wrap; }
+  .tab-btn { background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -2px; padding: 10px 16px 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; transition: all 0.18s; white-space: nowrap; }
+  .tab-btn:hover { color: var(--green-dark); }
+  .tab-btn.active { color: var(--green-dark); border-bottom-color: var(--green-dark); }
+
+  .source-panel { display: none; }
+  .source-panel.active { display: block; }
+
+  .source-intro { display: flex; gap: 24px; align-items: flex-start; background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 24px 28px; margin-bottom: 20px; box-shadow: var(--shadow); }
+  .source-badge { flex-shrink: 0; width: 52px; height: 52px; border-radius: 10px; background: var(--green-dark); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--gold-light); text-align: center; line-height: 1.3; }
+  .source-meta h2 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; color: var(--green-dark); margin-bottom: 4px; }
+  .source-meta p { font-size: 13.5px; color: var(--text-muted); line-height: 1.55; }
+  .source-pills { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill { display: inline-flex; align-items: center; font-family: 'DM Mono', monospace; font-size: 10.5px; letter-spacing: 0.05em; padding: 3px 10px; border-radius: 100px; background: var(--cream-dark); color: var(--text-muted); }
+  .pill.green { background: rgba(26,77,46,0.1); color: var(--green-dark); }
+  .pill.gold { background: rgba(201,151,58,0.12); color: #8A6420; }
+  .pill.blue { background: rgba(30,80,160,0.09); color: #1A3A8A; }
+
+  .strength-box { background: rgba(26,77,46,0.05); border: 1px solid rgba(26,77,46,0.14); border-left: 4px solid var(--green-dark); border-radius: 0 8px 8px 0; padding: 18px 22px; margin-bottom: 28px; }
+  .strength-box h3 { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--green-dark); margin-bottom: 10px; }
+  .strength-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .strength-list li { font-size: 13.5px; color: var(--text); padding-left: 18px; position: relative; line-height: 1.5; }
+  .strength-list li::before { content: '→'; position: absolute; left: 0; color: var(--green-mid); font-size: 12px; top: 1px; }
+  .strength-list li strong { color: var(--green-dark); }
+
+  .cat-section { margin-bottom: 28px; }
+  .cat-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; margin-top: 20px; }
+  .cat-title { font-family: 'DM Mono', monospace; font-size: 10.5px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--green-dark); font-weight: 500; white-space: nowrap; }
+  .cat-line { flex: 1; height: 1px; background: var(--border); }
+
+  .data-table { width: 100%; border-collapse: collapse; background: var(--white); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); font-size: 13.5px; }
+  .data-table thead { background: var(--green-dark); color: #fff; }
+  .data-table thead th { padding: 11px 16px; text-align: left; font-weight: 500; font-size: 12px; letter-spacing: 0.04em; white-space: nowrap; }
+  .data-table th:last-child, .data-table td:last-child { text-align: center; }
+  .data-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+  .data-table tbody tr:last-child { border-bottom: none; }
+  .data-table tbody tr:hover { background: rgba(26,77,46,0.03); }
+  .data-table td { padding: 10px 16px; vertical-align: top; line-height: 1.45; }
+  .data-table td:first-child { font-weight: 500; color: var(--text); width: 195px; }
+  .data-table td.desc { color: var(--text-muted); font-size: 13px; }
+  .data-table td.tbl-id { font-family: 'DM Mono', monospace; font-size: 11.5px; color: var(--green-mid); white-space: nowrap; }
+  .data-table td.period { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+
+  .badge-5y { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; font-size: 10px; font-family: 'DM Mono', monospace; font-weight: 500; }
+  .badge-5y.yes { background: rgba(26,77,46,0.12); color: var(--green-dark); }
+  .badge-5y.no { background: rgba(201,151,58,0.15); color: #8A6420; }
+  .badge-5y.snap { background: rgba(90,90,90,0.1); color: var(--text-muted); }
+
+  .legend { display: flex; gap: 20px; align-items: center; margin-bottom: 20px; font-size: 12.5px; color: var(--text-muted); flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+
+  .note-box { background: rgba(201,151,58,0.08); border-left: 3px solid var(--gold); border-radius: 0 6px 6px 0; padding: 12px 16px; font-size: 13px; color: var(--text-muted); margin-top: 16px; line-height: 1.55; }
+  .note-box strong { color: var(--text); }
+
+  .access-box { background: rgba(30,80,160,0.05); border-left: 3px solid #4A70C4; border-radius: 0 6px 6px 0; padding: 14px 18px; font-size: 13px; color: var(--text-muted); margin-top: 16px; line-height: 1.6; }
+  .access-box strong { color: #1A3A8A; }
+  .access-box code { background: rgba(30,80,160,0.1); color: #1A3A8A; padding: 1px 5px; border-radius: 3px; font-size: 11.5px; font-family: 'DM Mono', monospace; }
+
+  .freq { display: inline-block; font-family: 'DM Mono', monospace; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; background: var(--cream-dark); color: var(--text-muted); white-space: nowrap; }
+  .freq.maaned { background: rgba(26,77,46,0.09); color: var(--green-dark); }
+  .freq.kvartal { background: rgba(46,107,69,0.09); color: var(--green-mid); }
+  .freq.aar { background: rgba(201,151,58,0.12); color: #8A6420; }
+  .freq.fast { background: rgba(90,90,90,0.08); color: #555; }
+
+  @media (max-width: 700px) {
+    .page-header { padding: 32px 20px; }
+    .container { padding: 28px 16px 60px; }
+    .source-intro { flex-direction: column; }
+    .data-table { font-size: 12px; }
+    .data-table td { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ap-navbar">
+  <a class="ap-back" href="https://analyse.astrup.org">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+    </svg>
+    <span class="ap-brand">analyse.astrup.org</span>
+  </a>
+  <div class="ap-sep"></div>
+  <span class="ap-domain"><span class="ap-dot"></span>Analyseportal</span>
+</div>
+
+<div class="page-header">
+  <div class="header-label">Hvidovre Kommune · Økonomiforvaltningen</div>
+  <div class="header-title">Dataoversigt<br>— tilgængelige kilder</div>
+  <div class="header-sub">Komplet oversigt over alle datakilder til befolknings-, økonomi- og statistikanalyser. Inkluderer styrker, unikke datapunkter, tidshorisont og opdateringsfrekvens pr. kilde.</div>
+  <div class="header-meta">
+    <div class="meta-item">Opdateret <span class="meta-val">Maj 2025</span></div>
+    <div class="meta-item">Kilder <span class="meta-val">7 stk.</span></div>
+    <div class="meta-item">Benchmark <span class="meta-val">Brøndby · Rødovre · Ballerup · Gladsaxe · Herlev</span></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="legend">
+    <div class="legend-item"><div class="badge-5y yes">✓</div> Min. 5 års data</div>
+    <div class="legend-item"><div class="badge-5y no">~</div> Under 5 år / begrænset</div>
+    <div class="legend-item"><div class="badge-5y snap">●</div> Øjebliksbillede / ét år</div>
+  </div>
+
+  <div class="source-tabs">
+    <button class="tab-btn active" onclick="showTab('eco',this)">ECO Nøgletal</button>
+    <button class="tab-btn" onclick="showTab('dst',this)">Danmarks Statistik</button>
+    <button class="tab-btn" onclick="showTab('job',this)">Jobindsats</button>
+    <button class="tab-btn" onclick="showTab('udd',this)">Uddannelsesstatistik</button>
+    <button class="tab-btn" onclick="showTab('kn',this)">Kommunale Nøgletal</button>
+    <button class="tab-btn" onclick="showTab('lois',this)">LOIS / Census</button>
+    <button class="tab-btn" onclick="showTab('kmd',this)">KMD Insight ØS</button>
+  </div>
+
+  <!-- ===== ECO ===== -->
+  <div class="source-panel active" id="tab-eco">
+    <div class="source-intro">
+      <div class="source-badge">ECO<br>Nøgl.</div>
+      <div class="source-meta">
+        <h2>ECO Nøgletalsrapporten</h2>
+        <p>Sammenlignende analyse af Hvidovre Kommunes økonomi, service og demografi på tværs af ca. 479 emneområder — budget 2025 og regnskab 2024. Referencepunkter: Sammenligningsgruppe, Region Hovedstaden og Hele landet.</p>
+        <div class="source-pills">
+          <span class="pill green">2.416 målinger</span>
+          <span class="pill green">Budget 2025 + Regnskab 2024</span>
+          <span class="pill gold">Primært snapshot</span>
+          <span class="pill">Kilde: eco_slim.csv</span>
+        </div>
+      </div>
+    </div>
+    <div class="strength-box">
+      <h3>Særlige styrker — hvad finder du kun her?</h3>
+      <ul class="strength-list">
+        <li><strong>Bredeste benchmarkdækning:</strong> ECO er den eneste kilde der sammenligner Hvidovre mod sammenligningsgruppe, region og hele landet på tværs af alle kommunale serviceområder i ét samlet overblik — fra dagtilbud til natur og miljø.</li>
+        <li><strong>Normerede udgiftstal:</strong> Alle udgifter er normeret pr. relevant aldersgruppe (kr. pr. 0-5 årig, kr. pr. 67+ årig osv.), så sammenligning på tværs af kommuner med forskellig størrelse og demografi er meningsfuld.</li>
+        <li><strong>Ressourcepres og balanceindikator:</strong> Unik samlet vurdering af forholdet mellem ressourcegrundlag, udgiftsbehov og faktisk serviceniveau — findes ikke som samlet indeks i nogen anden kilde.</li>
+        <li><strong>Sygefravær og personalemobilitet:</strong> Detaljerede tal for kommunalt ansattes sygefravær (dage pr. helårsansat, fordelt på køn og ansættelsesform) og tilgangs-/afgangsprocenter. Ikke tilgængeligt via DST eller Jobindsats på dette niveau.</li>
+        <li><strong>Klage- og ankesager:</strong> Antal realitetsbehandlede sager pr. 10.000 indb. under serviceloven, barnets lov m.fl. — en retlig kvalitetsindikator der ikke findes andre steder.</li>
+        <li><strong>Biblioteksnøgletal og serviceaktivitet:</strong> Aktivitetstal for biblioteker (åbningstimer, udlån) og tandpleje, som ikke er tilgængelige via DST.</li>
+      </ul>
+    </div>
+    <div class="note-box"><strong>OBS:</strong> ECO er primært et øjebliksbillede. Enkelte tabeller indeholder tidsserier: kassebeholdning (2016–2025), rentekorrektioner (2019–2025), fødselsfrekvens (2018–2024) og fleksjob (2018–2024). Filtrer altid side &lt; 343 for at undgå dubletter.</div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Afsnit 1 — Overordnede nøgletal</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Emne</th><th>Indhold</th><th>Tabel</th><th>Periode</th><th>Enhed</th><th>5+ år</th></tr></thead><tbody>
+        <tr><td>Ressourcepres &amp; balance</td><td class="desc">Udgiftsbehov, ressourcegrundlag, serviceniveau, balanceindikator, beskatningsniveau</td><td class="tbl-id">1.10</td><td class="period">2025</td><td><span class="freq fast">Indeks</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Ressourceforbrug — budget</td><td class="desc">19 udgiftsområder: dagtilbud, folkeskole, ældre, kontanthjælp, handicap m.fl.</td><td class="tbl-id">1.30</td><td class="period">Budget 2025</td><td><span class="freq fast">Kr./borger</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Ressourceforbrug — regnskab</td><td class="desc">Samme 19 områder som budget</td><td class="tbl-id">1.31</td><td class="period">Regnskab 2024</td><td><span class="freq fast">Kr./borger</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Budgetafvigelse</td><td class="desc">Regnskab minus budget for alle 19 udgiftsområder (kr. og pct.)</td><td class="tbl-id">1.32–1.33</td><td class="period">2024</td><td><span class="freq fast">Kr./Pct.</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Resultatopgørelse</td><td class="desc">Skatter, tilskud, driftsresultat, anlæg, samlet resultat</td><td class="tbl-id">1.40–1.41</td><td class="period">B 2025+R 2024</td><td><span class="freq fast">Mio. kr.</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Udgiftsbehov (struktur)</td><td class="desc">Aldersandele, social struktur (enlige, ikke-vestlige, lav uddannelse, billige boliger)</td><td class="tbl-id">1.50</td><td class="period">2025</td><td><span class="freq fast">Pct./indeks</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Sygefravær</td><td class="desc">Fravær pr. helårsansat, fraværspct., fordelt på køn og ansættelsesform</td><td class="tbl-id">1.70</td><td class="period">2024</td><td><span class="freq fast">Dage/pct.</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Klage- og ankesager</td><td class="desc">Realitetsbehandlede sager pr. 10.000 indb. på serviceloven, barnets lov m.fl.</td><td class="tbl-id">1.80</td><td class="period">2024</td><td><span class="freq fast">Antal/10.000</span></td><td><div class="badge-5y snap">●</div></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Afsnit 2 — Demografi og sociale forhold</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Emne</th><th>Indhold</th><th>Tabel</th><th>Periode</th><th>Enhed</th><th>5+ år</th></tr></thead><tbody>
+        <tr><td>Aldersstruktur</td><td class="desc">Andel 0-5, 6-16, 17-66, 67-74, 75+ årige</td><td class="tbl-id">2.10</td><td class="period">2025</td><td><span class="freq fast">Pct.</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Befolkningsfremskrivning</td><td class="desc">Indekseret fremskrivning 2025–2035 pr. aldersgruppe</td><td class="tbl-id">2.16</td><td class="period">2025–2035</td><td><span class="freq fast">Indeks</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Fødselsfrekvens</td><td class="desc">Fødsler pr. 1.000 kvinder 15-49 år</td><td class="tbl-id">2.18</td><td class="period">2018–2024</td><td><span class="freq fast">Promille</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Beskæftigelsesstruktur</td><td class="desc">Selvstændige, lønmodtagere, ledige, arbejdsstyrke</td><td class="tbl-id">2.20–2.21</td><td class="period">2023</td><td><span class="freq fast">Pct./antal</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Arbejdsløshed</td><td class="desc">Pct. af arbejdsstyrken, fordelt på køn og aldersgrupper</td><td class="tbl-id">2.25</td><td class="period">2024</td><td><span class="freq fast">Pct.</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Pendling</td><td class="desc">Indpendlere (25.063) og udpendlere (20.872), frekvenser og afstand</td><td class="tbl-id">2.32–2.35</td><td class="period">2023</td><td><span class="freq fast">Antal/km</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Indvandrere og efterkommere</td><td class="desc">Andel vestlige/ikke-vestlige pr. aldersgruppe</td><td class="tbl-id">2.70</td><td class="period">2025</td><td><span class="freq fast">Pct.</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Uddannelsesniveau</td><td class="desc">Befolkning 15-69 år fordelt på uddannelsestrin, ændring 2020–2024</td><td class="tbl-id">2.80</td><td class="period">2024</td><td><span class="freq fast">Pct.</span></td><td><div class="badge-5y snap">●</div></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Afsnit 3 — Finansielle nøgletal</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Emne</th><th>Indhold</th><th>Tabel</th><th>Periode</th><th>Enhed</th><th>5+ år</th></tr></thead><tbody>
+        <tr><td>Beskatningsgrundlag</td><td class="desc">Udskrivningsgrundlag, grundværdier, selskabsskatter, renteindtægter</td><td class="tbl-id">3.10–3.11</td><td class="period">B 2025+Slutl. 2023</td><td><span class="freq fast">Kr./indb.</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Kassebeholdning (tidsserie)</td><td class="desc">Gennemsnitlig kassebeholdning — kassekreditreglen</td><td class="tbl-id">3.37</td><td class="period">2016–2025</td><td><span class="freq fast">Kr./indb.</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Gæld og likviditet</td><td class="desc">Nettogæld, arbejdskapital, aktier, indskud landsbyggefond</td><td class="tbl-id">3.40</td><td class="period">Ultimo 2024</td><td><span class="freq fast">Kr./indb.</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Borgernes pensionsformuer</td><td class="desc">Andel med pensionsformue og gennemsnit pr. aldersgruppe</td><td class="tbl-id">3.70</td><td class="period">2023</td><td><span class="freq fast">Pct./kr.</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Rentekorrektioner (tidsserie)</td><td class="desc">HK-renter og rentekorrektioner</td><td class="tbl-id">3.96–3.98</td><td class="period">2019–2025</td><td><span class="freq fast">Kr./indb.</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Afsnit 5–9 — Serviceområder</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Serviceområde</th><th>Indhold</th><th>Tabel</th><th>Periode</th><th>Enhed</th><th>5+ år</th></tr></thead><tbody>
+        <tr><td>Dagtilbud</td><td class="desc">Udgifter pr. 0-5 årig, takster, dækningsgrad, personalenormering</td><td class="tbl-id">5.10–5.18</td><td class="period">B 2025+R 2024</td><td><span class="freq fast">Kr./0-5 årig</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Folkeskole</td><td class="desc">Udgifter pr. elev, klassekvotient, specialundervisning, fravær, afgangsprøver</td><td class="tbl-id">6.10–6.34</td><td class="period">B 2025+R 2024</td><td><span class="freq fast">Kr./elev</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Ældrepleje</td><td class="desc">Hjemmehjælp, plejehjem, sygepleje, udgifter pr. 67+ årig</td><td class="tbl-id">7.10–7.54</td><td class="period">B 2025+R 2024</td><td><span class="freq fast">Kr./67+</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Børn m. særlige behov</td><td class="desc">Anbringelser, forebyggende foranstaltninger, antal anbragte</td><td class="tbl-id">7.60–7.65</td><td class="period">B 2025+R 2024</td><td><span class="freq fast">Kr./0-22 årig</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Handicap (voksne)</td><td class="desc">§85/§95/§96/§107/§108, hjemmehjælp, botilbud, misbrugscenter, antal modtagere</td><td class="tbl-id">7.80–7.84</td><td class="period">B 2025+R 2024</td><td><span class="freq fast">Kr./18-66 årig</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Beskæftigelse og overførsler</td><td class="desc">Kontanthjælp, sygedagpenge, FP, forsikrede ledige, fleksjob, revalidering</td><td class="tbl-id">8.00–8.94</td><td class="period">B 2025+R 2024</td><td><span class="freq fast">Kr./17-66 årig</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Fleksjob (tidsserie)</td><td class="desc">Andel fuldtidsdeltagere i fleks- og skånejob</td><td class="tbl-id">8.14</td><td class="period">2018–2024</td><td><span class="freq fast">Pct.</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Fritid, veje, beredskab</td><td class="desc">Idræt, biblioteker, museer, vejvedligehold, beredskabsudgifter</td><td class="tbl-id">9.10–9.31</td><td class="period">B 2025+R 2024</td><td><span class="freq fast">Kr./indb.</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Administration</td><td class="desc">Sekretariat, IT, politisk org., adm.andel af nettodriftsudgifter</td><td class="tbl-id">9.40–9.52</td><td class="period">B 2025+R 2024</td><td><span class="freq fast">Kr./indb./Pct.</span></td><td><div class="badge-5y snap">●</div></td></tr>
+        <tr><td>Sundhed og tandpleje</td><td class="desc">Aktivitetsbetinget medfinansiering, sygehusbenyttelse, lægebesøg, tandpleje</td><td class="tbl-id">9.60–9.75</td><td class="period">B 2025+R 2024</td><td><span class="freq fast">Kr./indb.</span></td><td><div class="badge-5y snap">●</div></td></tr>
+      </tbody></table>
+    </div>
+  </div>
+
+  <!-- ===== DST ===== -->
+  <div class="source-panel" id="tab-dst">
+    <div class="source-intro">
+      <div class="source-badge">DST<br>API</div>
+      <div class="source-meta">
+        <h2>Danmarks Statistik — Statistikbanken API</h2>
+        <p>Åbent REST API uden autentificering. Primær kilde til live befolknings-, økonomi- og regnskabsdata for Hvidovre og benchmark-kommunerne. Data hentes via <code style="font-family:'DM Mono',monospace;font-size:12px">api.statbank.dk/v1</code>.</p>
+        <div class="source-pills">
+          <span class="pill green">Ingen autentificering</span>
+          <span class="pill green">Live data</span>
+          <span class="pill green">Lange tidsserier fra 1971+</span>
+          <span class="pill">api.statbank.dk/v1</span>
+        </div>
+      </div>
+    </div>
+    <div class="strength-box">
+      <h3>Særlige styrker — hvad finder du kun her?</h3>
+      <ul class="strength-list">
+        <li><strong>Longest tidsserier:</strong> Befolkningsdata fra 1971, indkomst fra 1987, boliger fra 1981. Ingen anden kilde giver denne historiske dybde på kommuneniveau.</li>
+        <li><strong>Kommunale regnskaber og budgetter (REGK31/BUDK32):</strong> Den eneste kilde til detaljerede, sammenlignelige regnskabstal på funktionsniveau for alle kommuner — grundlaget for alle benchmarkanalyser af serviceudgifter.</li>
+        <li><strong>Månedlig befolkning (FOLK1AM):</strong> Opdateres månedligt, fordelt på køn, enkeltårsalder og civilstand. Ingen anden ekstern kilde har denne granularitet og frekvens.</li>
+        <li><strong>Flytninger og migrationsstrømme (VAN1AAR):</strong> Detaljeret billede af hvorfra og hvortil borgere flytter, inkl. enkeltårsalder og køn — til demografiske skifts- og bosætningsanalyser.</li>
+        <li><strong>Nettoprisindeks til deflation (PRIS05/PRIS04):</strong> Den officielle kilde til NPI, der bruges til at omregne alle historiske udgiftstal til faste 2026-priser. Ikke tilgængeligt som brugbar tidsserie i nogen anden kilde.</li>
+        <li><strong>Bred tematisk dækning uden licens:</strong> Boliger, erhverv, uddannelse, sundhed, sociale forhold og økonomi i én åben platform — ingen token, ingen licens, ingen pris.</li>
+      </ul>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Befolkning</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Tabel-ID</th><th>Beskrivelse</th><th>Nøglevariabler</th><th>Frekvens</th><th>Fra år</th><th>5+ år</th></tr></thead><tbody>
+        <tr><td class="tbl-id">FOLK1AM</td><td class="desc">Befolkning 1. dag i måneden pr. kommune, køn, alder, civilstand</td><td class="desc">OMRÅDE, KØN, ALDER</td><td><span class="freq maaned">Månedlig</span></td><td class="period">2008</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td class="tbl-id">FOLK1A</td><td class="desc">Befolkning 1. dag i kvartalet</td><td class="desc">OMRÅDE, KØN, ALDER</td><td><span class="freq kvartal">Kvartalsvis</span></td><td class="period">2007</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td class="tbl-id">BEF5</td><td class="desc">Befolkning 1. jan. med herkomst og statsborgerskab</td><td class="desc">OMRÅDE, HERKOMST, KØN, ALDER</td><td><span class="freq aar">Årlig</span></td><td class="period">1980</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td class="tbl-id">STRAF10</td><td class="desc">Befolkningsfremskrivning pr. kommune (DST's nationale model)</td><td class="desc">OMRÅDE, KØN, ALDER</td><td><span class="freq fast">Hvert 2. år</span></td><td class="period">2022</td><td><div class="badge-5y no">~</div></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Fødsler, dødsfald og flytninger</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Tabel-ID</th><th>Beskrivelse</th><th>Nøglevariabler</th><th>Frekvens</th><th>Fra år</th><th>5+ år</th></tr></thead><tbody>
+        <tr><td class="tbl-id">FOD / FOD207</td><td class="desc">Levendefødte pr. kommune, køn og moders alder</td><td class="desc">OMRÅDE, KØN, MODER_ALDER</td><td><span class="freq aar">Årlig</span></td><td class="period">1971</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td class="tbl-id">DOD</td><td class="desc">Dødsfald pr. kommune og køn</td><td class="desc">OMRÅDE, KØN</td><td><span class="freq aar">Årlig</span></td><td class="period">1971</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td class="tbl-id">BEVGAAR</td><td class="desc">Befolkningsbevægelser — fødte, døde, til-/fraflytning, vækst</td><td class="desc">OMRÅDE, BEVÆGELSE</td><td><span class="freq aar">Årlig</span></td><td class="period">1971</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td class="tbl-id">VAN1AAR / VAN2AAR</td><td class="desc">Til- og fraflytninger pr. kommune, køn og enkeltårsalder</td><td class="desc">OMRÅDE, BEVÆGELSE, KØN, ALDER</td><td><span class="freq aar">Årlig</span></td><td class="period">2007</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td class="tbl-id">INDVAN / UDVAN</td><td class="desc">International ind- og udvandring pr. statsborgerskab og kommune</td><td class="desc">OMRÅDE, STATSB, KØN</td><td><span class="freq aar">Årlig</span></td><td class="period">1980</td><td><div class="badge-5y yes">✓</div></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Kommunal økonomi, arbejdsmarked og sociale forhold</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Tabel-ID</th><th>Beskrivelse</th><th>Nøglevariabler</th><th>Frekvens</th><th>Fra år</th><th>5+ år</th></tr></thead><tbody>
+        <tr><td class="tbl-id">REGK31</td><td class="desc">Kommunernes regnskaber — nettoudgifter pr. funktion og art</td><td class="desc">OMRÅDE, FUNKTION, DRANST, ART</td><td><span class="freq aar">Årlig</span></td><td class="period">2007</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td class="tbl-id">BUDK32 / BUDK11</td><td class="desc">Kommunernes budgetter pr. funktion og overordnet niveau</td><td class="desc">REGI07A, FUNKTION, DRANST</td><td><span class="freq aar">Årlig</span></td><td class="period">2007</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td class="tbl-id">AUP01</td><td class="desc">Arbejdsløshed pr. kommune og køn — månedsopdateret</td><td class="desc">OMRÅDE, KØN</td><td><span class="freq maaned">Månedlig</span></td><td class="period">2007</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td class="tbl-id">LABY27</td><td class="desc">Beskæftigede pr. branche og bopælskommune</td><td class="desc">OMRÅDE, BRANCHE</td><td><span class="freq aar">Årlig</span></td><td class="period">2008</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td class="tbl-id">INDKP101</td><td class="desc">Gennemsnitlig indkomst pr. kommune</td><td class="desc">OMRÅDE, ENHED</td><td><span class="freq aar">Årlig</span></td><td class="period">1987</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td class="tbl-id">BOL101 / BYG5</td><td class="desc">Boliger efter type og ejerforhold; byggetilladelser og fuldførelser</td><td class="desc">OMRÅDE, BOLIGTYPE</td><td><span class="freq aar">Årlig</span></td><td class="period">1981</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td class="tbl-id">SOC14</td><td class="desc">Modtagere af overførselsindkomst pr. kommune og ydelse</td><td class="desc">OMRÅDE, YDELSE</td><td><span class="freq aar">Årlig</span></td><td class="period">2007</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td class="tbl-id">HFUDD11</td><td class="desc">Befolkningens højest fuldførte uddannelse pr. kommune</td><td class="desc">BOPOMR, KØN, ALDER</td><td><span class="freq aar">Årlig</span></td><td class="period">1991</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td class="tbl-id">SYGS20</td><td class="desc">Sygehusudskrivninger pr. kommune og diagnosegruppe</td><td class="desc">OMRÅDE, DIAGNOSE</td><td><span class="freq aar">Årlig</span></td><td class="period">2007</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td class="tbl-id">PRIS05 / PRIS04</td><td class="desc">Nettoprisindeks — til deflation til faste 2026-priser</td><td class="desc">Tid</td><td><span class="freq maaned">Månedlig</span></td><td class="period">1967</td><td><div class="badge-5y yes">✓</div></td></tr>
+      </tbody></table>
+    </div>
+  </div>
+
+  <!-- ===== JOBINDSATS ===== -->
+  <div class="source-panel" id="tab-job">
+    <div class="source-intro">
+      <div class="source-badge">JOB<br>API</div>
+      <div class="source-meta">
+        <h2>Jobindsats API (STAR)</h2>
+        <p>STARs databank — samme tal som på jobindsats.dk, men via API. Kræver Bearer token. Primær kilde til månedlige beskæftigelses- og ydelsestal med indsats- og resultatmålinger.</p>
+        <div class="source-pills">
+          <span class="pill gold">Bearer token påkrævet</span>
+          <span class="pill green">Månedlig opdatering</span>
+          <span class="pill green">Lange tidsserier</span>
+          <span class="pill">api.jobindsats.dk/v3</span>
+        </div>
+      </div>
+    </div>
+    <div class="strength-box">
+      <h3>Særlige styrker — hvad finder du kun her?</h3>
+      <ul class="strength-list">
+        <li><strong>Mest aktuelle ydelsestal:</strong> Opdateres månedligt og giver aktuelle tal for a-dagpenge, kontanthjælp og sygedagpenge med under to måneders forsinkelse — afgørende til løbende politisk opfølgning.</li>
+        <li><strong>Effektmålinger — fra ydelse til beskæftigelse:</strong> Den eneste kilde med mål for overgang til selvforsørgelse inden for 3, 6 og 12 måneder. Disse resultattalmålinger findes ikke i DST eller ECO.</li>
+        <li><strong>Forløbsvarighed pr. sag:</strong> For sygedagpenge og a-dagpenge vises fordeling på forløbslængde (under 2 uger, 2–8 uger, 9–26 uger, over 52 uger) — til tidlig identifikation af langvarige forløb.</li>
+        <li><strong>Indsatstyper og aktiveringsgrad:</strong> Antal jobsamtaler, vejledningsforløb, virksomhedspraktikker og løntilskud pr. kommune — beskæftigelsesforvaltningens egne indsatser i detaljer. Ikke tilgængeligt via DST.</li>
+      </ul>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Ydelsesmodtagere og indsats</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Emne</th><th>Beskrivelse</th><th>Opløsning</th><th>Frekvens</th><th>5+ år</th></tr></thead><tbody>
+        <tr><td>A-dagpenge</td><td class="desc">Antal og fuldtidspersoner pr. kommune, køn, alder, forløbsvarighed. Tabel: y01a02</td><td class="desc">Kommune, køn, alder</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Kontanthjælp</td><td class="desc">Antal modtagere, jobparat vs. aktivitetsparat, udbetalt beløb pr. person</td><td class="desc">Kommune, køn, alder</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Sygedagpenge</td><td class="desc">Antal modtagere, forløbsvarighed, afsluttede sager pr. varighed</td><td class="desc">Kommune, køn, alder</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Fleksjob og ledighedsydelse</td><td class="desc">Antal fleksjobbevillinger og ansatte; antal på ledighedsydelse</td><td class="desc">Kommune</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Ressourceforløb og revalidering</td><td class="desc">Antal personer i ressourceforløb og revalidering</td><td class="desc">Kommune, køn</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Førtidspension</td><td class="desc">Tilkendelser og bestand af førtidspensionister</td><td class="desc">Kommune, alder</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Offentligt forsørgede (samlet)</td><td class="desc">Alle ydelsestyper samlet — overblikstabel pr. kommune</td><td class="desc">Kommune</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Fra ydelse til beskæftigelse</td><td class="desc">Andel der overgår til selvforsørgelse inden for 3/6/12 mdr. pr. ydelsestype</td><td class="desc">Kommune, ydelsestype</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Tilbud og aktiveringsgrad</td><td class="desc">Antal jobsamtaler, vejledning, virksomhedspraktikker, løntilskud; andel aktiverede</td><td class="desc">Kommune, tilbudstype</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+      </tbody></table>
+    </div>
+    <div class="access-box"><strong>Adgang:</strong> Bearer token ansøges gratis via <strong>jobindsats-api@star.dk</strong>. Henrik Astrup har aktivt token. Kommune-ID'er er sti-baserede (<code>/167/</code>) — ikke identiske med DST's kommunekoder. Kør discovery workflow via <code>/v3/table/{tabel_id}</code> inden brug af ny tabel.</div>
+  </div>
+
+  <!-- ===== UDDANNELSESSTATISTIK ===== -->
+  <div class="source-panel" id="tab-udd">
+    <div class="source-intro">
+      <div class="source-badge">UDD<br>API</div>
+      <div class="source-meta">
+        <h2>Uddannelsesstatistik API (STIL/UVM)</h2>
+        <p>Børne- og Undervisningsministeriets statistik API. Dækker grundskole, dagtilbud og ungdomsuddannelser med data på skoleniveau. POST-baseret API med hierarkisk navigation.</p>
+        <div class="source-pills">
+          <span class="pill gold">Bearer token (langtidsholdbart)</span>
+          <span class="pill green">Skoleårsniveau</span>
+          <span class="pill green">Data på skoleniveau</span>
+          <span class="pill">api.uddannelsesstatistik.dk</span>
+        </div>
+      </div>
+    </div>
+    <div class="strength-box">
+      <h3>Særlige styrker — hvad finder du kun her?</h3>
+      <ul class="strength-list">
+        <li><strong>Data på den enkelte skole:</strong> Den eneste kilde der giver karaktergennemsnit, trivsel, fravær og elevtal på skoleniveau. Det gør det muligt at sammenligne Avedøre Skole, Risbjergskolen osv. direkte — noget DST og ECO ikke kan.</li>
+        <li><strong>Trivselsindikatorer:</strong> Social trivsel, faglig trivsel, ro og orden, støtte og inspiration — børns velvære i skolen, opdateret hvert skoleår. Disse mål findes kun her.</li>
+        <li><strong>Kompetencedækning pr. fag:</strong> Andelen af undervisning varetaget af lærere med faglig kompetence — en kvalitetsindikator der ikke er tilgængelig i DST eller ECO.</li>
+        <li><strong>Overgange fra grundskolen:</strong> Præcis fordeling af hvad elever fra Hvidovre vælger efter 9. klasse — gymnasium, EUD, FGU m.fl. En nøgleindikator for uddannelsesparathed.</li>
+        <li><strong>Dagtilbudsnormering:</strong> Den eneste kilde til aktuelle normeringstal pr. kommune — afgørende for analyser af dagtilbudskvalitet og ressourcepres.</li>
+        <li><strong>Klasseniveau-fordeling:</strong> Fravær og trivsel kan ses pr. klassetrin (0.–9. klasse), ikke kun pr. skole — til identifikation af mønstre på bestemte alderstrin.</li>
+      </ul>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Grundskole — Karakterer, trivsel, fravær og elever</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Underemne</th><th>Indhold</th><th>Opløsning</th><th>Seneste data</th><th>5+ år</th></tr></thead><tbody>
+        <tr><td>Gennemsnit bundne prøver (KARAGNS)</td><td class="desc">Samlet karaktergennemsnit og pr. skole, antal elever med karakter i alle bundne prøver</td><td class="desc">Skole, kommune, skoleår, køn</td><td class="period">2024/2025</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Dansk og matematik (KARADM)</td><td class="desc">Andel elever med mindst 2 i dansk og matematik</td><td class="desc">Skole, skoleår</td><td class="period">2024/2025</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Per fag (KARAFF)</td><td class="desc">Karaktergennemsnit pr. fag og fagdisciplin</td><td class="desc">Fag, fagdisciplin, skole, skoleår</td><td class="period">2024/2025</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Trivselsindikatorer (TRIVIND)</td><td class="desc">Social trivsel, faglig trivsel, støtte og inspiration, ro og orden, generel trivsel</td><td class="desc">Skole, kommune, klassetrin, skoleår</td><td class="period">2024/2025</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Elevfravær (FRAVAAR)</td><td class="desc">Gns. fravær pr. skoleår, sygefravær, ulovligt fravær, andel over 10 pct.</td><td class="desc">Skole, kommune, klassetrin, køn</td><td class="period">2024/2025</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Elevtal og inklusion (ELEVEX)</td><td class="desc">Antal elever, inklusionsgrad, andel der modtager specialundervisning</td><td class="desc">Skole, bopælskommune, herkomst, køn</td><td class="period">2024/2025</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Overgange fra grundskolen (OVERFG)</td><td class="desc">Overgang til gymnasiale, erhvervsfaglige og øvrige uddannelser pr. bopælskommune</td><td class="desc">Bopælskommune, uddannelsesgruppe</td><td class="period">2024/2025</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Kompetencedækning (KOMP)</td><td class="desc">Andel undervisning med kompetencedækkede lærere pr. fag og skole</td><td class="desc">Skole, fag, skoleår</td><td class="period">2024/2025</td><td><div class="badge-5y yes">✓</div></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Dagtilbud</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Underemne</th><th>Indhold</th><th>Opløsning</th><th>Seneste data</th><th>5+ år</th></tr></thead><tbody>
+        <tr><td>Børn i dagtilbud (Brn)</td><td class="desc">Helårsbørn og antal børn ved nedslag pr. pasningstilbud og kommune</td><td class="desc">Kommune, pasningstilbud, år</td><td class="period">2023</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Normering (Nrm)</td><td class="desc">Pædagognormering pr. kommune — fra 2020 (ny metodologi fra 2023)</td><td class="desc">Kommune, år</td><td class="period">2023</td><td><div class="badge-5y no">~</div></td></tr>
+        <tr><td>Personale (Pers)</td><td class="desc">Personaletal og uddannelsessammensætning pr. dagtilbudstype</td><td class="desc">Kommune, uddannelsessammensætning</td><td class="period">2023</td><td><div class="badge-5y yes">✓</div></td></tr>
+      </tbody></table>
+    </div>
+    <div class="note-box"><strong>Diskretionering:</strong> Celler med for få elever returneres som null af hensyn til persondatabeskyttelse — vis som "—" i rapporter.</div>
+  </div>
+
+  <!-- ===== KOMMUNALE NØGLETAL ===== -->
+  <div class="source-panel" id="tab-kn">
+    <div class="source-intro">
+      <div class="source-badge">KN<br>ISM</div>
+      <div class="source-meta">
+        <h2>Kommunale Nøgletal (Indenrigs- og Sundhedsministeriet)</h2>
+        <p>Finansieringsrelaterede nøgletal for alle 98 kommuner fra ministeriets portal. Gemt i projektet som <code style="font-family:'DM Mono',monospace;font-size:12px">kommunale_noegletal.md</code>.</p>
+        <div class="source-pills">
+          <span class="pill green">Alle 98 kommuner</span>
+          <span class="pill green">2020–2026 inkl. budgetår</span>
+          <span class="pill">Kilde: ism.dk</span>
+        </div>
+      </div>
+    </div>
+    <div class="strength-box">
+      <h3>Særlige styrker — hvad finder du kun her?</h3>
+      <ul class="strength-list">
+        <li><strong>Statsgaranteret udskrivningsgrundlag med fremtidsår:</strong> Den eneste kilde med det officielle statsgaranterede udskrivningsgrundlag for budgetåret — herunder 2026. Det er det tal der fastlægger kommunens skatteindtægter og bruges direkte i budgetlægningen.</li>
+        <li><strong>Udgiftsbehovsindeks for alle kommuner:</strong> Det officielle strukturelle udgiftsbehov fra udligningssystemet — afspejler demografisk og social belastning. Bruges til at vurdere om udgiftsniveauet er i overensstemmelse med kommunens strukturelle forudsætninger. Ikke tilgængeligt som samlet indeks i DST.</li>
+        <li><strong>Budgetcyklus-relevante fremskrivninger:</strong> Data dækker frem til budgetår 2026 — direkte anvendeligt i indeværende budgetcyklus til sammenligning med peers.</li>
+      </ul>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Tilgængelige datasæt — alle 98 kommuner, 2020–2026</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Nøgletal</th><th>Beskrivelse</th><th>Kommuner</th><th>Periode</th><th>5+ år</th></tr></thead><tbody>
+        <tr><td>Statsgar. udskrivningsgrundlag</td><td class="desc">Udskrivningsgrundlag pr. indb. (kr.) — grundlag for skatteberegning og udligning</td><td class="desc">Alle 98</td><td class="period">2020–2026</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Udgiftsbehovsindeks</td><td class="desc">Strukturelt udgiftsbehov indeks (DK = 1,00) — demografisk og social belastning</td><td class="desc">Alle 98</td><td class="period">2020–2026</td><td><div class="badge-5y yes">✓</div></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Hvidovre og benchmark-kommuner (2026)</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Kommune</th><th>Kode</th><th>Udskr.grundlag 2026 (kr./indb.)</th><th>Udgiftsbehovsindeks 2026</th></tr></thead><tbody>
+        <tr><td style="color:var(--green-dark);font-weight:600">Hvidovre</td><td class="tbl-id">167</td><td class="period">221.800</td><td class="period">0,97</td></tr>
+        <tr><td>Brøndby</td><td class="tbl-id">153</td><td class="period">184.652</td><td class="period">1,19</td></tr>
+        <tr><td>Rødovre</td><td class="tbl-id">175</td><td class="period">217.072</td><td class="period">1,03</td></tr>
+        <tr><td>Ballerup</td><td class="tbl-id">151</td><td class="period">218.626</td><td class="period">0,96</td></tr>
+        <tr><td>Gladsaxe</td><td class="tbl-id">159</td><td class="period">245.383</td><td class="period">0,91</td></tr>
+        <tr><td>Herlev</td><td class="tbl-id">163</td><td class="period">210.282</td><td class="period">0,96</td></tr>
+      </tbody></table>
+    </div>
+    <div class="note-box"><strong>Fortolkning — udgiftsbehovsindeks:</strong> Et indeks over 1,00 = strukturelt udgiftsbehov over landsgennemsnittet. Brøndby (1,19) har markant højere strukturelt behov end Hvidovre (0,97), der ligger en anelse under landsgennemsnittet.</div>
+  </div>
+
+  <!-- ===== LOIS / CENSUS ===== -->
+  <div class="source-panel" id="tab-lois">
+    <div class="source-intro">
+      <div class="source-badge">LOIS<br>Cens.</div>
+      <div class="source-meta">
+        <h2>LOIS Statistik PRO2 — Census-kuber (LIFA)</h2>
+        <p>Hvidovre Kommunes interne BI-platform baseret på CPR-registerdata og BBR. Tilgås via Targit BI Designer. Tre kuber: <strong>Census Borger</strong> (demografi), <strong>Census DMR</strong> (køretøjer), <strong>Census Erhverv</strong> (virksomheder) og <strong>Census Prognose</strong> (befolkningsfremskrivning).</p>
+        <div class="source-pills">
+          <span class="pill blue">Intern platform — Targit BI</span>
+          <span class="pill blue">CPR-registerbaseret</span>
+          <span class="pill green">Månedlig opdatering</span>
+          <span class="pill gold">Kræver kommunal adgang</span>
+        </div>
+      </div>
+    </div>
+    <div class="strength-box">
+      <h3>Særlige styrker — hvad finder du kun her?</h3>
+      <ul class="strength-list">
+        <li><strong>Geografisk opløsning til skoledistrikt og adresseniveau:</strong> Den eneste kilde der kan vise befolkningstal, flytninger og boligdata ned på skoledistrikt, lokalområde og enkeltadresse. DST og ECO opererer kun på kommuneniveau.</li>
+        <li><strong>Familier og husstande som analyseenhed:</strong> Ud over individdata kan LOIS tælle unikke familier, børnefamilier, husstandsstørrelser og aldersprofiler for husstande — ikke muligt i DST.</li>
+        <li><strong>Homecomers og bosætningslængde:</strong> Den eneste kilde der identificerer borgere der er vendt tilbage til Hvidovre efter fraflytning — inkl. gennemsnitlig fraværslængde og alder ved til-/fraflytning.</li>
+        <li><strong>BBR-boligdata koblet til beboernes demografi:</strong> Boligstørrelse (m²), boligart, beboelsestæthed (m² pr. beboer) og boligudvikling — direkte koblet til beboernes alderprofil og husstandstype.</li>
+        <li><strong>Kommunens egne befolkningsprognoser med boligbyggeprogram:</strong> Census Prognose indeholder Hvidovres egne fremskrivninger som kan kombineres med et boligbyggeprogram — dvs. befolkningseffekten af konkrete byggerier i specifikke delområder. Ikke muligt med DST's STRAF10.</li>
+        <li><strong>Erhvervsdata på adresse- og distriktsniveau (Census Erhverv):</strong> Virksomhedstal på CVR- og P-nummer-niveau med geografisk præcision, inkl. åbninger, lukninger, ansatte og brancheskift pr. distrikt.</li>
+        <li><strong>Køretøjsregistrering pr. husstand (DMR):</strong> Antal biler, drivmiddeltype (el/benzin/diesel) og husstande uden personbil pr. distrikt — til mobilitets- og parkeringsanalyser. Unik lokal kilde.</li>
+      </ul>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Census Borger — Borgere, familier og boligdata</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Measure / emne</th><th>Beskrivelse</th><th>Geografisk opløsning</th><th>Frekvens</th><th>5+ år</th></tr></thead><tbody>
+        <tr><td>Antal borgere (primo/aktuelle)</td><td class="desc">Befolkningstal pr. 1. i måneden og aktuelt snapshot. Tilvækst mdr-over-mdr og år-over-år</td><td class="desc">Adresse, distrikt, kommune</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Familier og børnefamilier</td><td class="desc">Unikke familier, børnefamilier, yngste/ældste barn, husstandsstørrelse og -profil</td><td class="desc">Adresse, distrikt</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Aldersgrupper og pyramider</td><td class="desc">Fem-årsgruppering, standardgruppering, dagtilbuds-, skole- og ældregruppering, VH-gruppering</td><td class="desc">Distrikt, postnummer</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>BBR Boligdata</td><td class="desc">Antal boliger, beboelses-m², gns. boligstørrelse, boligareal pr. person, boligudvikling 1 og 5 år</td><td class="desc">Adresse, distrikt, boligtype</td><td><span class="freq kvartal">Kvartalsvis</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Gennemsnitsalder og socioøkonomi</td><td class="desc">Gennemsnitsalder, Gallup-segment, Conzoom-kategori, socioøkonomisk nøgletal pr. husstand</td><td class="desc">Distrikt, boligtype</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Census Borger — Flytninger og befolkningsbevægelser</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Measure / emne</th><th>Beskrivelse</th><th>Geografisk opløsning</th><th>Frekvens</th><th>5+ år</th></tr></thead><tbody>
+        <tr><td>Tilflyttere (eksterne/interne)</td><td class="desc">Fra andre kommuner vs. interne flytninger. YTD og sammenligning med forrige år</td><td class="desc">Distrikt, fra-/til-kommune</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Fraflyttere og fraflytningshyppighed</td><td class="desc">Til andre kommuner og internationalt. Fraflytningshyppighed som andel af befolkning</td><td class="desc">Distrikt, destination</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Homecomers og Leavers</td><td class="desc">Tilbagevendte borgere: antal, andel, gns. fraværslængde (år/dage), alder ved til-/fraflytning</td><td class="desc">Kommune</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Fødsler og dødsfald</td><td class="desc">Antal fødsler og dødsfald, moders gennemsnitsalder, YTD og sammenligning med forrige år</td><td class="desc">Distrikt</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>International migration</td><td class="desc">Indrejste og udrejste internationalt — netto ind-/udrejsebalance</td><td class="desc">Kommune</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Census Prognose — Kommunens egne befolkningsfremskrivninger</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Measure / emne</th><th>Beskrivelse</th><th>Geografisk opløsning</th><th>Frekvens</th><th>5+ år</th></tr></thead><tbody>
+        <tr><td>Prognoseresultat</td><td class="desc">Estimeret befolkning pr. navngivet prognose ved månedsstart. Kræver filter på prognosenavn</td><td class="desc">Distrikt, aldersgruppe</td><td><span class="freq kvartal">Kvartalsvis</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Prognose inkl. boligbyggeprogram</td><td class="desc">Prognoseresultat tillagt effekt af valgt boligbyggeprogram i specifikke delområder</td><td class="desc">Boligudbygningsområde</td><td><span class="freq kvartal">Kvartalsvis</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Tilvækst siden prognosestartdato</td><td class="desc">Estimeret befolkningstilvækst fra startdatoen og frem — med og uden boligbyggeprogram</td><td class="desc">Distrikt</td><td><span class="freq kvartal">Kvartalsvis</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Boligbyggeprogram</td><td class="desc">Planlagte boliger pr. udbygningstidspunkt og -område, akkumuleret boligudbygning, afledt boligbehov</td><td class="desc">Boligudbygningsområde</td><td><span class="freq kvartal">Kvartalsvis</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Census DMR og Census Erhverv</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Kube</th><th>Indhold</th><th>Geografisk opløsning</th><th>Historik</th><th>5+ år</th></tr></thead><tbody>
+        <tr><td>Census DMR</td><td class="desc">Køretøjer registreret på adresser: antal biler, drivmiddeltype (el/benzin/diesel), husstande uden personbil, synsdata</td><td class="desc">Adresse, distrikt, postnummer</td><td class="period">Månedlig</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Census Erhverv — juridiske enheder</td><td class="desc">CVR: antal, vækst, bevægelser (åbning/lukning/flytning), brancheskift, ansatte, årsværk, regnskabsresultater</td><td class="desc">Adresse, distrikt, branche</td><td class="period">2015–nu</td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Census Erhverv — produktionsenheder</td><td class="desc">Fysiske forretningssteder (P-numre): antal, bevægelser, ansatte pr. lokation (ansatte fra 2019)</td><td class="desc">Adresse, distrikt</td><td class="period">2015–nu</td><td><div class="badge-5y yes">✓</div></td></tr>
+      </tbody></table>
+    </div>
+    <div class="access-box"><strong>Adgang og hentning:</strong> LOIS/Census tilgås via <strong>Targit BI Designer</strong> i kommunens netværk — ikke via offentligt API. Data eksporteres ved at vælge Measure, Dimensioner og Filtre i Targit. Kontakt IT eller den systemansvarlige for adgang. Claude kan vejlede i opsætning af dashboards og forespørgsler i LOIS ud fra den vedhæftede datamodel, men kan ikke hente data direkte.</div>
+  </div>
+
+  <!-- ===== KMD INSIGHT ØS ===== -->
+  <div class="source-panel" id="tab-kmd">
+    <div class="source-intro">
+      <div class="source-badge">KMD<br>ØS</div>
+      <div class="source-meta">
+        <h2>KMD Insight ØS — Kommunens Økonomisystem</h2>
+        <p>BI-løsning bygget på data fra Hvidovre Kommunes Økonomisystem (ØS). Understøtter budgetlægning og opfølgning med automatisk opdaterede rapporter i Targit. Én samlet kube: <code style="font-family:'DM Mono',monospace;font-size:12px">SamletPostering</code> med realiserede posteringer, budget, forventet regnskab og saldo.</p>
+        <div class="source-pills">
+          <span class="pill blue">Intern platform — Targit BI</span>
+          <span class="pill blue">Direkte fra ØS-systemet</span>
+          <span class="pill green">Op til 5 års historik</span>
+          <span class="pill gold">Kræver kommunal adgang</span>
+        </div>
+      </div>
+    </div>
+    <div class="strength-box">
+      <h3>Særlige styrker — hvad finder du kun her?</h3>
+      <ul class="strength-list">
+        <li><strong>Indeværende års faktiske forbrug i realtid:</strong> Den eneste kilde med realiserede posteringer for indeværende regnskabsår — månedsopdateret direkte fra ØS. DST's REGK31 er kun tilgængeligt efter regnskabsafslutning med op til et års forsinkelse.</li>
+        <li><strong>Budget kontra forbrug løbende:</strong> Korrigeret budget (vedtaget + genbevillinger + tillægsbevillinger + omplaceringer), restbudget og forbrugsprocent er direkte tilgængelige og sammenlignes med aktuelt forbrug — afgørende til løbende budgetopfølgning.</li>
+        <li><strong>Forventet regnskab (FVR) med historik:</strong> Den eneste kilde til kommunens egne forventede årsregnskaber inkl. historiske FVR-versioner. Giver mulighed for at spore om den forventede afvigelse har udviklet sig over året.</li>
+        <li><strong>Organisatorisk opløsning til kontoniveau:</strong> Data kan opdeles på administrativ organisation (U1–U5), politisk organisation (T1–T5) og funktion (F1–F6) — fuld regnskabsmæssig sporbarhed til bilagsniveau.</li>
+        <li><strong>Bilagslink til ØS:</strong> Som den eneste kilde leverer KMD Insight direkte link fra en postering i rapporten til det underliggende bilag i ØS — uvurderligt til revision og kontrol.</li>
+        <li><strong>Flerårigt budgetoverblik (B25 + B26):</strong> Vedtaget budget 2025 og budgetoverslag 2026–2029 side om side — til flerårig budgetplanlægning og politisk præsentation.</li>
+      </ul>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Kuben SamletPostering — Nøgletal og beregninger</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Nøgletal / Beregning</th><th>Beskrivelse</th><th>Opdatering</th><th>5+ år</th></tr></thead><tbody>
+        <tr><td>Forbrug (realiseret)</td><td class="desc">Realiserede nettoposteringer fra ØS. Ekskluderer primoposteringer (type 07)</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Korrigeret budget ⭐</td><td class="desc">Vedtaget budget + genbevillinger + tillægsbevillinger + omplaceringer. Det mest anvendte budgetfelt</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Restbudget</td><td class="desc">Korrigeret budget minus realiseret forbrug</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Forbrugsprocent</td><td class="desc">Forbrug / korrigeret budget — beregnes brutto og netto (inkl./ekskl. moms)</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Forventet regnskab (FVR)</td><td class="desc">Kommunens egne skøn for årsresultatet. Historiske FVR-versioner gemmes til sammenligning</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Afvigelse FVR vs. korr. budget</td><td class="desc">Forskel mellem forventet regnskab og korrigeret budget — central afvigelsesindikator</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Saldo og disponeret beløb</td><td class="desc">Disponerede beløb og primo-beløb — til likviditetsstyring</td><td><span class="freq maaned">Månedlig</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+        <tr><td>Bilagslink til ØS</td><td class="desc">Direkte link til bilagsvisning i ØS pr. postering — til revision og kontrol</td><td><span class="freq maaned">Løbende</span></td><td><div class="badge-5y yes">✓</div></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="cat-section">
+      <div class="cat-header"><div class="cat-title">Dimensioner — Kontoplan og organisation</div><div class="cat-line"></div></div>
+      <table class="data-table"><thead><tr><th>Dimension</th><th>Beskrivelse</th><th>Niveauer</th></tr></thead><tbody>
+        <tr><td>Funktion (F1–F6)</td><td class="desc">BF-kontonummer hierarki fra øverste serviceniveau til detailkonto. Identisk med REGK31-funktionskoder — muliggør kobling til DST's historiske regnskaber</td><td class="desc">6 niveauer</td></tr>
+        <tr><td>Administrativ org. (U1–U5)</td><td class="desc">Organisatorisk hierarki fra forvaltning til afdeling/institution</td><td class="desc">5 niveauer</td></tr>
+        <tr><td>Politisk org. (T1–T5)</td><td class="desc">Politisk udvalgshierarki — til rapportering til politisk niveau</td><td class="desc">5 niveauer</td></tr>
+        <tr><td>Art (A1–A4)</td><td class="desc">Kontoart: løn, varekøb, overførsler m.fl. Kobler til REGK31's artkoder</td><td class="desc">4 niveauer</td></tr>
+        <tr><td>Dranst</td><td class="desc">Drift (1), Anlæg (2), Statsrefusion (3), Tilskud (5), Finansiering (7)</td><td class="desc">1 niveau</td></tr>
+        <tr><td>Sted (S1–S7)</td><td class="desc">Geografisk/fysisk stedkode — institution, bygning eller lokation</td><td class="desc">7 niveauer</td></tr>
+        <tr><td>Budgetversion</td><td class="desc">B25 (vedtaget 2025), B26 (overslag 2026–2029), arbejds- og testversioner</td><td class="desc">—</td></tr>
+        <tr><td>Regnskabsperiode</td><td class="desc">Hierarki over 12/13/16 regnskabsperioder — til månedlig opfølgning og sammenligninger</td><td class="desc">—</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="access-box"><strong>Adgang og hentning:</strong> KMD Insight ØS tilgås via <strong>Targit BI Designer</strong> i kommunens netværk. Husk: altid medtag mindst ét nøgletal fra Måltal-mappen og sæt en tidsmæssig afgrænsning for optimal ydeevne. Historik opbygges fra 1. dataleverance — maksimalt 5 år. Claude kan vejlede i rapportopsætning og dimensionsvalg, men kan ikke hente data direkte.</div>
+    <div class="note-box"><strong>Kobling til DST:</strong> KMD Insights funktionskoder (F1–F6) er identiske med BF-funktionskoderne i REGK31 og BUDK32. Det muliggør direkte sammenligning af indeværende års forbrug (KMD Insight) med historiske regnskabstal (DST) på præcis samme funktionsniveau.</div>
+  </div>
+
+</div>
+
+<script>
+  function showTab(id, btn) {
+    document.querySelectorAll('.source-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+</body>
+</html>
