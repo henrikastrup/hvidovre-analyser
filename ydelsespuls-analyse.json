@@ -1,5 +1,5 @@
 {
-  "genereret": "2026-05-26",
+  "genereret": "2026-06-01",
   "senesteLabel": "Apr 26",
   "data": {
     "y01a02": {
@@ -122,11 +122,62 @@
     },
     "y07a02": {
       "navn": "Sygedagpenge",
-      "labels": [],
-      "ftp": [],
-      "forrigeLabels": [],
-      "forrigeFtp": [],
-      "fejl": true
+      "labels": [
+        "Apr 25",
+        "Maj 25",
+        "Jun 25",
+        "Jul 25",
+        "Aug 25",
+        "Sep 25",
+        "Okt 25",
+        "Nov 25",
+        "Dec 25",
+        "Jan 26",
+        "Feb 26",
+        "Mar 26"
+      ],
+      "ftp": [
+        811,
+        767,
+        752,
+        730,
+        711,
+        724,
+        762,
+        756,
+        771,
+        791,
+        788,
+        759
+      ],
+      "forrigeLabels": [
+        "Apr 24",
+        "Maj 24",
+        "Jun 24",
+        "Jul 24",
+        "Aug 24",
+        "Sep 24",
+        "Okt 24",
+        "Nov 24",
+        "Dec 24",
+        "Jan 25",
+        "Feb 25",
+        "Mar 25"
+      ],
+      "forrigeFtp": [
+        788,
+        778,
+        765,
+        711,
+        746,
+        738,
+        802,
+        831,
+        827,
+        844,
+        862,
+        868
+      ]
     },
     "y11a02": {
       "navn": "Ressourceforløb",
@@ -426,36 +477,36 @@
   },
   "analyse": {
     "y01a02": {
-      "overskrift": "A-dagpenge falder til 730 fuldtidspersoner i april efter mindre stigning",
-      "tekst": "I april 2026 var der 730 helårspersoner på A-dagpenge, hvilket markerer et fald på 29 personer sammenlignet med måneden før. Dette fald følger efter en mindre stigning i de foregående måneder, hvor tallet lå på 755 for to måneder siden og 759 i marts. Ser man på udviklingen over det seneste år, er antallet af dagpagemodtagere dog steget med 15 fuldtidspersoner. Den seneste måneds fald kan indikere en sæsonbetinget forbedring på arbejdsmarkedet, som det ofte ses i forårsmånederne. Den overordnede årlige tendens viser dog en svagt stigende eller stabiliserende bundlinje for denne ydelsesgruppe. Udviklingen vurderes samlet set at være stabil med normale sæsonudsving."
+      "overskrift": "A-dagpenge falder til 730 helårspersoner i april efter tidligere stigninger",
+      "tekst": "Modtagergruppen for A-dagpenge udgjorde 730 helårspersoner i april 2026, hvilket er et fald på 29 personer i forhold til marts og 25 færre end i februar. Set over det seneste år er antallet af dagpengemodtagere dog steget med 15 helårspersoner, hvilket indikerer en underliggende stabilitet med svage fluktuationer. Den seneste måneds fald bryder med en kortere periode med stigende tendenser hen over vintermånederne. Denne udvikling kan delvist tilskrives sæsonbetinget fremgang på arbejdsmarkedet, som normalt indtræffer i forårsmånederne. Retningen for ydelserne vurderes i øjeblikket at være stabiliserende efter en mindre stigning i det foregående år."
     },
     "y60a02": {
-      "overskrift": "Kontanthjælp stiger svagt til 704 i april, men er lavere end sidste år",
-      "tekst": "Antallet af helårspersoner på kontanthjælp udgjorde 704 i april 2026, hvilket er en mindre stigning på 2 personer i forhold til måneden før. Over en to-måneders periode er der tale om en stigning på 20 personer, idet niveauet i februar lå på 684. Modsat den kortsigtede stigning viser det årlige perspektiv et fald på 19 fuldtidspersoner sammenlignet med samme tidspunkt sidste år. Denne udvikling peger på en vis kortsigtet tilgang til ydelsen, mens den langsigtede trend fortsat er nedadgående. Aktiviteten på området bør overvåges for at afgøre, om den seneste stigning over to måneder er midlertidig. Samlet set vurderes niveauet at ligge inden for det forventede interval, omend med en svagt opadgående tendens de seneste måneder."
+      "overskrift": "Mindre stigning i kontanthjælp til 704 helårspersoner i april",
+      "tekst": "Antallet af kontanthjælpsmodtagere lå i april 2026 på 704 helårspersoner, hvilket er en mindre stigning på 2 personer sammenlignet med måneden før. Sammenlignes niveauet med situationen for to måneder siden, er der tale om en stigning på 20 personer. Over det seneste år er der dog registreret et fald på 19 helårspersoner i denne modtagergruppe. Udviklingen de seneste måneder viser således en kortvarig opadgående tendens efter en længere periode med faldende volumener. Den nuværende retning peger på en stabilisering på et lavere niveau end for et år siden."
     },
     "y07a02": {
-      "overskrift": "Data ikke tilgængeligt",
-      "tekst": "Data ikke tilgængeligt for denne periode."
+      "overskrift": "Sygedagpenge falder til 759 helårspersoner i marts",
+      "tekst": "Sygedagpengemodtagere udgjorde 759 helårspersoner i marts 2026, hvilket repræsenterer et fald på 29 personer sammenlignet med februar. I forhold til to måneder tilbage er modtagergruppen reduceret med 32 personer. Over en 12-måneders periode er der tale om en mere markant reduktion på 109 helårspersoner, svarende til et fald på under 0,1 pct. Dette jævne fald hen over det seneste år tyder på en vedvarende nedadgående trend i sygefraværsforløbene i kommunen. Retningen for sygedagpengeområdet vurderes på denne baggrund fortsat at være svagt nedadgående."
     },
     "y11a02": {
-      "overskrift": "Antallet af borgere i ressourceforløb falder til 178 i april",
-      "tekst": "I april 2026 var der 178 fuldtidspersoner i ressourceforløb, hvilket er et fald på 3 personer i forhold til marts. Udviklingen over de seneste to måneder viser en reduktion på i alt 8 personer fra 186 i februar. Sammenlignet med for et år siden er der tale om et fald på 12 helårspersoner, hvilket understøtter en jævn, nedadgående tendens. Denne tilbagegang over det seneste år indikerer et stabilt flow ud af ressourceforløb til andre ydelser eller selvforsørgelse. Der ses ingen pludselige udsving i månedstallene, hvilket tyder på en kontrolleret visitation og sagsbehandling. Retningen vurderes at være fortsat svagt nedadgående i overensstemmelse med den langsigtede trend."
+      "overskrift": "Ressourceforløb falder svagt til 178 helårspersoner i april",
+      "tekst": "I april 2026 var der registreret 178 helårspersoner i ressourceforløb, hvilket er 3 færre end i marts og 8 færre end i februar. Gennem det seneste år er antallet af borgere i ressourceforløb faldet med i alt 12 helårspersoner. Denne jævne tilbagegang over det seneste år indikerer en stabil visitation og et kontinuerligt flow ud af ordningen. Udviklingen bærer præg af en langsigtet og rolig tilpasning uden pludselige udsving. Retningen for ydelsen vurderes fortsat at være stabil med en svag tendens til yderligere reduktion."
     },
     "y09a02": {
-      "overskrift": "Ledighedsydelse stiger til 72 i april efter stigning over to måneder",
-      "tekst": "Modtagere af ledighedsydelse udgjorde 72 fuldtidspersoner i april 2026, hvilket er en stigning på 4 personer i forhold til måneden før. Set over de seneste to måneder er antallet steget med 12 personer fra et niveau på 60 i februar. I forhold til samme måned sidste år er der dog tale om et minimalt fald på 2 fuldtidspersoner. Den kortsigtede stigning over de seneste to måneder adskiller sig således fra den ellers flade årlige udvikling. Udviklingen kan afspejle midlertidige forskydninger i visitationer eller overgange fra afsluttede forløb. Den overordnede retning vurderes fortsat at være stabil på trods af den mindre stigning de seneste to måneder."
+      "overskrift": "Ledighedsydelse stiger til 72 helårspersoner i april",
+      "tekst": "Ledighedsydelsen omfattede 72 helårspersoner i april 2026, hvilket markerer en stigning på 4 personer i forhold til marts. Sammenlignet med niveauet for to måneder siden er der tale om en stigning på 12 personer. Ser man på det samlede år, er modtagergruppen dog stort set uforandret med et marginalt fald på 2 personer. De seneste måneders stigning afviger således fra den overordnede årlige stabilitet og kan indikere midlertidige forskydninger i visitation eller jobafslutninger. Den kortsigtede retning er opadgående, mens det langsigtede billede fortsat fremstår stabilt."
     },
     "y08a02": {
-      "overskrift": "Fleksjob svagt faldende til 739 i april, men højere end sidste år",
-      "tekst": "I april 2026 var der 739 fuldtidspersoner i fleksjob, hvilket udgør et marginalt fald på 2 personer sammenlignet med marts. Niveauet er uændret i forhold til for to måneder siden, hvor der ligeledes var registreret 739 personer. Over en 12-måneders periode er der derimod registreret en stigning på 29 personer i fleksjobordningen. Den langsigtede stigning afspejler en generel tendens til, at flere borgere visiteres til og fastholdes i fleksjob. De seneste måneders flade udvikling tyder på en midlertidig stabilisering af tilgangen til ordningen. Retningen vurderes på kort sigt at være stabil, mens den langsigtede trend fortsat er svagt stigende."
+      "overskrift": "Antallet af fleksjobvisiterede lander på 739 personer i april",
+      "tekst": "I april 2026 var der 739 helårspersoner i fleksjobordningen, hvilket er en marginal reduktion på 2 personer i forhold til marts. Niveauet er identisk med antallet for to måneder siden, hvor der ligeledes var 739 personer registreret. Over det seneste år er antallet af personer i fleksjob dog steget med 29 helårspersoner. Denne årlige vækst afspejler en generel tendens til øget brug af ordningen over tid, trods de seneste måneders flade udvikling. Den overordnede retning for ordningen vurderes at være stabil til svagt stigende på årsbasis."
     },
     "y12a02": {
-      "overskrift": "Jobafklaringsforløb fortsætter faldet til 191 helårspersoner i april",
-      "tekst": "Antallet af borgere i jobafklaringsforløb faldt til 191 i april 2026, hvilket er 6 færre end i den foregående måned. Reduktionen er mere markant over en to-måneders periode med et fald på 14 personer sammenlignet med februar. Sammenlignet med april sidste år er antallet af personer i jobafklaringsforløb faldet med 30 fuldtidspersoner. Dette konstante fald over både kort og lang sigt indikerer en stabil afvikling af forløb og progression mod arbejdsmarkedet eller andre ordninger. Udviklingen viser et stabilt fravær af opadgående udsving gennem den seneste 12-måneders periode. Retningen vurderes at være entydigt nedadgående og stabiliserende på et lavere niveau."
+      "overskrift": "Jobafklaringsforløb reduceres til 191 helårspersoner i april",
+      "tekst": "Mængden af borgere i jobafklaringsforløb udgjorde 191 helårspersoner i april 2026, svarende til et fald på 6 personer sammenlignet med marts. Reduktionen er på 14 personer set i forhold til niveauet for to måneder siden. Sammenlignet med samme tidspunkt sidste år er der tale om et fald på 30 helårspersoner. Dette understøtter en længerevarende og stabil tendens til færre igangværende forløb gennem det seneste år. Retningen for området vurderes fortsat at pege i nedadgående retning."
     },
     "y10a02": {
-      "overskrift": "Antallet af førtidspensionister stabiliseres på 2.294 personer i april",
-      "tekst": "Der var 2.294 fuldtidspersoner på førtidspension i april 2026, hvilket er en minimal stigning på 1 person i forhold til marts. Set over de seneste to måneder er gruppen øget med 11 personer, idet antallet i februar var 2.283. På årsbasis ses en markant tilvækst med en stigning på 144 personer sammenlignet med samme tidspunkt sidste år. Den væsentlige årlige stigning afspejler den overordnede demografiske udvikling samt tidligere måneders visitationsmønstre i kommunen. Den meget beskedne stigning fra marts til april indikerer dog en opbremsning i den ellers opadgående månedlige tilgang. Retningen vurderes på lang sigt at være stigende, selvom de seneste tal viser tegn på kortsigtet stabilisering."
+      "overskrift": "Førtidspension stiger marginalt til 2.294 personer i april",
+      "tekst": "Antallet af modtagere af førtidspension lå i april 2026 på 2.294 helårspersoner, hvilket er en stigning på 1 person i forhold til marts. Sammenlignet med februar er der tale om en stigning på 11 personer, mens stigningen over det seneste år udgør 144 helårspersoner. Denne markante årlige tilvækst viser en fortsat og stabil opadgående tendens i det samlede antal modtagere af førtidspension. Udviklingen afspejler langsigtede demografiske forskydninger og visitationsmønstre frem for kortsigtede konjunkturudsving. Retningen for denne ydelsesgruppe vurderes fortsat at være stabilt stigende."
     },
     "y85a02": {
       "overskrift": "Data ikke tilgængeligt",
