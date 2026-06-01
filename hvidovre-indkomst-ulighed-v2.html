@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indkomst og ulighed — Hvidovre vs. nabokommunerne</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --hk-blaa:#004890; --hk-blaa-80:#336da6; --hk-blaa-60:#6691bc; --hk-blaa-40:#99b6d3; --hk-blaa-20:#ccdae9;
+  --hk-navy:#2b4458; --hk-skifer:#4d697d; --hk-blaagraa:#59676f; --hk-plomme:#824458; --hk-graaviolet:#73666f;
+  --hk-creme:#eae9d7; --hk-graagroen:#cad1c6; --hk-tekst:#1a1a1a; --hk-hvid:#ffffff;
+  --hk-gul:#ffda78; --hk-gylden:#cba624; --hk-orange:#fe8f48; --hk-orange-m:#d68c42;
+  --hk-roed:#d64738; --hk-koral:#ef7173; --hk-groen:#89ad93; --hk-groen-lys:#a7d6b4; --hk-groen-mel:#6d9e7a; --hk-salvie:#9ebab6;
+  --hk-radius:8px; --hk-skygge:0 1px 3px rgba(0,0,0,.10),0 1px 2px rgba(0,0,0,.06);
+  --hk-positiv:#1a6b3a; --hk-negativ:#a32d20;
+}
+*{box-sizing:border-box;}
+body{font-family:Arial,"Helvetica Neue",Helvetica,"Segoe UI",system-ui,sans-serif;color:var(--hk-tekst);background:var(--hk-hvid);line-height:1.6;margin:0;}
+.hk-wrap{max-width:980px;margin:0 auto;padding:0 24px 40px;}
+p{max-width:70ch;}
+a{color:var(--hk-blaa);text-decoration:underline;}
+a:hover{color:var(--hk-blaa-80);}
+h1,h2,h3,h4{color:var(--hk-blaa);line-height:1.2;}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;text-transform:uppercase;letter-spacing:.01em;margin:0 0 .4em;}
+h2{font-size:1.5rem;font-weight:800;margin:1.6em 0 .4em;}
+h3{font-size:1.2rem;font-weight:700;margin:1.4em 0 .4em;}
+h4{font-size:1.0rem;font-weight:700;color:var(--hk-navy);margin:1.3em 0 .3em;}
+small,.hk-note{font-size:.85rem;color:var(--hk-blaagraa);}
+.hk-cover{position:relative;background:var(--hk-creme);padding:52px 40px 84px;overflow:hidden;}
+.hk-cover h1{color:var(--hk-tekst);margin:0;}
+.hk-cover .hk-undertitel{color:var(--hk-navy);font-weight:700;font-size:1.15rem;margin-top:8px;max-width:60ch;}
+.hk-cover::after{content:"";position:absolute;left:0;right:0;bottom:0;height:56px;background:linear-gradient(115deg,var(--hk-skifer) 0 30%,transparent 30%),linear-gradient(255deg,var(--hk-roed) 0 28%,transparent 28%),var(--hk-gul);}
+.hk-accentbar{height:14px;background:linear-gradient(115deg,var(--hk-skifer) 0 34%,transparent 34%),linear-gradient(255deg,var(--hk-roed) 0 30%,transparent 30%),var(--hk-gul);margin-top:40px;}
+.hk-kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin:24px 0;}
+.hk-kpi{background:var(--hk-hvid);border:1px solid var(--hk-graagroen);border-top:4px solid var(--hk-blaa);border-radius:var(--hk-radius);box-shadow:var(--hk-skygge);padding:18px 20px;}
+.hk-kpi .tal{font-size:2rem;font-weight:800;color:var(--hk-blaa);line-height:1.1;}
+.hk-kpi .label{font-size:.9rem;color:var(--hk-blaagraa);margin-top:4px;}
+.hk-kpi .sub{font-size:.82rem;color:var(--hk-tekst);margin-top:8px;line-height:1.45;}
+.hk-kpi .change{font-size:.85rem;font-weight:700;margin-top:6px;}
+.hk-kpi.op{border-top-color:var(--hk-groen-mel);}
+.hk-kpi.ned{border-top-color:var(--hk-roed);}
+.hk-box{border-left:4px solid var(--hk-blaa);background:color-mix(in srgb,var(--hk-blaa) 8%,white);padding:14px 18px;border-radius:0 var(--hk-radius) var(--hk-radius) 0;margin:20px 0;}
+.hk-box.usikkerhed{border-left-color:var(--hk-gylden);background:color-mix(in srgb,var(--hk-gylden) 14%,white);}
+.hk-box.advarsel{border-left-color:var(--hk-roed);background:color-mix(in srgb,var(--hk-roed) 8%,white);}
+.hk-box h4{margin-top:0;}
+table{border-collapse:collapse;width:100%;margin:20px 0;font-size:.95rem;}
+thead th{background:var(--hk-blaa);color:var(--hk-hvid);text-align:left;padding:10px 12px;font-weight:700;}
+tbody td{padding:9px 12px;border-bottom:1px solid var(--hk-graagroen);}
+tbody tr:nth-child(even){background:var(--hk-blaa-20);}
+tbody td.tal{text-align:right;font-variant-numeric:tabular-nums;}
+.hk-graf{position:relative;height:360px;margin:18px 0;}
+.hk-positiv{color:var(--hk-positiv);font-weight:700;}
+.hk-negativ{color:var(--hk-negativ);font-weight:700;}
+
+.ap-navbar{all:unset;display:flex!important;align-items:center;background:#0E1612;border-bottom:1px solid rgba(255,255,255,0.08);padding:0 28px;height:40px;font-family:'DM Mono',monospace,sans-serif;position:relative;z-index:9999;box-sizing:border-box;width:100%;}
+.ap-back{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.55);font-size:11.5px;letter-spacing:0.04em;text-decoration:none;transition:color 0.18s;}
+.ap-back:hover{color:#E8C06A;}
+.ap-back svg{flex-shrink:0;transition:transform 0.18s;}
+.ap-back:hover svg{transform:translateX(-3px);}
+.ap-brand{font-size:11.5px;letter-spacing:0.08em;color:#E8C06A;margin-left:4px;}
+.ap-sep{width:1px;height:18px;background:rgba(255,255,255,0.1);margin:0 16px;}
+.ap-domain{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.25);}
+.ap-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:rgba(201,151,58,0.6);margin-right:8px;vertical-align:middle;}
+
+.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--hk-blaagraa);}
+.cover-meta{margin-top:22px;font-size:.85rem;color:var(--hk-navy);}
+.cover-meta b{color:var(--hk-tekst);}
+.lead-takeaway{font-size:1.8rem;font-weight:800;color:var(--hk-blaa);line-height:1.18;margin:.15em 0 .5em;max-width:22ch;letter-spacing:-.01em;}
+@media(min-width:760px){.lead-takeaway{font-size:2.3rem;}}
+.deck{font-size:1.1rem;font-weight:400;color:var(--hk-navy);line-height:1.55;max-width:58ch;margin:0 0 .4em;}
+.deck b{color:var(--hk-tekst);font-weight:700;}
+.lede{font-size:1.15rem;font-weight:700;color:var(--hk-tekst);line-height:1.4;max-width:54ch;margin:.2em 0;}
+.payoff{font-size:1rem;color:var(--hk-tekst);line-height:1.6;max-width:60ch;margin:.2em 0 .4em;}
+.hint{font-size:.76rem;color:var(--hk-blaagraa);font-style:italic;margin:-2px 0 12px;}
+
+.beat{margin:18px 0 8px;}
+h2{margin:1.5em 0 .3em;}
+.chart-card{background:var(--hk-hvid);border:1px solid var(--hk-graagroen);border-radius:var(--hk-radius);box-shadow:var(--hk-skygge);padding:20px 22px;margin:18px 0;}
+.chart-h{font-weight:800;color:var(--hk-blaa);font-size:1.05rem;margin-bottom:2px;}
+.chart-sub{font-size:.82rem;color:var(--hk-blaagraa);margin-bottom:14px;}
+
+.controls{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;}
+.ctrl{padding:6px 13px;border:1.5px solid var(--hk-graagroen);background:transparent;font:inherit;font-size:.82rem;color:var(--hk-navy);cursor:pointer;border-radius:20px;transition:all .15s;}
+.ctrl:hover{border-color:var(--hk-blaa);color:var(--hk-blaa);}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:10px;margin-bottom:16px;}
+.kcard{position:relative;background:var(--hk-hvid);border:1px solid var(--hk-graagroen);border-left:5px solid var(--c);border-radius:7px;padding:10px 13px 11px;cursor:pointer;transition:all .15s;user-select:none;}
+.kcard:hover{box-shadow:var(--hk-skygge);transform:translateY(-1px);}
+.kcard.active{background:color-mix(in srgb,var(--c) 14%,white);border-color:var(--c);}
+.kc-check{position:absolute;top:9px;right:11px;font-size:13px;font-weight:800;color:var(--c);opacity:0;transition:opacity .15s;}
+.kcard.active .kc-check{opacity:1;}
+.kc-name{font-weight:700;font-size:.86rem;color:var(--hk-tekst);margin-bottom:6px;}
+.kc-val{font-size:1.35rem;font-weight:800;color:var(--hk-blaa);line-height:1;}
+.kc-meta{font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;color:var(--hk-blaagraa);margin-top:3px;}
+.kc-delta{font-size:.78rem;font-weight:700;margin-top:6px;}
+.kc-delta.good{color:var(--hk-positiv);}
+.kc-delta.bad{color:var(--hk-negativ);}
+
+.hl{background:color-mix(in srgb,var(--hk-blaa) 12%,white)!important;font-weight:700;}
+
+.footer{margin-top:8px;font-size:.8rem;color:var(--hk-blaagraa);display:flex;gap:16px;flex-wrap:wrap;align-items:center;line-height:1.6;}
+.dl-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;background:var(--hk-blaa);border:none;border-radius:6px;color:#fff;font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;transition:background .15s;}
+.dl-btn:hover{background:var(--hk-blaa-80);}
+.byline{font-weight:700;color:var(--hk-navy);}
+@media(max-width:600px){.hk-cover{padding:40px 22px 72px;}.hk-wrap{padding:0 16px 48px;}}
+</style>
+</head>
+<body>
+
+<div class="ap-navbar">
+  <a class="ap-back" href="https://analyse.astrup.org">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+    </svg>
+    <span class="ap-brand">analyse.astrup.org</span>
+  </a>
+  <div class="ap-sep"></div>
+  <span class="ap-domain"><span class="ap-dot"></span>Analyseportal</span>
+</div>
+
+<header class="hk-cover">
+  <div class="eyebrow">Benchmarkanalyse · Hvidovre vs. fem nabokommuner</div>
+  <h1>Indkomst og ulighed</h1>
+  <div class="hk-undertitel">Seks nabokommuner, ét arbejdsmarked — men seks forskellige økonomier. Hvor står Hvidovre?</div>
+  <div class="cover-meta">
+    <b>Henrik Astrup</b> · 30. maj 2026 · Median, deciler og relativ fattigdom 2015–2024 · alle beløb i faste 2026-priser
+  </div>
+</header>
+
+<div class="hk-wrap">
+
+  <p class="eyebrow" style="margin-top:30px">Kort fortalt</p>
+  <p class="lead-takeaway">Ingen i gruppen vokser hurtigere — og ingen har færre fattige børn.</p>
+  <p class="deck">Hvidovre er ikke den rigeste af de seks kommuner. Men siden 2016 er indkomsten steget mest her, og <b>færre børn vokser op i fattigdom end nogen andre steder i gruppen.</b> Tre grafer fortæller hvorfor.</p>
+
+  <div class="hk-kpi-grid">
+    <div class="hk-kpi op">
+      <div class="tal">+9,2 %</div>
+      <div class="label">Real medianvækst 2016→2024</div>
+      <div class="change hk-positiv">▲ Stærkest i gruppen</div>
+      <div class="sub">Landsgennemsnit: +5,8 %.</div>
+    </div>
+    <div class="hk-kpi">
+      <div class="tal">320,1<span style="font-size:1.1rem"> t.kr</span></div>
+      <div class="label">Median real disp. indkomst 2024</div>
+      <div class="change" style="color:var(--hk-navy)">Nr. 3 af 6</div>
+      <div class="sub">Under Gladsaxe og Herlev; over Rødovre, Ballerup og Brøndby.</div>
+    </div>
+    <div class="hk-kpi op">
+      <div class="tal">3,8 %</div>
+      <div class="label">Børn 0–17 i lavindkomst 2024</div>
+      <div class="change hk-positiv">▼ Lavest af alle seks</div>
+      <div class="sub">Under landstal 4,3 %. Brøndby: 8,6 %.</div>
+    </div>
+    <div class="hk-kpi ned">
+      <div class="tal">3,14</div>
+      <div class="label">Decilspredning D9/D1 2024</div>
+      <div class="change hk-negativ">▲ +0,09 siden 2016</div>
+      <div class="sub">Mild stigning. Under landstal 3,24.</div>
+    </div>
+  </div>
+
+  <h2>Hvidovre haler ind på toppen</h2>
+  <p class="lede">Hvidovre er ikke gruppens rigeste kommune. Men ingen er vokset hurtigere.</p>
+  <p class="payoff">Renset for inflation er medianindkomsten steget mere her end hos alle fem naboer siden 2016.</p>
+
+  <div class="chart-card">
+    <div class="chart-h">Hvidovre har gruppens stærkeste reale medianvækst</div>
+    <div class="chart-sub">Median (5. decil) af ækvivaleret disponibel indkomst · faste 2026-priser · indeks 2016 = 100</div>
+    <div class="controls">
+      <button class="ctrl" onclick="preset('median','focus')">Hvidovre + hele landet</button>
+      <button class="ctrl" onclick="preset('median','all')">+ Alle kommuner</button>
+      <button class="ctrl" onclick="preset('median','clear')">✕ Ryd</button>
+    </div>
+    <p class="hint">Klik kommunerne ind for at sammenligne · starter med Hvidovre og hele landet</p>
+    <div class="card-grid" id="cards-median"></div>
+    <div class="hk-graf"><canvas id="chartMedian"></canvas></div>
+  </div>
+
+  <p class="payoff"><b>+9,2 % på otte år</b>, mod landets +5,8 %. Men kurven gemmer en advarsel: alle toppede i 2021, inflationen åd købekraften i 2022–23, og 2024 er kun en delvis genopretning. <b>Ingen er endnu tilbage på toppen.</b></p>
+
+  <h2>Toppen trækker en anelse fra bunden</h2>
+  <p class="lede">Vækst er én ting. Hvem der får den, er en anden.</p>
+  <p class="payoff">Alle ti indkomstlag i Hvidovre er blevet rigere siden 2016 — men ikke lige meget.</p>
+
+  <div class="chart-card">
+    <div class="chart-h">Alle deciler er vokset realt — men toppen mest</div>
+    <div class="chart-sub">Hvidovres decilgrænser (D1–D9), ækv. disp. indkomst · faste 2026-priser · 2016 vs. 2024</div>
+    <div class="hk-graf" style="height:430px"><canvas id="chartDeciler"></canvas></div>
+  </div>
+
+  <p class="payoff">Bunden voksede <b>+8,4 %</b>, toppen <b>+11,5 %</b>. Afstanden er altså blevet en smule større. Men Hvidovre er stadig mindre ulige end landet som helhed <span class="hk-positiv">(3,14 mod 3,24)</span> — og langt fra Gladsaxes 3,64.</p>
+
+  <h2>Lav fattigdom — bedst for børnene</h2>
+  <p class="lede">Her ligger det stærkeste resultat.</p>
+  <p class="payoff">Få i Hvidovre lever i relativ fattigdom — og blandt børn er andelen den laveste i hele gruppen.</p>
+
+  <div class="chart-card">
+    <div class="chart-h">Hvidovre ligger lavt og stabilt — Brøndby er gruppens modpol</div>
+    <div class="chart-sub">Andel personer i lavindkomstgruppen (relativ fattigdom) · pct. af befolkningen · 2015–2024</div>
+    <div class="controls">
+      <button class="ctrl" onclick="preset('poverty','focus')">Hvidovre + Brøndby + land</button>
+      <button class="ctrl" onclick="preset('poverty','all')">+ Alle kommuner</button>
+      <button class="ctrl" onclick="preset('poverty','clear')">✕ Ryd</button>
+    </div>
+    <p class="hint">Se især afstanden til Brøndby · klik for at tilføje de øvrige kommuner</p>
+    <div class="card-grid" id="cards-poverty"></div>
+    <div class="hk-graf"><canvas id="chartPoverty"></canvas></div>
+  </div>
+
+  <div class="hk-box advarsel">
+    <h4>Samme arbejdsmarked, dobbelt så mange fattige børn</h4>
+    <p style="margin:0">I Hvidovre vokser <b>3,8 %</b> af børnene op i lavindkomst — lavest af alle seks og under landstallet på 4,3 %. I Brøndby er det <b>8,6 %</b>. To nabokommuner, samme arbejdsmarked, vidt forskellige opvækstvilkår.</p>
+  </div>
+
+  <h3>De seks kommuner side om side · 2024</h3>
+  <p class="beat">Alle tal samlet. Hvidovre er fremhævet. Beløb i faste 2026-priser.</p>
+  <table id="sammenTabel">
+    <thead>
+      <tr>
+        <th>Kommune</th>
+        <th>Median real (kr.)</th>
+        <th>Realvækst 2016→24</th>
+        <th>Fattigdom alle</th>
+        <th>Børn 0–17</th>
+        <th>D9/D1</th>
+      </tr>
+    </thead>
+    <tbody id="tabelBody"></tbody>
+  </table>
+  <p class="hk-note">▲/▼ og fortegn markerer retning, så signalet ikke afhænger af farve alene (WCAG). Median = 5. decil af ækvivaleret disponibel indkomst.</p>
+
+  <h2>Hvad betyder det for direktionen?</h2>
+  <p class="lede">Indkomst og ulighed er en styrke for Hvidovre — ikke et problem, der kalder på handling.</p>
+  <p class="payoff">Men to ting er værd at holde øje med:</p>
+  <div class="hk-box">
+    <p style="margin:0 0 8px"><b>1 · Bunden følger ikke helt med.</b> Den laveste indkomstgruppe vokser langsommere end den højeste. Spredningen er stadig under landstal — en vagtpost, ikke en alarm.</p>
+    <p style="margin:0"><b>2 · Genopretningen er ikke slut.</b> Realindkomsterne er endnu under 2021-toppen. Følg, om fremgangen fortsætter.</p>
+  </div>
+  <p class="payoff">Og husk forskellen til Brøndby, når <i>andre</i> tal i gruppen sammenlignes: peer-gruppen er socioøkonomisk uensartet, og en enkelt kommune kan trække gennemsnit og spredning så meget, at Hvidovre fremstår mere middel, end den er.</p>
+
+  <div class="hk-box usikkerhed">
+    <h4>Metode · faste priser og datagrundlag</h4>
+    <p style="margin:0 0 8px"><b>Deflatering til 2026-priser (nettoprisindeks).</b> Beløb er omregnet med DST PRIS05 (NPI, årsgennemsnit). Da 2026-årstallet endnu ikke er offentliggjort, er det estimeret fra PRIS04 månedsdata: gennemsnittet af Jan–Apr 2026 mod samme måneder 2025 = <b>+1,86 %</b>, anvendt på 2025-niveauet → NPI<sub>2026</sub> = 101,857.</p>
+    <p style="margin:0 0 8px"><b>Eksempel (median 2024 → 2026):</b> oprindeligt år 2024 → målår 2026 → PL-faktor ×1,0382 → 320.135 kr. i 2026-priser.</p>
+    <p style="margin:0"><b>Tabelvalg.</b> Median og deciler: DST IFOR22 (decilgrænser på ækvivaleret disponibel indkomst, kommuneniveau; 5. decil = median). INDKP101 rummer kun gennemsnit, og INDKP106's faste nominelle intervaller ville være misvisende over tid. Relativ fattigdom og børnefattigdom: DST LABY07. Indeksserier er beregnet på de reale tal, så de viser udvikling i købekraft.</p>
+  </div>
+
+  <div class="hk-accentbar"></div>
+  <div class="footer">
+    <span class="byline">Henrik Astrup · 30. maj 2026</span>
+    <span>Kilde: Danmarks Statistik · IFOR22, LABY07, PRIS05, PRIS04 · faste 2026-priser</span>
+    <button class="dl-btn" onclick="downloadRapport()">↓ Download rapport</button>
+  </div>
+
+</div>
+
+<script>
+const DATA = {"meta": {"genereret": "2026-05-30", "nyesteAar": "2024", "basisAar": "2016", "npi2026": 101.857, "npi2025": 100.0, "g2026_pct": 1.86, "defl": {"2014": 1.245, "2015": 1.2369, "2016": 1.231, "2017": 1.2158, "2018": 1.2057, "2019": 1.1951, "2020": 1.191, "2021": 1.1736, "2022": 1.0895, "2023": 1.0479, "2024": 1.0382, "2025": 1.0186, "2026": 1.0}}, "yearsMedian": ["2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"], "yearsPoverty": ["2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"], "medianReal": {"167": [293198, 295347, 302530, 307072, 321607, 327144, 309211, 307585, 320135], "153": [256668, 259395, 265138, 268275, 278980, 284293, 269785, 268249, 276746], "175": [288830, 291243, 297981, 302458, 317937, 324933, 304411, 302410, 314252], "151": [294441, 298473, 303185, 305602, 318330, 325298, 306489, 306647, 312831], "159": [310854, 312683, 319065, 325731, 343725, 349653, 329084, 328050, 338884], "163": [293529, 297422, 301979, 307008, 321910, 329939, 309090, 309572, 320151], "000": [288708, 292166, 297980, 302443, 315138, 322686, 302974, 299121, 305529]}, "medianIndex": {"167": [100.0, 100.7, 103.2, 104.7, 109.7, 111.6, 105.5, 104.9, 109.2], "153": [100.0, 101.1, 103.3, 104.5, 108.7, 110.8, 105.1, 104.5, 107.8], "175": [100.0, 100.8, 103.2, 104.7, 110.1, 112.5, 105.4, 104.7, 108.8], "151": [100.0, 101.4, 103.0, 103.8, 108.1, 110.5, 104.1, 104.1, 106.2], "159": [100.0, 100.6, 102.6, 104.8, 110.6, 112.5, 105.9, 105.5, 109.0], "163": [100.0, 101.3, 102.9, 104.6, 109.7, 112.4, 105.3, 105.5, 109.1], "000": [100.0, 101.2, 103.2, 104.8, 109.2, 111.8, 104.9, 103.6, 105.8]}, "hvDeciler": {"2016": [158622, 199727, 228299, 259325, 293198, 328883, 367306, 414656, 484860], "2024": [171978, 212983, 246404, 284064, 320135, 360228, 403847, 456455, 540445]}, "povertyAll": {"167": [3.5, 3.7, 4.0, 3.9, 4.0, 3.9, 4.0, 3.8, 3.9, 3.7], "153": [5.6, 6.0, 7.3, 7.0, 7.4, 7.3, 7.0, 6.3, 6.8, 6.9], "175": [4.0, 4.0, 4.7, 4.7, 4.9, 5.0, 4.9, 4.9, 4.8, 4.8], "151": [3.4, 3.5, 3.9, 4.0, 4.3, 4.1, 3.8, 3.5, 3.8, 3.7], "159": [3.8, 4.1, 4.6, 4.3, 4.3, 4.2, 4.1, 4.0, 4.2, 4.1], "163": [3.2, 3.4, 3.8, 3.8, 3.9, 3.5, 3.5, 3.3, 3.8, 3.9], "000": [3.6, 4.0, 4.5, 4.4, 4.4, 4.2, 4.0, 3.7, 3.9, 3.8]}, "povertyChild": {"167": [3.2, 3.6, 4.2, 3.8, 4.0, 4.0, 4.1, 3.8, 3.6, 3.8], "153": [7.0, 7.5, 10.4, 9.3, 10.0, 9.1, 9.0, 7.2, 8.5, 8.6], "175": [4.4, 4.3, 5.7, 5.0, 5.2, 5.4, 5.2, 5.3, 5.3, 4.9], "151": [3.3, 3.6, 4.6, 4.7, 5.1, 5.2, 4.6, 4.1, 4.5, 4.1], "159": [4.0, 4.3, 5.4, 4.7, 5.1, 4.9, 4.8, 4.7, 4.7, 4.3], "163": [3.4, 3.5, 4.7, 4.2, 4.5, 3.8, 3.9, 3.5, 4.0, 4.2], "000": [3.8, 4.6, 5.6, 5.4, 5.3, 5.0, 4.7, 4.2, 4.5, 4.3]}, "d9d1": {"167": {"2016": 3.06, "2024": 3.14}, "153": {"2016": 3.03, "2024": 3.14}, "175": {"2016": 3.06, "2024": 3.16}, "151": {"2016": 3.06, "2024": 3.08}, "159": {"2016": 3.61, "2024": 3.64}, "163": {"2016": 3.05, "2024": 3.08}, "000": {"2016": 3.24, "2024": 3.24}}};
+
+const KOMMUNER = [
+  {code:'167', navn:'Hvidovre',    c:'#004890', pt:'circle',      w:3, dash:[]},
+  {code:'153', navn:'Brøndby',     c:'#fe8f48', pt:'rectRot',     w:2, dash:[]},
+  {code:'175', navn:'Rødovre',     c:'#6d9e7a', pt:'triangle',    w:2, dash:[]},
+  {code:'151', navn:'Ballerup',    c:'#cba624', pt:'rect',        w:2, dash:[]},
+  {code:'159', navn:'Gladsaxe',    c:'#824458', pt:'star',        w:2, dash:[]},
+  {code:'163', navn:'Herlev',      c:'#336da6', pt:'crossRot',    w:2, dash:[]},
+  {code:'000', navn:'Hele landet', c:'#59676f', pt:'rectRounded', w:2, dash:[6,4]}
+];
+const charts = {};
+const active = { median:new Set(['167','000']), poverty:new Set(['167','153','000']) };
+
+const fmtKr=v=>v.toLocaleString('da-DK');
+const fmtPct=v=>v.toLocaleString('da-DK',{minimumFractionDigits:1,maximumFractionDigits:1});
+
+function buildCards(kind){
+  const grid=document.getElementById('cards-'+kind); grid.innerHTML='';
+  KOMMUNER.forEach(k=>{
+    const isMed=kind==='median';
+    const series=isMed?DATA.medianIndex[k.code]:DATA.povertyAll[k.code];
+    const last=series[series.length-1], first=series[0];
+    let valTxt,metaTxt,deltaTxt,deltaCls;
+    if(isMed){
+      const real=DATA.medianReal[k.code];
+      valTxt=(real[real.length-1]/1000).toLocaleString('da-DK',{maximumFractionDigits:1})+' t.kr';
+      metaTxt='median 2024';
+      const g=last-100;
+      deltaTxt=(g>=0?'▲ +':'▼ ')+fmtPct(Math.abs(g))+' % real siden 2016';
+      deltaCls=g>=0?'good':'bad';
+    }else{
+      valTxt=fmtPct(last)+' %';
+      metaTxt='fattigdom 2024';
+      const d=+(last-first).toFixed(1);
+      deltaTxt=(d>0?'▲ +':(d<0?'▼ ':'± '))+fmtPct(Math.abs(d))+' pct.-point';
+      deltaCls=d<=0?'good':'bad';
+    }
+    const div=document.createElement('div');
+    div.className='kcard'+(active[kind].has(k.code)?' active':'');
+    div.style.setProperty('--c',k.c);
+    div.onclick=()=>toggle(kind,k.code);
+    div.innerHTML='<span class="kc-check">✓</span><div class="kc-name">'+k.navn+'</div>'+
+      '<div class="kc-val">'+valTxt+'</div><div class="kc-meta">'+metaTxt+'</div>'+
+      '<div class="kc-delta '+deltaCls+'">'+deltaTxt+'</div>';
+    grid.appendChild(div);
+  });
+}
+function toggle(kind,code){ active[kind].has(code)?active[kind].delete(code):active[kind].add(code); buildCards(kind); renderLine(kind); }
+function preset(kind,mode){
+  if(mode==='clear') active[kind]=new Set();
+  else if(mode==='focus') active[kind]= kind==='median'?new Set(['167','000']):new Set(['167','153','000']);
+  else if(mode==='all') active[kind]=new Set(KOMMUNER.map(k=>k.code));
+  buildCards(kind); renderLine(kind);
+}
+
+function lineDatasets(kind){
+  const isMed=kind==='median';
+  const src=isMed?DATA.medianIndex:DATA.povertyAll;
+  return KOMMUNER.filter(k=>active[kind].has(k.code)).map(k=>({
+    label:k.navn, data:src[k.code],
+    borderColor:k.c, backgroundColor:k.c, borderWidth:k.w, borderDash:k.dash,
+    tension:0.3, pointStyle:k.pt, pointRadius:3.5, pointHoverRadius:7,
+    pointBorderColor:'#fff', pointBorderWidth:1
+  }));
+}
+function renderLine(kind){
+  const isMed=kind==='median';
+  const id=isMed?'chartMedian':'chartPoverty';
+  const labels=isMed?DATA.yearsMedian:DATA.yearsPoverty;
+  const ds=lineDatasets(kind);
+  if(charts[kind]){ charts[kind].data.datasets=ds; charts[kind].update(); return; }
+  charts[kind]=new Chart(document.getElementById(id),{
+    type:'line', data:{labels,datasets:ds},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:true,position:'bottom',labels:{usePointStyle:true,font:{family:'Arial',size:12},boxWidth:8,padding:14,color:'#1a1a1a'}},
+        tooltip:{backgroundColor:'#2b4458',padding:11,cornerRadius:6,usePointStyle:true,
+          titleFont:{family:'Arial',size:13,weight:'bold'},bodyFont:{family:'Arial',size:12},
+          callbacks:{label:c=> isMed?'  '+c.dataset.label+': indeks '+fmtPct(c.parsed.y):'  '+c.dataset.label+': '+fmtPct(c.parsed.y)+' %'}}
+      },
+      scales:{
+        x:{ticks:{font:{family:'Arial',size:11},color:'#59676f'},grid:{color:'rgba(0,0,0,0.05)'}},
+        y:{ticks:{font:{family:'Arial',size:11},color:'#59676f',callback:v=>isMed?fmtPct(v):fmtPct(v)+'%'},grid:{color:'rgba(0,0,0,0.06)'}}
+      }
+    }
+  });
+}
+
+function renderDeciler(){
+  new Chart(document.getElementById('chartDeciler'),{
+    type:'bar',
+    data:{
+      labels:['1. decil','2. decil','3. decil','4. decil','5. decil (median)','6. decil','7. decil','8. decil','9. decil'],
+      datasets:[
+        {label:'2016',data:DATA.hvDeciler['2016'],backgroundColor:'#99b6d3',borderRadius:4,borderSkipped:false},
+        {label:'2024',data:DATA.hvDeciler['2024'],backgroundColor:'#004890',borderRadius:4,borderSkipped:false}
+      ]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:true,position:'top',align:'end',labels:{font:{family:'Arial',size:12},boxWidth:13,padding:14,color:'#1a1a1a'}},
+        tooltip:{backgroundColor:'#2b4458',padding:11,cornerRadius:6,
+          titleFont:{family:'Arial',size:13,weight:'bold'},bodyFont:{family:'Arial',size:12},
+          callbacks:{label:c=>'  '+c.dataset.label+': '+fmtKr(c.parsed.x)+' kr.'}}
+      },
+      scales:{
+        x:{beginAtZero:true,ticks:{font:{family:'Arial',size:10},color:'#59676f',callback:v=>Math.round(v/1000)+'k'},grid:{color:'rgba(0,0,0,0.05)'}},
+        y:{ticks:{font:{family:'Arial',size:12},color:'#1a1a1a'},grid:{display:false}}
+      }
+    }
+  });
+}
+
+function buildTable(){
+  const tb=document.getElementById('tabelBody');
+  const codes=['167','153','175','151','159','163','000'];
+  const navn={'167':'Hvidovre','153':'Brøndby','175':'Rødovre','151':'Ballerup','159':'Gladsaxe','163':'Herlev','000':'Hele landet'};
+  codes.forEach(c=>{
+    const med=DATA.medianReal[c][DATA.medianReal[c].length-1];
+    const g=DATA.medianIndex[c][DATA.medianIndex[c].length-1]-100;
+    const pa=DATA.povertyAll[c][DATA.povertyAll[c].length-1];
+    const pc=DATA.povertyChild[c][DATA.povertyChild[c].length-1];
+    const dd=DATA.d9d1[c]['2024'];
+    const tr=document.createElement('tr');
+    if(c==='167') tr.className='hl';
+    tr.innerHTML='<td>'+navn[c]+(c==='167'?' ★':'')+'</td>'+
+      '<td class="tal">'+fmtKr(med)+'</td>'+
+      '<td class="tal">'+(g>=0?'▲ +':'▼ ')+fmtPct(Math.abs(g))+' %</td>'+
+      '<td class="tal">'+fmtPct(pa)+' %</td>'+
+      '<td class="tal">'+fmtPct(pc)+' %</td>'+
+      '<td class="tal">'+dd.toLocaleString('da-DK',{minimumFractionDigits:2,maximumFractionDigits:2})+'</td>';
+    tb.appendChild(tr);
+  });
+}
+
+function downloadRapport(){
+  const blob=new Blob([document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='hvidovre-indkomst-ulighed.html'; a.click();
+}
+
+buildCards('median'); renderLine('median');
+buildCards('poverty'); renderLine('poverty');
+renderDeciler(); buildTable();
+</script>
+</body>
+</html>
