@@ -1,0 +1,313 @@
+{
+  "genereret": "2026-06-22",
+  "kilde": "Danmarks Statistik · FOLK1AM, VAN1UGE, BEV22 · Hvidovre Kommune (167)",
+  "folketal": {
+    "senesteMaaned": "2026M05",
+    "senesteMaanedDisplay": "Maj 2026",
+    "nu": 54196,
+    "forrige": 54152,
+    "deltaMd": 44,
+    "for12": 53821,
+    "delta12": 375,
+    "serie": {
+      "labels": [
+        "Juni 2024",
+        "Juli 2024",
+        "August 2024",
+        "September 2024",
+        "Oktober 2024",
+        "November 2024",
+        "December 2024",
+        "Januar 2025",
+        "Februar 2025",
+        "Marts 2025",
+        "April 2025",
+        "Maj 2025",
+        "Juni 2025",
+        "Juli 2025",
+        "August 2025",
+        "September 2025",
+        "Oktober 2025",
+        "November 2025",
+        "December 2025",
+        "Januar 2026",
+        "Februar 2026",
+        "Marts 2026",
+        "April 2026",
+        "Maj 2026"
+      ],
+      "values": [
+        53814,
+        53803,
+        53838,
+        53823,
+        53759,
+        53846,
+        53805,
+        53760,
+        53721,
+        53775,
+        53757,
+        53821,
+        53938,
+        53973,
+        54007,
+        54066,
+        54155,
+        54250,
+        54306,
+        54228,
+        54210,
+        54175,
+        54152,
+        54196
+      ]
+    }
+  },
+  "alder": {
+    "grupper": [
+      {
+        "gruppe": "0-5 år",
+        "nu": 3476,
+        "foer": 3562,
+        "andelNu": 6.41,
+        "andelFoer": 6.62,
+        "deltaAndel": -0.2
+      },
+      {
+        "gruppe": "6-16 år",
+        "nu": 7606,
+        "foer": 7606,
+        "andelNu": 14.03,
+        "andelFoer": 14.13,
+        "deltaAndel": -0.1
+      },
+      {
+        "gruppe": "17-26 år",
+        "nu": 6433,
+        "foer": 6269,
+        "andelNu": 11.87,
+        "andelFoer": 11.65,
+        "deltaAndel": 0.22
+      },
+      {
+        "gruppe": "27-39 år",
+        "nu": 9184,
+        "foer": 9097,
+        "andelNu": 16.95,
+        "andelFoer": 16.9,
+        "deltaAndel": 0.04
+      },
+      {
+        "gruppe": "40-64 år",
+        "nu": 17642,
+        "foer": 17569,
+        "andelNu": 32.55,
+        "andelFoer": 32.64,
+        "deltaAndel": -0.09
+      },
+      {
+        "gruppe": "65-79 år",
+        "nu": 6990,
+        "foer": 6962,
+        "andelNu": 12.9,
+        "andelFoer": 12.94,
+        "deltaAndel": -0.04
+      },
+      {
+        "gruppe": "80+ år",
+        "nu": 2865,
+        "foer": 2756,
+        "andelNu": 5.29,
+        "andelFoer": 5.12,
+        "deltaAndel": 0.17
+      }
+    ]
+  },
+  "indvandring": {
+    "heleMaaned": "2026M04",
+    "heleMaanedDisplay": "April 2026",
+    "total": 52,
+    "forrige": 47,
+    "delta": 5,
+    "foreloebigMaaned": "2026M05",
+    "foreloebigDisplay": "Maj 2026",
+    "foreloebigTotal": 11,
+    "vestlig": 18,
+    "ikkeVestlig": 34,
+    "topLande": [
+      {
+        "land": "Ukraine",
+        "antal": 11,
+        "forrige": 17,
+        "delta": -6
+      },
+      {
+        "land": "Kina",
+        "antal": 6,
+        "forrige": 7,
+        "delta": -1
+      },
+      {
+        "land": "Rumænien",
+        "antal": 4,
+        "forrige": 1,
+        "delta": 3
+      },
+      {
+        "land": "Sverige",
+        "antal": 3,
+        "forrige": 3,
+        "delta": 0
+      },
+      {
+        "land": "Indien",
+        "antal": 3,
+        "forrige": 1,
+        "delta": 2
+      },
+      {
+        "land": "Thailand",
+        "antal": 3,
+        "forrige": 0,
+        "delta": 3
+      },
+      {
+        "land": "Spanien",
+        "antal": 2,
+        "forrige": 3,
+        "delta": -1
+      },
+      {
+        "land": "Tyrkiet",
+        "antal": 2,
+        "forrige": 3,
+        "delta": -1
+      },
+      {
+        "land": "Iran",
+        "antal": 2,
+        "forrige": 0,
+        "delta": 2
+      },
+      {
+        "land": "Færøerne",
+        "antal": 1,
+        "forrige": 0,
+        "delta": 1
+      }
+    ],
+    "alderProfil": [
+      {
+        "gruppe": "0-5 år",
+        "antal": 1
+      },
+      {
+        "gruppe": "6-16 år",
+        "antal": 6
+      },
+      {
+        "gruppe": "17-26 år",
+        "antal": 11
+      },
+      {
+        "gruppe": "27-39 år",
+        "antal": 14
+      },
+      {
+        "gruppe": "40-64 år",
+        "antal": 14
+      },
+      {
+        "gruppe": "65-79 år",
+        "antal": 6
+      },
+      {
+        "gruppe": "80+ år",
+        "antal": 0
+      }
+    ],
+    "trend": {
+      "labels": [
+        "Juni 2024",
+        "Juli 2024",
+        "August 2024",
+        "September 2024",
+        "Oktober 2024",
+        "November 2024",
+        "December 2024",
+        "Januar 2025",
+        "Februar 2025",
+        "Marts 2025",
+        "April 2025",
+        "Maj 2025",
+        "Juni 2025",
+        "Juli 2025",
+        "August 2025",
+        "September 2025",
+        "Oktober 2025",
+        "November 2025",
+        "December 2025",
+        "Januar 2026",
+        "Februar 2026",
+        "Marts 2026",
+        "April 2026",
+        "Maj 2026"
+      ],
+      "values": [
+        50,
+        43,
+        123,
+        55,
+        62,
+        47,
+        24,
+        77,
+        72,
+        24,
+        43,
+        50,
+        43,
+        79,
+        101,
+        96,
+        79,
+        45,
+        38,
+        70,
+        36,
+        47,
+        52,
+        11
+      ],
+      "foreloebigIdx": 23
+    }
+  },
+  "kvartal": {
+    "periode": "2026K1",
+    "display": "1. kvartal 2026",
+    "primo": 54228,
+    "ultimo": 54152,
+    "foedte": 107,
+    "doede": 139,
+    "foedselsoverskud": -32,
+    "tilflyttede": 883,
+    "fraflyttede": 967,
+    "nettoTilflyt": -84,
+    "indvandrede": 164,
+    "udvandrede": 119,
+    "nettoIndvandring": 45,
+    "korrektioner": -5,
+    "tilvaekst": -76
+  },
+  "analyse": {
+    "maanedlig": {
+      "overskrift": "Folketallet steg til 54.196 i maj 2026",
+      "tekst": "Hvidovres folketal var 54.196 pr. 1. i måneden. en stigning på +44 siden måneden før og +375 over de seneste 12 måneder. Folketallet den 1. i måneden afspejler bevægelser i den foregående måned. I april 2026 (seneste hele måned) indvandrede 52 personer mod 47 måneden før; de hyppigste oprindelseslande var Ukraine. Kina. Rumænien. Aldersmæssigt forskydes sammensætningen svagt mod de ældste grupper. mens de nye indvandrere primært er i de erhvervsaktive aldre."
+    },
+    "kvartal": {
+      "overskrift": "1. kvartal 2026: samlet tilvækst på -76",
+      "tekst": "I 1. kvartal 2026 faldt befolkningen netto med 76 fra 54.228 til 54.152. Fødselsoverskuddet var -32 (107 fødte mod 139 døde). Den indenlandske flytning gav et nettotab på 84 (883 tilflyttede mod 967 fraflyttede). mens udlandsbevægelserne bidrog positivt med +45 (164 indvandrede mod 119 udvandrede). Den væsentligste drivkraft bag kvartalets fald er dermed nettofraflytningen til andre kommuner."
+    }
+  }
+}
