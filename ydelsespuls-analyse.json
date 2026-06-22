@@ -1,422 +1,9 @@
 {
-  "genereret": "2026-06-15",
+  "genereret": "2026-06-22",
   "senesteLabel": "Maj 26",
   "data": {
     "y01a02": {
       "navn": "A-dagpenge",
-      "labels": [
-        "Maj 25",
-        "Jun 25",
-        "Jul 25",
-        "Aug 25",
-        "Sep 25",
-        "Okt 25",
-        "Nov 25",
-        "Dec 25",
-        "Jan 26",
-        "Feb 26",
-        "Mar 26",
-        "Apr 26"
-      ],
-      "ftp": [
-        693,
-        699,
-        716,
-        700,
-        687,
-        675,
-        639,
-        607,
-        725,
-        755,
-        759,
-        730
-      ],
-      "forrigeLabels": [
-        "Maj 24",
-        "Jun 24",
-        "Jul 24",
-        "Aug 24",
-        "Sep 24",
-        "Okt 24",
-        "Nov 24",
-        "Dec 24",
-        "Jan 25",
-        "Feb 25",
-        "Mar 25",
-        "Apr 25"
-      ],
-      "forrigeFtp": [
-        655,
-        655,
-        644,
-        692,
-        650,
-        636,
-        622,
-        609,
-        714,
-        711,
-        726,
-        715
-      ]
-    },
-    "y60a02": {
-      "navn": "Kontanthjælp",
-      "labels": [
-        "Maj 25",
-        "Jun 25",
-        "Jul 25",
-        "Aug 25",
-        "Sep 25",
-        "Okt 25",
-        "Nov 25",
-        "Dec 25",
-        "Jan 26",
-        "Feb 26",
-        "Mar 26",
-        "Apr 26"
-      ],
-      "ftp": [
-        697,
-        668,
-        653,
-        634,
-        637,
-        648,
-        665,
-        674,
-        665,
-        684,
-        702,
-        704
-      ],
-      "forrigeLabels": [
-        "Maj 24",
-        "Jun 24",
-        "Jul 24",
-        "Aug 24",
-        "Sep 24",
-        "Okt 24",
-        "Nov 24",
-        "Dec 24",
-        "Jan 25",
-        "Feb 25",
-        "Mar 25",
-        "Apr 25"
-      ],
-      "forrigeFtp": [
-        786,
-        762,
-        740,
-        738,
-        730,
-        732,
-        731,
-        730,
-        721,
-        732,
-        732,
-        723
-      ]
-    },
-    "y07a02": {
-      "navn": "Sygedagpenge",
-      "labels": [
-        "Maj 25",
-        "Jun 25",
-        "Jul 25",
-        "Aug 25",
-        "Sep 25",
-        "Okt 25",
-        "Nov 25",
-        "Dec 25",
-        "Jan 26",
-        "Feb 26",
-        "Mar 26",
-        "Apr 26"
-      ],
-      "ftp": [
-        767,
-        752,
-        730,
-        711,
-        724,
-        762,
-        756,
-        771,
-        793,
-        791,
-        789,
-        749
-      ],
-      "forrigeLabels": [
-        "Maj 24",
-        "Jun 24",
-        "Jul 24",
-        "Aug 24",
-        "Sep 24",
-        "Okt 24",
-        "Nov 24",
-        "Dec 24",
-        "Jan 25",
-        "Feb 25",
-        "Mar 25",
-        "Apr 25"
-      ],
-      "forrigeFtp": [
-        778,
-        765,
-        711,
-        746,
-        738,
-        802,
-        831,
-        827,
-        844,
-        862,
-        868,
-        811
-      ]
-    },
-    "y11a02": {
-      "navn": "Ressourceforløb",
-      "labels": [
-        "Maj 25",
-        "Jun 25",
-        "Jul 25",
-        "Aug 25",
-        "Sep 25",
-        "Okt 25",
-        "Nov 25",
-        "Dec 25",
-        "Jan 26",
-        "Feb 26",
-        "Mar 26",
-        "Apr 26"
-      ],
-      "ftp": [
-        201,
-        199,
-        195,
-        201,
-        193,
-        197,
-        202,
-        198,
-        197,
-        186,
-        181,
-        178
-      ],
-      "forrigeLabels": [
-        "Maj 24",
-        "Jun 24",
-        "Jul 24",
-        "Aug 24",
-        "Sep 24",
-        "Okt 24",
-        "Nov 24",
-        "Dec 24",
-        "Jan 25",
-        "Feb 25",
-        "Mar 25",
-        "Apr 25"
-      ],
-      "forrigeFtp": [
-        179,
-        175,
-        171,
-        174,
-        178,
-        184,
-        184,
-        193,
-        196,
-        198,
-        193,
-        190
-      ]
-    },
-    "y09a02": {
-      "navn": "Ledighedsydelse",
-      "labels": [
-        "Maj 25",
-        "Jun 25",
-        "Jul 25",
-        "Aug 25",
-        "Sep 25",
-        "Okt 25",
-        "Nov 25",
-        "Dec 25",
-        "Jan 26",
-        "Feb 26",
-        "Mar 26",
-        "Apr 26"
-      ],
-      "ftp": [
-        73,
-        67,
-        63,
-        58,
-        62,
-        59,
-        67,
-        67,
-        63,
-        60,
-        68,
-        72
-      ],
-      "forrigeLabels": [
-        "Maj 24",
-        "Jun 24",
-        "Jul 24",
-        "Aug 24",
-        "Sep 24",
-        "Okt 24",
-        "Nov 24",
-        "Dec 24",
-        "Jan 25",
-        "Feb 25",
-        "Mar 25",
-        "Apr 25"
-      ],
-      "forrigeFtp": [
-        69,
-        60,
-        60,
-        65,
-        64,
-        63,
-        59,
-        57,
-        56,
-        59,
-        68,
-        74
-      ]
-    },
-    "y08a02": {
-      "navn": "Fleksjob",
-      "labels": [
-        "Maj 25",
-        "Jun 25",
-        "Jul 25",
-        "Aug 25",
-        "Sep 25",
-        "Okt 25",
-        "Nov 25",
-        "Dec 25",
-        "Jan 26",
-        "Feb 26",
-        "Mar 26",
-        "Apr 26"
-      ],
-      "ftp": [
-        713,
-        718,
-        718,
-        719,
-        721,
-        722,
-        723,
-        725,
-        731,
-        739,
-        741,
-        739
-      ],
-      "forrigeLabels": [
-        "Maj 24",
-        "Jun 24",
-        "Jul 24",
-        "Aug 24",
-        "Sep 24",
-        "Okt 24",
-        "Nov 24",
-        "Dec 24",
-        "Jan 25",
-        "Feb 25",
-        "Mar 25",
-        "Apr 25"
-      ],
-      "forrigeFtp": [
-        685,
-        700,
-        698,
-        699,
-        708,
-        706,
-        715,
-        720,
-        713,
-        708,
-        706,
-        710
-      ]
-    },
-    "y12a02": {
-      "navn": "Jobafklaringsforløb",
-      "labels": [
-        "Maj 25",
-        "Jun 25",
-        "Jul 25",
-        "Aug 25",
-        "Sep 25",
-        "Okt 25",
-        "Nov 25",
-        "Dec 25",
-        "Jan 26",
-        "Feb 26",
-        "Mar 26",
-        "Apr 26"
-      ],
-      "ftp": [
-        218,
-        227,
-        221,
-        227,
-        222,
-        227,
-        225,
-        225,
-        218,
-        205,
-        197,
-        191
-      ],
-      "forrigeLabels": [
-        "Maj 24",
-        "Jun 24",
-        "Jul 24",
-        "Aug 24",
-        "Sep 24",
-        "Okt 24",
-        "Nov 24",
-        "Dec 24",
-        "Jan 25",
-        "Feb 25",
-        "Mar 25",
-        "Apr 25"
-      ],
-      "forrigeFtp": [
-        260,
-        249,
-        233,
-        233,
-        227,
-        235,
-        227,
-        213,
-        227,
-        220,
-        213,
-        221
-      ]
-    },
-    "y10a02": {
-      "navn": "Førtidspension",
       "labels": [
         "Jun 25",
         "Jul 25",
@@ -432,18 +19,18 @@
         "Maj 26"
       ],
       "ftp": [
-        2184,
-        2212,
-        2199,
-        2217,
-        2225,
-        2245,
-        2250,
-        2268,
-        2283,
-        2293,
-        2295,
-        2298
+        699,
+        716,
+        700,
+        687,
+        676,
+        640,
+        607,
+        726,
+        756,
+        759,
+        741,
+        717
       ],
       "forrigeLabels": [
         "Jun 24",
@@ -460,69 +47,176 @@
         "Maj 25"
       ],
       "forrigeFtp": [
-        2056,
-        2080,
-        2063,
-        2079,
-        2088,
-        2097,
-        2113,
-        2120,
-        2132,
-        2147,
-        2149,
-        2175
+        655,
+        644,
+        692,
+        650,
+        636,
+        622,
+        609,
+        714,
+        711,
+        726,
+        715,
+        693
       ]
+    },
+    "y60a02": {
+      "navn": "Kontanthjælp",
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
+    },
+    "y07a02": {
+      "navn": "Sygedagpenge",
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
+    },
+    "y11a02": {
+      "navn": "Ressourceforløb",
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
+    },
+    "y09a02": {
+      "navn": "Ledighedsydelse",
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
+    },
+    "y08a02": {
+      "navn": "Fleksjob",
+      "labels": [
+        "Jun 25",
+        "Jul 25",
+        "Aug 25",
+        "Sep 25",
+        "Okt 25",
+        "Nov 25",
+        "Dec 25",
+        "Jan 26",
+        "Feb 26",
+        "Mar 26",
+        "Apr 26",
+        "Maj 26"
+      ],
+      "ftp": [
+        717,
+        717,
+        718,
+        720,
+        721,
+        722,
+        724,
+        730,
+        738,
+        739,
+        739,
+        745
+      ],
+      "forrigeLabels": [
+        "Jun 24",
+        "Jul 24",
+        "Aug 24",
+        "Sep 24",
+        "Okt 24",
+        "Nov 24",
+        "Dec 24",
+        "Jan 25",
+        "Feb 25",
+        "Mar 25",
+        "Apr 25",
+        "Maj 25"
+      ],
+      "forrigeFtp": [
+        699,
+        697,
+        698,
+        707,
+        705,
+        714,
+        719,
+        712,
+        707,
+        705,
+        709,
+        712
+      ]
+    },
+    "y12a02": {
+      "navn": "Jobafklaringsforløb",
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
+    },
+    "y10a02": {
+      "navn": "Førtidspension",
+      "labels": [],
+      "ftp": [],
+      "forrigeLabels": [],
+      "forrigeFtp": [],
+      "fejl": true
     }
   },
   "analyse": {
     "y01a02": {
-      "overskrift": "A-dagpenge falder til 730 fuldtidspersoner i april efter mindre stigning",
-      "tekst": "I april 2026 var der 730 helårspersoner på A-dagpenge, hvilket er et fald på 29 personer i forhold til marts og 25 færre end i februar. Dette fald følger efter en kortere periode med stabilisering omkring de 755-759 personer. Set over den seneste 12-måneders periode er der tale om en moderat stigning på 15 personer sammenlignet med samme tidspunkt sidste år. Udviklingen peger på en vis sæsonbetinget fluktuation, hvor foråret traditionelt bringer øget beskæftigelse og dermed færre dagpengemodtagere. På baggrund af de seneste tal vurderes niveauet for A-dagpenge at være stabiliserende med en svagt nedadgående tendens på den korte bane."
+      "overskrift": "A-dagpenge falder til 717 helårspersoner i maj efter måneders fald",
+      "tekst": "I maj 2026 er antallet af modtagere af A-dagpenge opgjort til 717 fuldtidspersoner, hvilket er et fald på 24 personer i forhold til måneden før. Sammenlignet med niveauet for to måneder siden, hvor antallet var 759, er der tale om en reduktion på 42 fuldtidspersoner. Ser man på den samlede 12-måneders periode, ligger det aktuelle niveau dog fortsat 24 fuldtidspersoner højere end på samme tidspunkt sidste år. Den seneste tids udvikling peger på en nedadgående tendens i forårsmånederne, hvilket er i tråd med de sæsonmæssige mønstre på arbejdsmarkedet. Denne reduktion afbalancerer den stigning, der blev registreret hen over vinteren. Udviklingen vurderes samlet set at stabilisere sig på et moderat niveau efter en periode med svag stigning på årsbasis."
     },
     "y60a02": {
-      "overskrift": "Kontanthjælp stiger svagt til 704 personer i april efter tidligere stigninger",
-      "tekst": "Antallet af modtagere af kontanthjælp lå i april 2026 på 704 fuldtidspersoner, hvilket er en mindre stigning på 2 personer sammenlignet med marts og 20 personer flere end i februar. Denne stigning over de seneste måneder nuancerer det langsigtede billede, hvor der er sket et fald på 19 personer i forhold til samme måned sidste år. Den seneste tids stigning indikerer en afvigelse fra den ellers faldende tendens, der har præget det seneste år. Der ses et mønster af kortere udsving, som kan hænge sammen med tilstrømning af nye forløb eller ændringer i visitationer. Samlet set vurderes retningen for kontanthjælpsområdet på kort sigt at være svagt opadgående, trods det årlige fald."
+      "overskrift": "Data ikke tilgængeligt",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y07a02": {
-      "overskrift": "Sygedagpenge falder markant til 749 personer i april efter stabil vinter",
-      "tekst": "Sygedagpengeområdet registrerede 749 helårspersoner i april 2026, hvilket repræsenterer et fald på 40 personer i forhold til marts og 42 færre end i februar. Dette markante fald markerer et brud med de foregående måneders stabile niveau omkring 790 personer. Sammenlignet med samme måned sidste år er der tale om en mærkbar reduktion på 62 helårspersoner på årsbasis. Reduktionen i april kan delvist tilskrives det sæsonbetingede fald i sygefravær, som ofte observeres i forårsmånederne. Retningen for sygedagpengeområdet vurderes på denne baggrund at være nedadgående, understøttet af både den kortsigtede og langsigtede udvikling."
+      "overskrift": "Data ikke tilgængeligt",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y11a02": {
-      "overskrift": "Antallet i ressourceforløb falder til 178 personer i april",
-      "tekst": "I april 2026 var der 178 fuldtidspersoner i ressourceforløb, hvilket er 3 færre end i marts og 8 færre end i februar. Dette fortsætter en jævn, men langsom reduktion, som også afspejles i årsstatistikken med 12 færre modtagere end i april sidste år. Udviklingen over de seneste 12 måneder viser en stabil og ensartet tendens mod færre sideløbende forløb uden pludselige udsving. Mønstret indikerer en kontrolleret afgang fra ordningen, eventuelt i retning af visitation til andre ydelser eller beskæftigelse. Den fremadrettede udvikling vurderes at fortsætte i en stabil til svagt faldende retning."
+      "overskrift": "Data ikke tilgængeligt",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y09a02": {
-      "overskrift": "Ledighedsydelse stiger til 72 personer i april efter lavpunkt",
-      "tekst": "Antallet af modtagere af ledighedsydelse steg til 72 helårspersoner i april 2026, hvilket er en stigning på 4 personer i forhold til marts og 12 personer flere end i februar. Trods denne stigning over de seneste to måneder ligger niveauet fortsat meget tæt på situationen for et år siden, hvor der var 2 personer flere på ydelsen. Den kortsigtede stigning markerer en afvigelse fra den ellers flade tendens, der har kendetegnet det meste af det forgangne år. Dette kan indikere en midlertidig ophobning af personer, der venter på at påbegynde et fleksjob. Udviklingen vurderes samlet set at pege mod en stabilisering på et let forhøjet niveau på kort sigt."
+      "overskrift": "Data ikke tilgængeligt",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y08a02": {
-      "overskrift": "Fleksjob stabiliserer sig på 739 personer i april efter tidligere vækst",
-      "tekst": "Antallet af personer i fleksjob lå i april 2026 på 739 helårspersoner, hvilket er et minimalt fald på 2 personer sammenlignet med marts og uændret i forhold til februar. Over det seneste år har der dog været en markant vækst, idet der er registreret 29 flere fuldtidspersoner end på samme tidspunkt sidste år. Denne langsigtede stigning vidner om en generel udbygning af ordningen over den samlede 12-måneders periode. Den seneste stabilisering over de seneste to måneder tyder på, at tilgangen af nye forløb er balanceret af afgangen i samme periode. Retningen for fleksjobområdet vurderes på kort sigt at være stabil, mens den overordnede årlige tendens forbliver stigende."
+      "overskrift": "Fleksjob stiger svagt til 745 helårspersoner i maj",
+      "tekst": "Antallet af modtagere i fleksjob er opgjort til 745 fuldtidspersoner i maj 2026, hvilket udgør en stigning på 6 personer i forhold til måneden før. Niveauet er ligeledes steget med 6 personer i forhold til for to måneder siden, hvor antallet lå stabilt på 739. Over det seneste år har der været en mere markant tilgang, idet antallet af helårspersoner er steget med 33 i forhold til samme måned sidste år. Dette mønster afspejler en jævn og fortsat vækst i ordningen over den samlede 12-måneders periode uden pludselige månedlige udsving. Den langsigtede trend peger således på en stabil tilgang til fleksjobområdet i kommunen. Udviklingen vurderes samlet set at fortsætte i en svagt opadgående retning."
     },
     "y12a02": {
-      "overskrift": "Jobafklaringsforløb fortsætter faldet og lander på 191 i april",
-      "tekst": "Der var 191 helårspersoner i jobafklaringsforløb i april 2026, hvilket er en reduktion på 6 personer i forhold til marts og 14 færre end i februar. Dette fald understøtter den langsigtede udvikling, hvor der over det seneste år er sket en markant reduktion på 30 personer. Udviklingen har i hele den seneste 12-måneders periode udvist en næsten konstant nedadgående trend uden væsentlige sæsonbetingede afvigelser. Den jævne nedgang peger på en effektiv sagsbehandling og hurtigere afklaring af borgerne på denne ydelse. Retningen for området vurderes fortsat at være nedadgående på både kort og mellemlangt sigt."
+      "overskrift": "Data ikke tilgængeligt",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y10a02": {
-      "overskrift": "Førtidspension stiger til 2.298 personer i maj efter fortsat tilgang",
-      "tekst": "I maj 2026 modtog 2.298 personer førtidspension, hvilket er en mindre stigning på 3 personer i forhold til april og 5 flere end i marts. Denne månedlige stigning understøtter den markante langsigtede tendens, hvor antallet af modtagere er øget med 123 personer over det seneste år. Væksten på årsbasis udgør en markant stigning på cirka 5 procent, hvilket afspejler en vedvarende tilgang til ordningen gennem hele 12-måneders perioden. Der ses ingen tegn på opbremsning eller sæsonudsving, men derimod en konstant, lineær stigning over tid. Retningen for førtidspension vurderes at fortsætte opadgående som følge af det stærke langsigtede momentum."
+      "overskrift": "Data ikke tilgængeligt",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y85a02": {
-      "overskrift": "Data ikke tilgængelig",
-      "tekst": ": Data ikke tilgængeligt for denne periode."
+      "overskrift": "Data ikke tilgængeligt",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y13a02": {
-      "overskrift": "Data ikke tilgængelig",
-      "tekst": ": Data ikke tilgængeligt for denne periode."
+      "overskrift": "Data ikke tilgængeligt",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y40a02": {
-      "overskrift": "Data ikke tilgængelig",
-      "tekst": ": Data ikke tilgængeligt for denne periode."
+      "overskrift": "Data ikke tilgængeligt",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y28a02": {
-      "overskrift": "Data ikke tilgængelig",
-      "tekst": ": Data ikke tilgængeligt for denne periode."
+      "overskrift": "Data ikke tilgængeligt",
+      "tekst": "Data ikke tilgængeligt for denne periode."
     }
   }
 }
