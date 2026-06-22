@@ -103,6 +103,7 @@ main{padding:26px 48px 40px;max-width:1140px;}
 <div class="toolbar">
   <button class="btn active" data-view="folketal" onclick="skiftView('folketal')">Folketal</button>
   <button class="btn" data-view="alder" onclick="skiftView('alder')">Alder</button>
+  <button class="btn" data-view="foedselDoed" onclick="skiftView('foedselDoed')">Fødsler &amp; dødsfald</button>
   <button class="btn" data-view="indvandring" onclick="skiftView('indvandring')">Indvandring</button>
   <button class="btn" data-view="regnskab" onclick="skiftView('regnskab')">Fuldt regnskab</button>
   <div class="sep"></div>
@@ -124,7 +125,14 @@ main{padding:26px 48px 40px;max-width:1140px;}
     <div class="ov" id="overlay"><div class="spinner"></div></div>
     <div class="chart-title" id="chartTitle">—</div>
     <div class="chart-desc" id="chartDesc">—</div>
-    <div id="grafArea"><div class="canvas-wrap"><canvas id="mainCanvas"></canvas></div></div>
+    <div id="grafArea">
+      <div class="canvas-wrap"><canvas id="mainCanvas"></canvas></div>
+      <div id="extraWrap" style="display:none">
+        <div class="chart-title" id="extraTitle" style="margin-top:30px;font-size:16px"></div>
+        <div class="chart-desc" id="extraDesc" style="margin-bottom:14px"></div>
+        <div class="canvas-wrap"><canvas id="extraCanvas"></canvas></div>
+      </div>
+    </div>
     <div id="tabelArea" style="display:none;overflow-x:auto">
       <table class="data-tbl"><thead id="tblHead"></thead><tbody id="tblBody"></tbody></table>
     </div>
@@ -142,6 +150,7 @@ main{padding:26px 48px 40px;max-width:1140px;}
     <div class="ai-tabs">
       <button class="ai-tab active" id="aiT1" onclick="skiftAiTab('maanedlig')">Måned</button>
       <button class="ai-tab" id="aiT2" onclick="skiftAiTab('kvartal')">Kvartal (fuldt regnskab)</button>
+      <button class="ai-tab" id="aiT3" onclick="skiftAiTab('foedselDoed')">Fødsler &amp; dødsfald</button>
     </div>
     <div class="ai-heading" id="aiHeading"></div>
     <div id="aiBody"><div class="ai-empty">Henter analyse...</div></div>
@@ -157,7 +166,7 @@ main{padding:26px 48px 40px;max-width:1140px;}
 <script>
 const CONFIG = { dataUrl: './demografi-analyse.json' };
 const FARVER = ['#1A4D2E','#C9973A','#2E7D54','#8B6914','#4A9B7F','#5DADE2','#E67E22','#8E44AD','#C0392B','#2E86AB'];
-let data=null, chart=null;
+let data=null, chart=null, chart2=null;
 let aktivView = localStorage.getItem('hv_demo_view') || 'folketal';
 let display   = localStorage.getItem('hv_demo_disp') || 'graf';
 let aktivAiTab= 'maanedlig';
@@ -238,10 +247,17 @@ function renderKPI(){
     h+=kpi('Indvandring', nf(i.total), fmtDelta(i.delta,'vs. md før'), 'Seneste hele måned: '+i.heleMaanedDisplay);
     const top=i.topLande[0];
     h+=kpi('Største oprindelsesland', top?top.land:'—', null, top?nf(top.antal)+' personer':'—','gld');
-    const vestPct = Math.round(100*i.vestlig/Math.max(1,(i.vestlig+i.ikkeVestlig)));
-    h+=kpi('Vestlig oprindelse', vestPct+' %', null, nf(i.vestlig)+' vestlige / '+nf(i.ikkeVestlig)+' ikke-vestlige','mid');
+    const kn=i.koen||{maend:0,kvinder:0,maendPct:0};
+    h+=kpi('Køn', kn.maendPct+' % mænd', null, nf(kn.maend)+' mænd / '+nf(kn.kvinder)+' kvinder','mid');
     const ap=[...i.alderProfil].sort((x,y)=>y.antal-x.antal)[0];
     h+=kpi('Dominerende alder', ap&&ap.antal>0?ap.gruppe.replace(' år',''):'—', null, 'Hyppigste aldersgruppe blandt nye');
+  } else if(aktivView==='foedselDoed'){
+    const fd=data.foedselDoed;
+    h+=kpi('Levendefødte', nf(fd.fNu), fd.fÅrFør!=null?fmtDelta(fd.fNu-fd.fÅrFør,'år/år'):null, fd.senesteKvartalDisp);
+    h+=kpi('Døde', nf(fd.dNu), fd.dÅrFør!=null?fmtDelta(fd.dNu-fd.dÅrFør,'år/år'):null, fd.senesteKvartalDisp,'gld');
+    h+=kpi('Fødselsoverskud', (fd.nettoNu>=0?'+':'')+nf(fd.nettoNu), null, 'Fødte minus døde i kvartalet','mid');
+    const iH=fd.idxHvFoedte[fd.idxHvFoedte.length-1], iL=fd.idxLandFoedte[fd.idxLandFoedte.length-1];
+    h+=kpi('Fødte-indeks', nf(iH), {txt:(iH<iL?'▼ under':'▲ over')+' land ('+nf(iL)+')',cls:iH<iL?'neg':'pos'}, fd.indexBaseDisp+' = 100');
   } else { /* regnskab */
     h+=kpi('Befolkningstilvækst', (k.tilvaekst>=0?'+':'')+nf(k.tilvaekst), null, k.display+' · netto', k.tilvaekst>=0?'':'');
     h+=kpi('Fødselsoverskud', (k.foedselsoverskud>=0?'+':'')+nf(k.foedselsoverskud), null, nf(k.foedte)+' fødte − '+nf(k.doede)+' døde','gld');
@@ -253,8 +269,13 @@ function renderKPI(){
 function renderCtx(){
   const i=data.indvandring; let chips=[];
   if(aktivView==='indvandring'){
-    chips.push(`<span class="chip warn">⚠ ${i.foreloebigDisplay} er foreløbig (${i.foreloebigTotal} t.o.m. seneste uge) — nøgletal viser seneste <b>hele</b> måned</span>`);
+    const vestPct = Math.round(100*i.vestlig/Math.max(1,(i.vestlig+i.ikkeVestlig)));
+    chips.push(`<span class="chip">Oprindelse: <b>${vestPct}%</b> vestlig (${nf(i.vestlig)}) / ${nf(i.ikkeVestlig)} ikke-vestlig</span>`);
+    chips.push(`<span class="chip warn">⚠ ${i.foreloebigDisplay} er foreløbig — nøgletal viser seneste <b>hele</b> måned</span>`);
     chips.push(`<span class="chip">Folketal 1. i måneden afspejler bevægelser i <b>foregående</b> måned</span>`);
+  } else if(aktivView==='foedselDoed'){
+    chips.push(`<span class="chip">Mest detaljerede niveau for kommunen er <b>kvartalsvist</b> (BEV22)</span>`);
+    chips.push(`<span class="chip">Landstal: DST BEV3A · indekseret med <b>${data.foedselDoed.indexBaseDisp} = 100</b></span>`);
   } else if(aktivView==='regnskab'){
     chips.push(`<span class="chip">Det fulde regnskab opgøres kun <b>kvartalsvist</b> (BEV22)</span>`);
     chips.push(`<span class="chip">Primo ${nf(data.kvartal.primo)} → ultimo <b>${nf(data.kvartal.ultimo)}</b></span>`);
@@ -277,6 +298,9 @@ function newChart(cfg){ if(chart) chart.destroy(); chart=new Chart(document.getE
 function renderChart(){
   const f=data.folketal, i=data.indvandring, k=data.kvartal, a=data.alder.grupper;
   const T=document.getElementById('chartTitle'), D=document.getElementById('chartDesc');
+  const exW=document.getElementById('extraWrap');
+  exW.style.display = (aktivView==='foedselDoed' && display==='graf') ? 'block' : 'none';
+  if(aktivView!=='foedselDoed' && chart2){ chart2.destroy(); chart2=null; }
 
   if(aktivView==='folketal'){
     T.textContent='Folketal — udvikling';
@@ -310,6 +334,32 @@ function renderChart(){
         plugins:{legend:{display:false},tooltip:{...baseTooltip,callbacks:{label:c=>'  '+c.parsed.x.toLocaleString('da-DK')+' personer'}}},
         scales:{x:{beginAtZero:true,ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',precision:0},grid:{color:'rgba(0,0,0,0.04)'}},
           y:{ticks:{font:{family:'DM Sans',size:13,weight:'500'},color:'#1C1C1A'},grid:{display:false}}}}});
+
+  } else if(aktivView==='foedselDoed'){
+    const fd=data.foedselDoed;
+    T.textContent='Fødsler & dødsfald — Hvidovre';
+    D.textContent='BEV22 · kvartalsvise tal · '+fd.labels[0]+' – '+fd.labels[fd.labels.length-1];
+    newChart({type:'line',
+      data:{labels:fd.labels,datasets:[
+        {label:'Levendefødte',data:fd.hvFoedte,borderColor:FARVER[2],backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:0,pointHoverRadius:5},
+        {label:'Døde',data:fd.hvDoede,borderColor:FARVER[8],backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:0,pointHoverRadius:5}]},
+      options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+        plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'DM Sans',size:11},boxWidth:14,padding:14}},tooltip:baseTooltip},
+        scales:{x:{ticks:{font:{family:'DM Mono',size:10},color:'#6A6A60',maxRotation:0,autoSkip:true,maxTicksLimit:11},grid:{color:'rgba(0,0,0,0.04)'}},
+          y:{beginAtZero:false,ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E'},grid:{color:'rgba(0,0,0,0.05)'}}}}});
+    document.getElementById('extraTitle').textContent='Indekseret udvikling vs. hele landet';
+    document.getElementById('extraDesc').textContent=fd.indexBaseDisp+' = 100 · heltrukken linje = Hvidovre, stiplet = hele landet';
+    if(chart2) chart2.destroy();
+    chart2=new Chart(document.getElementById('extraCanvas'),{type:'line',
+      data:{labels:fd.labels,datasets:[
+        {label:'Fødte · Hvidovre',data:fd.idxHvFoedte,borderColor:FARVER[2],borderWidth:2.2,tension:.3,pointRadius:0},
+        {label:'Fødte · Hele landet',data:fd.idxLandFoedte,borderColor:FARVER[2],borderWidth:1.5,tension:.3,pointRadius:0,borderDash:[5,4]},
+        {label:'Døde · Hvidovre',data:fd.idxHvDoede,borderColor:FARVER[8],borderWidth:2.2,tension:.3,pointRadius:0},
+        {label:'Døde · Hele landet',data:fd.idxLandDoede,borderColor:FARVER[8],borderWidth:1.5,tension:.3,pointRadius:0,borderDash:[5,4]}]},
+      options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+        plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'DM Sans',size:10},boxWidth:18,padding:10}},tooltip:baseTooltip},
+        scales:{x:{ticks:{font:{family:'DM Mono',size:10},color:'#6A6A60',maxRotation:0,autoSkip:true,maxTicksLimit:11},grid:{color:'rgba(0,0,0,0.04)'}},
+          y:{ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E'},grid:{color:'rgba(0,0,0,0.05)'}}}}});
 
   } else { /* regnskab — bidrag til kvartalets tilvækst */
     T.textContent='Fuldt befolkningsregnskab';
@@ -358,6 +408,14 @@ function renderTable(){
     });
     body+=`<tr><td></td><td class="land">Indvandrere efter alder →</td><td colspan="3">`+
       i.alderProfil.filter(x=>x.antal>0).map(x=>x.gruppe.replace(' år','')+': '+x.antal).join(' · ')+`</td></tr>`;
+    const kn=i.koen; if(kn) body+=`<tr><td></td><td class="land">Efter køn →</td><td colspan="3">${kn.maend} mænd · ${kn.kvinder} kvinder (${kn.maendPct}% mænd)</td></tr>`;
+  } else if(aktivView==='foedselDoed'){
+    const fd=data.foedselDoed;
+    head='<tr><th>Kvartal</th><th class="r">Fødte (HV)</th><th class="r">Døde (HV)</th><th class="r">Netto</th><th class="r">Idx fødte HV</th><th class="r">Idx fødte land</th></tr>';
+    for(let n=fd.kvartaler.length-1;n>=0;n--){
+      const net=fd.hvFoedte[n]-fd.hvDoede[n];
+      body+=`<tr><td class="land">${fd.kvartaler[n]}</td><td class="num">${fd.hvFoedte[n]}</td><td class="num">${fd.hvDoede[n]}</td><td class="${net>=0?'pos':'neg'}">${(net>=0?'+':'')+net}</td><td class="num">${fd.idxHvFoedte[n]}</td><td class="num">${fd.idxLandFoedte[n]}</td></tr>`;
+    }
   } else {
     head='<tr><th>Bevægelsesart</th><th class="r">Antal</th></tr>';
     const rows=[
@@ -376,6 +434,7 @@ function skiftAiTab(t){
   aktivAiTab=t;
   document.getElementById('aiT1').classList.toggle('active',t==='maanedlig');
   document.getElementById('aiT2').classList.toggle('active',t==='kvartal');
+  document.getElementById('aiT3').classList.toggle('active',t==='foedselDoed');
   const a = data && data.analyse ? data.analyse[t] : null;
   document.getElementById('aiHeading').textContent = a? (a.overskrift||'') : '';
   document.getElementById('aiBody').innerHTML = a? `<div class="ai-text">${(a.tekst||'').replace(/</g,'&lt;')}</div>` : '<div class="ai-empty">Ingen analyse.</div>';
