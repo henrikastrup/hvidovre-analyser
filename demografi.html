@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hvidovre · Demografisk månedsmonitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap');
+:root{
+  --green:#1A4D2E; --green-mid:#2E7D54; --gold:#C9973A; --red:#C0392B;
+  --bg:#F9F6F0; --card:#FFFFFF; --text:#1C1C1A; --mid:#4A4A44;
+  --muted:#8A8A7E; --border:#E2DDD4; --shadow:0 2px 20px rgba(26,77,46,0.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased;}
+.hdr{background:var(--green);color:#fff;padding:32px 48px 26px;position:relative;overflow:hidden;}
+.hdr::before{content:'';position:absolute;right:-60px;bottom:-60px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.03);pointer-events:none;}
+.hdr-eye{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px;}
+.hdr h1{font-family:'DM Serif Display',serif;font-size:clamp(20px,2.5vw,30px);font-weight:400;line-height:1.2;margin-bottom:8px;}
+.hdr h1 em{font-style:italic;color:#E8C06A;}
+.hdr p{font-size:13px;color:rgba(255,255,255,.6);font-weight:300;line-height:1.65;max-width:680px;}
+.toolbar{background:#fff;border-bottom:1px solid var(--border);padding:10px 48px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.sep{width:1px;height:22px;background:var(--border);margin:0 2px;}
+.btn{padding:7px 15px;border:1.5px solid var(--border);background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--mid);cursor:pointer;border-radius:6px;transition:all .15s;white-space:nowrap;}
+.btn:hover{border-color:var(--green);color:var(--green);}
+.btn.active{background:var(--green);border-color:var(--green);color:#fff;}
+#updateTime{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--muted);margin-left:auto;}
+.statusbar{background:#fff;border-bottom:1px solid var(--border);padding:8px 48px;display:flex;align-items:center;gap:9px;min-height:34px;}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot.loading{background:var(--gold);animation:pulse .9s ease-in-out infinite;}
+.dot.ok{background:var(--green-mid);}
+.dot.error{background:var(--red);}
+#statusMsg{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+main{padding:26px 48px 40px;max-width:1140px;}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:11px;margin-bottom:18px;}
+.kpi{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--green);border-radius:10px;padding:14px 17px;box-shadow:var(--shadow);}
+.kpi.gld{border-left-color:var(--gold);}
+.kpi.mid{border-left-color:var(--green-mid);}
+.kpi-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.kpi-val{font-family:'DM Serif Display',serif;font-size:30px;line-height:1;color:var(--text);margin-bottom:3px;}
+.kpi-delta{font-family:'DM Mono',monospace;font-size:11.5px;margin-bottom:2px;}
+.kpi-delta.pos{color:var(--green-mid);}
+.kpi-delta.neg{color:var(--red);}
+.kpi-delta.neu{color:var(--muted);}
+.kpi-desc{font-size:11.5px;color:var(--mid);line-height:1.4;}
+.ctx{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px;}
+.chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--mid);font-family:'DM Mono',monospace;}
+.chip b{color:var(--green);font-weight:500;}
+.chip.warn{border-color:var(--gold);color:#8a6a1a;background:rgba(201,151,58,.07);}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;box-shadow:var(--shadow);margin-bottom:24px;position:relative;}
+.chart-title{font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;color:var(--text);margin-bottom:4px;}
+.chart-desc{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:18px;}
+.canvas-wrap{position:relative;height:420px;}
+.ov{position:absolute;inset:0;background:rgba(249,246,240,.85);border-radius:12px;display:none;align-items:center;justify-content:center;z-index:10;}
+.ov.show{display:flex;}
+.spinner{width:32px;height:32px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--green);animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.ai-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;box-shadow:var(--shadow);margin-bottom:24px;}
+.ai-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px;}
+.ai-icon{width:36px;height:36px;background:var(--green);color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ai-title{font-weight:600;font-size:14px;color:var(--text);margin-bottom:2px;}
+.ai-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
+.ai-badge{margin-left:auto;font-family:'DM Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.ai-badge.ny{background:rgba(46,125,84,.12);color:var(--green-mid);}
+.ai-badge.gammel{background:rgba(201,151,58,.12);color:var(--gold);}
+.ai-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.ai-tab{padding:5px 14px;border:1.5px solid var(--border);background:transparent;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--mid);cursor:pointer;border-radius:20px;transition:all .15s;}
+.ai-tab:hover{border-color:var(--green);color:var(--green);}
+.ai-tab.active{background:var(--green);border-color:var(--green);color:#fff;}
+.ai-heading{font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;color:var(--text);margin-bottom:12px;line-height:1.35;}
+.ai-text{font-size:14px;line-height:1.8;color:var(--mid);max-width:780px;white-space:pre-wrap;}
+.ai-empty{font-size:13px;color:var(--muted);font-style:italic;}
+.data-tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.data-tbl th{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:9px 14px;text-align:left;border-bottom:2px solid var(--border);white-space:nowrap;}
+.data-tbl td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text);}
+.data-tbl tr:last-child td{border-bottom:none;}
+.data-tbl tr:hover td{background:rgba(26,77,46,.025);}
+.data-tbl td.num{font-family:'DM Mono',monospace;font-weight:500;font-size:14px;text-align:right;}
+.data-tbl th.r{text-align:right;}
+.data-tbl td.rank{color:var(--muted);font-family:'DM Mono',monospace;width:38px;}
+.data-tbl td.pos{color:var(--green-mid);font-family:'DM Mono',monospace;text-align:right;}
+.data-tbl td.neg{color:var(--red);font-family:'DM Mono',monospace;text-align:right;}
+.data-tbl td.land{font-weight:500;}
+.kilde{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--muted);padding:0 48px 32px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.dl-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;background:transparent;border:1.5px solid var(--border);border-radius:6px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);cursor:pointer;transition:all .15s;}
+.dl-btn:hover{border-color:var(--green);color:var(--green);}
+@media(max-width:700px){
+  .hdr,.toolbar,.statusbar,main,.kilde{padding-left:20px;padding-right:20px;}
+  .kpi-row{grid-template-columns:1fr 1fr;}
+  .canvas-wrap{height:340px;}
+}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-eye">Hvidovre Kommune · Center for Økonomi og Personale · Månedlig</div>
+  <h1>Demografisk månedsmonitor <em>— hvad sker der under overfladen</em></h1>
+  <p>Folketallets udvikling dekomponeret: aldersmæssig sammensætning, indvandring efter land og alder (månedligt) samt det fulde befolkningsregnskab (kvartalsvist). Kilde: Danmarks Statistik · FOLK1AM, VAN1UGE, BEV22.</p>
+</header>
+
+<div class="toolbar">
+  <button class="btn active" data-view="folketal" onclick="skiftView('folketal')">Folketal</button>
+  <button class="btn" data-view="alder" onclick="skiftView('alder')">Alder</button>
+  <button class="btn" data-view="indvandring" onclick="skiftView('indvandring')">Indvandring</button>
+  <button class="btn" data-view="regnskab" onclick="skiftView('regnskab')">Fuldt regnskab</button>
+  <div class="sep"></div>
+  <button class="btn active" id="bGraf" onclick="skiftDisplay('graf')">Diagram</button>
+  <button class="btn" id="bTabel" onclick="skiftDisplay('tabel')">Tabel</button>
+  <span id="updateTime"></span>
+</div>
+
+<div class="statusbar">
+  <div class="dot loading" id="dot"></div>
+  <span id="statusMsg">Henter data...</span>
+</div>
+
+<main>
+  <div class="kpi-row" id="kpiRow"></div>
+  <div class="ctx" id="ctxRow"></div>
+
+  <div class="chart-card">
+    <div class="ov" id="overlay"><div class="spinner"></div></div>
+    <div class="chart-title" id="chartTitle">—</div>
+    <div class="chart-desc" id="chartDesc">—</div>
+    <div id="grafArea"><div class="canvas-wrap"><canvas id="mainCanvas"></canvas></div></div>
+    <div id="tabelArea" style="display:none;overflow-x:auto">
+      <table class="data-tbl"><thead id="tblHead"></thead><tbody id="tblBody"></tbody></table>
+    </div>
+  </div>
+
+  <div class="ai-card">
+    <div class="ai-header">
+      <div class="ai-icon">✦</div>
+      <div>
+        <div class="ai-title">AI-analyse af udviklingen</div>
+        <div class="ai-meta" id="aiMeta">Genereret automatisk via n8n + Gemini</div>
+      </div>
+      <div class="ai-badge" id="aiBadge"></div>
+    </div>
+    <div class="ai-tabs">
+      <button class="ai-tab active" id="aiT1" onclick="skiftAiTab('maanedlig')">Måned</button>
+      <button class="ai-tab" id="aiT2" onclick="skiftAiTab('kvartal')">Kvartal (fuldt regnskab)</button>
+    </div>
+    <div class="ai-heading" id="aiHeading"></div>
+    <div id="aiBody"><div class="ai-empty">Henter analyse...</div></div>
+  </div>
+</main>
+
+<div class="kilde" id="kilde">
+  Kilde: Danmarks Statistik · FOLK1AM (måned), VAN1UGE (uge→måned), BEV22 (kvartal) · Hvidovre Kommune (kode 167)
+  <button class="dl-btn" onclick="downloadRapport()">↓ Download rapport</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script>
+const CONFIG = { dataUrl: './demografi-analyse.json' };
+const FARVER = ['#1A4D2E','#C9973A','#2E7D54','#8B6914','#4A9B7F','#5DADE2','#E67E22','#8E44AD','#C0392B','#2E86AB'];
+let data=null, chart=null;
+let aktivView = localStorage.getItem('hv_demo_view') || 'folketal';
+let display   = localStorage.getItem('hv_demo_disp') || 'graf';
+let aktivAiTab= 'maanedlig';
+
+const nf = n => (typeof n==='number'? n.toLocaleString('da-DK') : '—');
+function fmtDelta(n,suffix){
+  if(typeof n!=='number') return {txt:'—',cls:'neu'};
+  if(n===0) return {txt:'±0 '+suffix,cls:'neu'};
+  return {txt:(n>0?'▲ +':'▼ ')+Math.abs(n).toLocaleString('da-DK')+' '+suffix, cls:n>0?'pos':'neg'};
+}
+function setStatus(type,msg){ document.getElementById('dot').className='dot '+type; document.getElementById('statusMsg').textContent=msg; }
+
+async function loadData(){
+  document.getElementById('overlay').classList.add('show');
+  setStatus('loading','Henter data...');
+  try{
+    const r = await fetch(CONFIG.dataUrl + '?t=' + Date.now());
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    data = await r.json();
+    document.getElementById('updateTime').textContent = 'Genereret '+data.genereret;
+    visBadge(data.genereret);
+    skiftView(aktivView, true);
+    skiftAiTab(aktivAiTab);
+    setStatus('ok', 'Folketal pr. '+data.folketal.senesteMaanedDisplay+' · Indvandring t.o.m. '+data.indvandring.heleMaanedDisplay+' · Regnskab '+data.kvartal.display);
+  }catch(e){
+    setStatus('error','Kunne ikke hente data: '+e.message);
+  }
+  document.getElementById('overlay').classList.remove('show');
+}
+function visBadge(d){
+  const dage = Math.floor((Date.now()-new Date(d+'T00:00:00'))/864e5);
+  const b=document.getElementById('aiBadge');
+  b.textContent = dage<=14 ? 'Opdateret' : dage+' dage siden';
+  b.className='ai-badge '+(dage<=14?'ny':'gammel');
+}
+
+/* ---------- VIEW-SWITCH ---------- */
+function skiftView(v, force){
+  if(!data) return;
+  aktivView=v; localStorage.setItem('hv_demo_view',v);
+  document.querySelectorAll('.btn[data-view]').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
+  renderKPI(); renderCtx(); render();
+}
+function skiftDisplay(d){
+  display=d; localStorage.setItem('hv_demo_disp',d);
+  document.getElementById('bGraf').classList.toggle('active', d==='graf');
+  document.getElementById('bTabel').classList.toggle('active', d==='tabel');
+  document.getElementById('grafArea').style.display  = d==='graf'?'block':'none';
+  document.getElementById('tabelArea').style.display = d==='tabel'?'block':'none';
+  render();
+}
+
+/* ---------- KPI + KONTEKST ---------- */
+function kpi(lbl,val,delta,desc,cls){
+  const d = delta||{txt:'&nbsp;',cls:'neu'};
+  return `<div class="kpi ${cls||''}"><div class="kpi-lbl">${lbl}</div><div class="kpi-val">${val}</div><div class="kpi-delta ${d.cls}">${d.txt}</div><div class="kpi-desc">${desc}</div></div>`;
+}
+function renderKPI(){
+  const f=data.folketal, i=data.indvandring, k=data.kvartal, a=data.alder.grupper;
+  let h='';
+  if(aktivView==='folketal'){
+    h+=kpi('Folketal', nf(f.nu), fmtDelta(f.deltaMd,'sidste md'), f.senesteMaanedDisplay);
+    h+=kpi('Seneste 12 mdr', (f.delta12>=0?'+':'')+nf(f.delta12), fmtDelta(f.delta12,'borgere'), 'Nettoændring på et år','gld');
+    const gns = (f.delta12/12);
+    h+=kpi('Gns. pr. måned', (gns>=0?'+':'')+gns.toFixed(1), null, 'Gennemsnitlig månedlig vækst','mid');
+    const stoerst=[...a].sort((x,y)=>y.nu-x.nu)[0];
+    h+=kpi('Største aldersgruppe', stoerst.gruppe.replace(' år',''), null, nf(stoerst.nu)+' borgere');
+  } else if(aktivView==='alder'){
+    const vækst=[...a].sort((x,y)=>y.deltaAndel-x.deltaAndel)[0];
+    const fald=[...a].sort((x,y)=>x.deltaAndel-y.deltaAndel)[0];
+    h+=kpi('Gruppe i størst vækst', vækst.gruppe.replace(' år',''), {txt:(vækst.deltaAndel>=0?'▲ +':'▼ ')+Math.abs(vækst.deltaAndel)+' pct.-point',cls:vækst.deltaAndel>=0?'pos':'neg'}, 'Andel af befolkningen, 12 mdr');
+    h+=kpi('Gruppe i størst fald', fald.gruppe.replace(' år',''), {txt:(fald.deltaAndel>=0?'▲ +':'▼ ')+Math.abs(fald.deltaAndel)+' pct.-point',cls:fald.deltaAndel>=0?'pos':'neg'}, 'Andel af befolkningen, 12 mdr','gld');
+    const ældre = a.find(x=>x.gruppe==='80+ år');
+    h+=kpi('80+ år', nf(ældre.nu), fmtDelta(ældre.nu-ældre.foer,'på 12 mdr'), (ældre.andelNu)+' % af befolkningen','mid');
+    const børn = a.find(x=>x.gruppe==='0-5 år');
+    h+=kpi('0-5 år', nf(børn.nu), fmtDelta(børn.nu-børn.foer,'på 12 mdr'), (børn.andelNu)+' % af befolkningen');
+  } else if(aktivView==='indvandring'){
+    h+=kpi('Indvandring', nf(i.total), fmtDelta(i.delta,'vs. md før'), 'Seneste hele måned: '+i.heleMaanedDisplay);
+    const top=i.topLande[0];
+    h+=kpi('Største oprindelsesland', top?top.land:'—', null, top?nf(top.antal)+' personer':'—','gld');
+    const vestPct = Math.round(100*i.vestlig/Math.max(1,(i.vestlig+i.ikkeVestlig)));
+    h+=kpi('Vestlig oprindelse', vestPct+' %', null, nf(i.vestlig)+' vestlige / '+nf(i.ikkeVestlig)+' ikke-vestlige','mid');
+    const ap=[...i.alderProfil].sort((x,y)=>y.antal-x.antal)[0];
+    h+=kpi('Dominerende alder', ap&&ap.antal>0?ap.gruppe.replace(' år',''):'—', null, 'Hyppigste aldersgruppe blandt nye');
+  } else { /* regnskab */
+    h+=kpi('Befolkningstilvækst', (k.tilvaekst>=0?'+':'')+nf(k.tilvaekst), null, k.display+' · netto', k.tilvaekst>=0?'':'');
+    h+=kpi('Fødselsoverskud', (k.foedselsoverskud>=0?'+':'')+nf(k.foedselsoverskud), null, nf(k.foedte)+' fødte − '+nf(k.doede)+' døde','gld');
+    h+=kpi('Netto indenlands', (k.nettoTilflyt>=0?'+':'')+nf(k.nettoTilflyt), null, nf(k.tilflyttede)+' til − '+nf(k.fraflyttede)+' fra','mid');
+    h+=kpi('Netto udland', (k.nettoIndvandring>=0?'+':'')+nf(k.nettoIndvandring), null, nf(k.indvandrede)+' ind − '+nf(k.udvandrede)+' ud');
+  }
+  document.getElementById('kpiRow').innerHTML=h;
+}
+function renderCtx(){
+  const i=data.indvandring; let chips=[];
+  if(aktivView==='indvandring'){
+    chips.push(`<span class="chip warn">⚠ ${i.foreloebigDisplay} er foreløbig (${i.foreloebigTotal} t.o.m. seneste uge) — nøgletal viser seneste <b>hele</b> måned</span>`);
+    chips.push(`<span class="chip">Folketal 1. i måneden afspejler bevægelser i <b>foregående</b> måned</span>`);
+  } else if(aktivView==='regnskab'){
+    chips.push(`<span class="chip">Det fulde regnskab opgøres kun <b>kvartalsvist</b> (BEV22)</span>`);
+    chips.push(`<span class="chip">Primo ${nf(data.kvartal.primo)} → ultimo <b>${nf(data.kvartal.ultimo)}</b></span>`);
+  } else if(aktivView==='alder'){
+    chips.push(`<span class="chip">Sammenligning: <b>nu</b> vs. <b>samme måned sidste år</b></span>`);
+  } else {
+    chips.push(`<span class="chip">Viser seneste <b>24 måneder</b></span>`);
+  }
+  document.getElementById('ctxRow').innerHTML=chips.join('');
+}
+
+/* ---------- RENDER ---------- */
+function render(){
+  if(!data) return;
+  if(display==='graf'){ renderChart(); } else { renderTable(); }
+}
+const baseTooltip={backgroundColor:'#1C1C1A',titleFont:{family:'DM Sans',size:13,weight:'600'},bodyFont:{family:'DM Sans',size:12},padding:11,cornerRadius:6};
+function newChart(cfg){ if(chart) chart.destroy(); chart=new Chart(document.getElementById('mainCanvas'),cfg); }
+
+function renderChart(){
+  const f=data.folketal, i=data.indvandring, k=data.kvartal, a=data.alder.grupper;
+  const T=document.getElementById('chartTitle'), D=document.getElementById('chartDesc');
+
+  if(aktivView==='folketal'){
+    T.textContent='Folketal — udvikling';
+    D.textContent='FOLK1AM · seneste 24 måneder · den 1. i måneden';
+    newChart({type:'line',
+      data:{labels:f.serie.labels,datasets:[{label:'Folketal',data:f.serie.values,borderColor:FARVER[0],backgroundColor:'transparent',borderWidth:2.5,tension:.35,pointRadius:2,pointHoverRadius:6,pointBackgroundColor:FARVER[0]}]},
+      options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+        plugins:{legend:{display:false},tooltip:{...baseTooltip,callbacks:{label:c=>'  '+c.parsed.y.toLocaleString('da-DK')+' borgere'}}},
+        scales:{x:{ticks:{font:{family:'DM Sans',size:11},color:'#6A6A60',maxRotation:40,autoSkip:true,maxTicksLimit:12},grid:{color:'rgba(0,0,0,0.04)'}},
+          y:{ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>v.toLocaleString('da-DK')},grid:{color:'rgba(0,0,0,0.05)'}}}}});
+
+  } else if(aktivView==='alder'){
+    T.textContent='Aldersmæssig sammensætning';
+    D.textContent='Befolkning pr. aldersgruppe · nu vs. samme måned sidste år';
+    newChart({type:'bar',
+      data:{labels:a.map(x=>x.gruppe),datasets:[
+        {label:'Sidste år',data:a.map(x=>x.foer),backgroundColor:'#D8CDB8',borderRadius:4},
+        {label:'Nu',data:a.map(x=>x.nu),backgroundColor:FARVER[0],borderRadius:4}]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'DM Sans',size:11},boxWidth:14,padding:14}},tooltip:{...baseTooltip,callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toLocaleString('da-DK')}}},
+        scales:{x:{ticks:{font:{family:'DM Sans',size:12},color:'#1C1C1A'},grid:{display:false}},
+          y:{beginAtZero:true,ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>v.toLocaleString('da-DK')},grid:{color:'rgba(0,0,0,0.05)'}}}}});
+
+  } else if(aktivView==='indvandring'){
+    const top=i.topLande.filter(x=>x.antal>0);
+    T.textContent='Indvandring efter oprindelsesland';
+    D.textContent='VAN1UGE · '+i.heleMaanedDisplay+' (seneste hele måned) · top '+top.length;
+    newChart({type:'bar',
+      data:{labels:top.map(x=>x.land),datasets:[{data:top.map(x=>x.antal),backgroundColor:top.map((_,idx)=>FARVER[idx%FARVER.length]),borderRadius:5,borderSkipped:false}]},
+      options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{...baseTooltip,callbacks:{label:c=>'  '+c.parsed.x.toLocaleString('da-DK')+' personer'}}},
+        scales:{x:{beginAtZero:true,ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',precision:0},grid:{color:'rgba(0,0,0,0.04)'}},
+          y:{ticks:{font:{family:'DM Sans',size:13,weight:'500'},color:'#1C1C1A'},grid:{display:false}}}}});
+
+  } else { /* regnskab — bidrag til kvartalets tilvækst */
+    T.textContent='Fuldt befolkningsregnskab';
+    D.textContent='BEV22 · '+k.display+' · komponenternes bidrag til tilvæksten';
+    const comp=[
+      {n:'Fødselsoverskud',v:k.foedselsoverskud},
+      {n:'Netto indenlands flyt',v:k.nettoTilflyt},
+      {n:'Netto udland',v:k.nettoIndvandring},
+      {n:'Korrektioner',v:k.korrektioner},
+      {n:'= Tilvækst',v:k.tilvaekst}
+    ];
+    newChart({type:'bar',
+      data:{labels:comp.map(c=>c.n),datasets:[{data:comp.map(c=>c.v),
+        backgroundColor:comp.map(c=>c.n.startsWith('=')?'#1C1C1A':(c.v>=0?FARVER[2]:FARVER[8])),borderRadius:5,borderSkipped:false}]},
+      options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{...baseTooltip,callbacks:{label:c=>'  '+(c.parsed.x>=0?'+':'')+c.parsed.x.toLocaleString('da-DK')+' borgere'}}},
+        scales:{x:{ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E'},grid:{color:'rgba(0,0,0,0.04)'}},
+          y:{ticks:{font:{family:'DM Sans',size:13,weight:'500'},color:'#1C1C1A'},grid:{display:false}}}}});
+  }
+}
+
+function renderTable(){
+  const f=data.folketal, i=data.indvandring, k=data.kvartal, a=data.alder.grupper;
+  const H=document.getElementById('tblHead'), B=document.getElementById('tblBody');
+  let head='', body='';
+  if(aktivView==='folketal'){
+    head='<tr><th>Måned</th><th class="r">Folketal</th><th class="r">Ændring</th></tr>';
+    const L=f.serie.labels, V=f.serie.values;
+    for(let n=L.length-1;n>=0;n--){
+      const d = n>0 ? V[n]-V[n-1] : null;
+      const dc = d===null?'':(d>0?'pos':(d<0?'neg':''));
+      const dt = d===null?'—':((d>0?'+':'')+d);
+      body+=`<tr><td>${L[n]}</td><td class="num">${nf(V[n])}</td><td class="${dc}">${dt}</td></tr>`;
+    }
+  } else if(aktivView==='alder'){
+    head='<tr><th>Aldersgruppe</th><th class="r">Nu</th><th class="r">Sidste år</th><th class="r">Andel nu</th><th class="r">Δ andel</th></tr>';
+    a.forEach(x=>{
+      const dc=x.deltaAndel>0?'pos':(x.deltaAndel<0?'neg':'');
+      body+=`<tr><td class="land">${x.gruppe}</td><td class="num">${nf(x.nu)}</td><td class="num">${nf(x.foer)}</td><td class="num">${x.andelNu} %</td><td class="${dc}">${(x.deltaAndel>0?'+':'')+x.deltaAndel}</td></tr>`;
+    });
+  } else if(aktivView==='indvandring'){
+    head='<tr><th>#</th><th>Oprindelsesland</th><th class="r">'+i.heleMaanedDisplay+'</th><th class="r">Md før</th><th class="r">Δ</th></tr>';
+    i.topLande.filter(x=>x.antal>0).forEach((x,n)=>{
+      const dc=x.delta>0?'pos':(x.delta<0?'neg':'');
+      body+=`<tr><td class="rank">${n+1}</td><td class="land">${x.land}</td><td class="num">${nf(x.antal)}</td><td class="num">${nf(x.forrige)}</td><td class="${dc}">${(x.delta>0?'+':'')+x.delta}</td></tr>`;
+    });
+    body+=`<tr><td></td><td class="land">Indvandrere efter alder →</td><td colspan="3">`+
+      i.alderProfil.filter(x=>x.antal>0).map(x=>x.gruppe.replace(' år','')+': '+x.antal).join(' · ')+`</td></tr>`;
+  } else {
+    head='<tr><th>Bevægelsesart</th><th class="r">Antal</th></tr>';
+    const rows=[
+      ['Befolkning primo',k.primo],['Levendefødte',k.foedte],['Døde',k.doede],
+      ['Fødselsoverskud',k.foedselsoverskud],['Tilflyttede',k.tilflyttede],['Fraflyttede',k.fraflyttede],
+      ['Nettotilflyttede',k.nettoTilflyt],['Indvandrede',k.indvandrede],['Udvandrede',k.udvandrede],
+      ['Nettoindvandring',k.nettoIndvandring],['Korrektioner',k.korrektioner],
+      ['Befolkningstilvækst',k.tilvaekst],['Befolkning ultimo',k.ultimo]];
+    rows.forEach(([n,v])=>{ body+=`<tr><td class="land">${n}</td><td class="num">${(typeof v==='number'&&v<0?'':'')+nf(v)}</td></tr>`; });
+  }
+  H.innerHTML=head; B.innerHTML=body;
+}
+
+/* ---------- AI ---------- */
+function skiftAiTab(t){
+  aktivAiTab=t;
+  document.getElementById('aiT1').classList.toggle('active',t==='maanedlig');
+  document.getElementById('aiT2').classList.toggle('active',t==='kvartal');
+  const a = data && data.analyse ? data.analyse[t] : null;
+  document.getElementById('aiHeading').textContent = a? (a.overskrift||'') : '';
+  document.getElementById('aiBody').innerHTML = a? `<div class="ai-text">${(a.tekst||'').replace(/</g,'&lt;')}</div>` : '<div class="ai-empty">Ingen analyse.</div>';
+}
+
+function downloadRapport(){
+  const blob=new Blob([document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='hvidovre-demografi-'+(data?data.folketal.senesteMaaned:'rapport')+'.html'; a.click();
+}
+
+window.addEventListener('load',()=>{
+  document.getElementById('bGraf').classList.toggle('active',display==='graf');
+  document.getElementById('bTabel').classList.toggle('active',display==='tabel');
+  document.getElementById('grafArea').style.display  = display==='graf'?'block':'none';
+  document.getElementById('tabelArea').style.display = display==='tabel'?'block':'none';
+  if(window.location.protocol==='file:'){
+    setStatus('error','Åbn på GitHub Pages for live data (CORS blokerer fetch ved lokal åbning)');
+    document.getElementById('overlay').classList.remove('show');
+    return;
+  }
+  loadData();
+});
+</script>
+</body>
+</html>
