@@ -72,6 +72,9 @@ main{padding:26px 48px 40px;max-width:1140px;}
 .ai-heading{font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;color:var(--text);margin-bottom:12px;line-height:1.35;}
 .ai-text{font-size:14px;line-height:1.8;color:var(--mid);max-width:780px;white-space:pre-wrap;}
 .ai-empty{font-size:13px;color:var(--muted);font-style:italic;}
+.ai-section{margin-bottom:18px;}
+.ai-section:last-child{margin-bottom:0;}
+.ai-section-title{font-size:12px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;}
 .data-tbl{width:100%;border-collapse:collapse;font-size:13px;}
 .data-tbl th{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:9px 14px;text-align:left;border-bottom:2px solid var(--border);white-space:nowrap;}
 .data-tbl td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text);}
@@ -217,6 +220,9 @@ function skiftView(v, force){
   if(!data) return;
   aktivView=v; localStorage.setItem('hv_demo_view',v);
   document.querySelectorAll('.btn[data-view]').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
+  // Synkronisér AI-fane automatisk
+  const aiTab = VIEW_AI_TAB[v] || 'maanedlig';
+  skiftAiTab(aiTab);
   renderKPI(); renderCtx(); render();
 }
 function skiftDisplay(d){
@@ -456,6 +462,30 @@ function renderTable(){
 }
 
 /* ---------- AI ---------- */
+// Mapping: hvilken AI-fane hører til hvilket view
+const VIEW_AI_TAB = {
+  folketal:    'maanedlig',
+  alder:       'maanedlig',
+  indvandring: 'maanedlig',
+  foedselDoed: 'foedselDoed',
+  regnskab:    'kvartal'
+};
+
+function renderAiTekst(a){
+  if(!a) return '<div class="ai-empty">Ingen analyse.</div>';
+  // Understøt både gammel plain-tekst og ny struktur med afsnit
+  if(a.afsnit && Array.isArray(a.afsnit)){
+    return a.afsnit.map(s=>`
+      <div class="ai-section">
+        ${s.overskrift?`<div class="ai-section-title">${s.overskrift.replace(/</g,'&lt;')}</div>`:''}
+        <div class="ai-text">${(s.tekst||'').replace(/</g,'&lt;')}</div>
+      </div>`).join('');
+  }
+  // Fallback: plain tekst — split på linjeskift
+  const tekst=(a.tekst||'').replace(/</g,'&lt;');
+  return `<div class="ai-text">${tekst}</div>`;
+}
+
 function skiftAiTab(t){
   aktivAiTab=t;
   document.getElementById('aiT1').classList.toggle('active',t==='maanedlig');
@@ -463,7 +493,7 @@ function skiftAiTab(t){
   document.getElementById('aiT3').classList.toggle('active',t==='foedselDoed');
   const a = data && data.analyse ? data.analyse[t] : null;
   document.getElementById('aiHeading').textContent = a? (a.overskrift||'') : '';
-  document.getElementById('aiBody').innerHTML = a? `<div class="ai-text">${(a.tekst||'').replace(/</g,'&lt;')}</div>` : '<div class="ai-empty">Ingen analyse.</div>';
+  document.getElementById('aiBody').innerHTML = renderAiTekst(a);
 }
 
 function setFdToggle(v){ fdToggle=v; if(aktivView==='foedselDoed') render(); }
