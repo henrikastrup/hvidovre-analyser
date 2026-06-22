@@ -128,7 +128,13 @@ main{padding:26px 48px 40px;max-width:1140px;}
     <div id="grafArea">
       <div class="canvas-wrap"><canvas id="mainCanvas"></canvas></div>
       <div id="extraWrap" style="display:none">
-        <div class="chart-title" id="extraTitle" style="margin-top:30px;font-size:16px"></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:30px;margin-bottom:8px">
+          <div class="chart-title" id="extraTitle" style="font-size:16px;margin:0"></div>
+          <div style="margin-left:auto;display:flex;gap:5px">
+            <button class="btn active" id="fdBtnFoedte" onclick="setFdToggle('foedte')">Fødsler</button>
+            <button class="btn" id="fdBtnDoede" onclick="setFdToggle('doede')">Dødsfald</button>
+          </div>
+        </div>
         <div class="chart-desc" id="extraDesc" style="margin-bottom:14px"></div>
         <div class="canvas-wrap"><canvas id="extraCanvas"></canvas></div>
       </div>
@@ -170,6 +176,9 @@ let data=null, chart=null, chart2=null;
 let aktivView = localStorage.getItem('hv_demo_view') || 'folketal';
 let display   = localStorage.getItem('hv_demo_disp') || 'graf';
 let aktivAiTab= 'maanedlig';
+let fdToggle  = 'foedte';   // 'foedte' | 'doede' — vælger hvilke to kurver der vises i indeks-grafen
+const RUL_MD  = 36;         // rullende 36 måneder (3 år)
+const RUL_KV  = 12;         // rullende 12 kvartaler (3 år)
 
 const nf = n => (typeof n==='number'? n.toLocaleString('da-DK') : '—');
 function fmtDelta(n,suffix){
@@ -302,11 +311,15 @@ function renderChart(){
   exW.style.display = (aktivView==='foedselDoed' && display==='graf') ? 'block' : 'none';
   if(aktivView!=='foedselDoed' && chart2){ chart2.destroy(); chart2=null; }
 
+  // Hjælpefunktioner: begræns til rullende N elementer
+  const tail=(arr,n)=>arr.slice(-n);
+
   if(aktivView==='folketal'){
+    const lbl=tail(f.serie.labels,RUL_MD), val=tail(f.serie.values,RUL_MD);
     T.textContent='Folketal — udvikling';
-    D.textContent='FOLK1AM · seneste 24 måneder · den 1. i måneden';
+    D.textContent='FOLK1AM · seneste 3 år ('+RUL_MD+' måneder) · den 1. i måneden';
     newChart({type:'line',
-      data:{labels:f.serie.labels,datasets:[{label:'Folketal',data:f.serie.values,borderColor:FARVER[0],backgroundColor:'transparent',borderWidth:2.5,tension:.35,pointRadius:2,pointHoverRadius:6,pointBackgroundColor:FARVER[0]}]},
+      data:{labels:lbl,datasets:[{label:'Folketal',data:val,borderColor:FARVER[0],backgroundColor:'transparent',borderWidth:2.5,tension:.35,pointRadius:2,pointHoverRadius:6,pointBackgroundColor:FARVER[0]}]},
       options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
         plugins:{legend:{display:false},tooltip:{...baseTooltip,callbacks:{label:c=>'  '+c.parsed.y.toLocaleString('da-DK')+' borgere'}}},
         scales:{x:{ticks:{font:{family:'DM Sans',size:11},color:'#6A6A60',maxRotation:40,autoSkip:true,maxTicksLimit:12},grid:{color:'rgba(0,0,0,0.04)'}},
@@ -337,47 +350,60 @@ function renderChart(){
 
   } else if(aktivView==='foedselDoed'){
     const fd=data.foedselDoed;
+    const lbl =tail(fd.labels,RUL_KV);
+    const hvF =tail(fd.hvFoedte,RUL_KV),  hvD=tail(fd.hvDoede,RUL_KV);
+    const ixHF=tail(fd.idxHvFoedte,RUL_KV), ixLF=tail(fd.idxLandFoedte,RUL_KV);
+    const ixHD=tail(fd.idxHvDoede,RUL_KV),  ixLD=tail(fd.idxLandDoede,RUL_KV);
     T.textContent='Fødsler & dødsfald — Hvidovre';
-    D.textContent='BEV22 · kvartalsvise tal · '+fd.labels[0]+' – '+fd.labels[fd.labels.length-1];
+    D.textContent='BEV22 · seneste 3 år ('+RUL_KV+' kvartaler)';
     newChart({type:'line',
-      data:{labels:fd.labels,datasets:[
-        {label:'Levendefødte',data:fd.hvFoedte,borderColor:FARVER[2],backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:0,pointHoverRadius:5},
-        {label:'Døde',data:fd.hvDoede,borderColor:FARVER[8],backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:0,pointHoverRadius:5}]},
+      data:{labels:lbl,datasets:[
+        {label:'Levendefødte',data:hvF,borderColor:FARVER[2],backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3,pointHoverRadius:6,pointBackgroundColor:FARVER[2]},
+        {label:'Døde',data:hvD,borderColor:FARVER[8],backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3,pointHoverRadius:6,pointBackgroundColor:FARVER[8]}]},
       options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
         plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'DM Sans',size:11},boxWidth:14,padding:14}},tooltip:baseTooltip},
-        scales:{x:{ticks:{font:{family:'DM Mono',size:10},color:'#6A6A60',maxRotation:0,autoSkip:true,maxTicksLimit:11},grid:{color:'rgba(0,0,0,0.04)'}},
+        scales:{x:{ticks:{font:{family:'DM Mono',size:11},color:'#6A6A60',maxRotation:0},grid:{color:'rgba(0,0,0,0.04)'}},
           y:{beginAtZero:false,ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E'},grid:{color:'rgba(0,0,0,0.05)'}}}}});
-    document.getElementById('extraTitle').textContent='Indekseret udvikling vs. hele landet';
-    document.getElementById('extraDesc').textContent=fd.indexBaseDisp+' = 100 · heltrukken linje = Hvidovre, stiplet = hele landet';
+    // Indekseret ekstra graf — kun 2 kurver styret af fdToggle
+    const erFoedte=(fdToggle==='foedte');
+    document.getElementById('fdBtnFoedte').classList.toggle('active', erFoedte);
+    document.getElementById('fdBtnDoede').classList.toggle('active', !erFoedte);
+    document.getElementById('extraTitle').textContent='Indekseret udvikling vs. hele landet — '+(erFoedte?'Levendefødte':'Døde');
+    document.getElementById('extraDesc').textContent=fd.indexBaseDisp+' = 100 · heltrukken = Hvidovre, stiplet = hele landet · seneste 3 år';
+    const [hvIdx,laIdx,farve] = erFoedte ? [ixHF,ixLF,FARVER[2]] : [ixHD,ixLD,FARVER[8]];
+    const label = erFoedte ? 'Levendefødte' : 'Døde';
     if(chart2) chart2.destroy();
     chart2=new Chart(document.getElementById('extraCanvas'),{type:'line',
-      data:{labels:fd.labels,datasets:[
-        {label:'Fødte · Hvidovre',data:fd.idxHvFoedte,borderColor:FARVER[2],borderWidth:2.2,tension:.3,pointRadius:0},
-        {label:'Fødte · Hele landet',data:fd.idxLandFoedte,borderColor:FARVER[2],borderWidth:1.5,tension:.3,pointRadius:0,borderDash:[5,4]},
-        {label:'Døde · Hvidovre',data:fd.idxHvDoede,borderColor:FARVER[8],borderWidth:2.2,tension:.3,pointRadius:0},
-        {label:'Døde · Hele landet',data:fd.idxLandDoede,borderColor:FARVER[8],borderWidth:1.5,tension:.3,pointRadius:0,borderDash:[5,4]}]},
+      data:{labels:lbl,datasets:[
+        {label:label+' · Hvidovre',data:hvIdx,borderColor:farve,borderWidth:2.5,tension:.3,pointRadius:3,pointHoverRadius:6,pointBackgroundColor:farve},
+        {label:label+' · Hele landet',data:laIdx,borderColor:farve,borderWidth:1.5,tension:.3,pointRadius:0,borderDash:[6,4]}]},
       options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
-        plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'DM Sans',size:10},boxWidth:18,padding:10}},tooltip:baseTooltip},
-        scales:{x:{ticks:{font:{family:'DM Mono',size:10},color:'#6A6A60',maxRotation:0,autoSkip:true,maxTicksLimit:11},grid:{color:'rgba(0,0,0,0.04)'}},
+        plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'DM Sans',size:11},boxWidth:18,padding:12}},
+          tooltip:{...baseTooltip,callbacks:{label:c=>c.dataset.label+': '+c.parsed.y}}},
+        scales:{x:{ticks:{font:{family:'DM Mono',size:11},color:'#6A6A60',maxRotation:0},grid:{color:'rgba(0,0,0,0.04)'}},
           y:{ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E'},grid:{color:'rgba(0,0,0,0.05)'}}}}});
 
-  } else { /* regnskab — bidrag til kvartalets tilvækst */
-    T.textContent='Fuldt befolkningsregnskab';
-    D.textContent='BEV22 · '+k.display+' · komponenternes bidrag til tilvæksten';
-    const comp=[
-      {n:'Fødselsoverskud',v:k.foedselsoverskud},
-      {n:'Netto indenlands flyt',v:k.nettoTilflyt},
-      {n:'Netto udland',v:k.nettoIndvandring},
-      {n:'Korrektioner',v:k.korrektioner},
-      {n:'= Tilvækst',v:k.tilvaekst}
-    ];
+  } else { /* regnskab — stacked nettobidrag kvartal for kvartal */
+    const rh=data.regnskabHistorik;
+    T.textContent='Fuldt befolkningsregnskab — nettobidrag pr. kvartal';
+    D.textContent='BEV22 · seneste 3 år · stacked: positive bidrag opad, negative nedad';
     newChart({type:'bar',
-      data:{labels:comp.map(c=>c.n),datasets:[{data:comp.map(c=>c.v),
-        backgroundColor:comp.map(c=>c.n.startsWith('=')?'#1C1C1A':(c.v>=0?FARVER[2]:FARVER[8])),borderRadius:5,borderSkipped:false}]},
-      options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false},tooltip:{...baseTooltip,callbacks:{label:c=>'  '+(c.parsed.x>=0?'+':'')+c.parsed.x.toLocaleString('da-DK')+' borgere'}}},
-        scales:{x:{ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E'},grid:{color:'rgba(0,0,0,0.04)'}},
-          y:{ticks:{font:{family:'DM Sans',size:13,weight:'500'},color:'#1C1C1A'},grid:{display:false}}}}});
+      data:{labels:rh.labels,datasets:[
+        {label:'Fødselsoverskud',     data:rh.foedselsoverskud, backgroundColor:'#2E7D54',stack:'s',borderSkipped:false},
+        {label:'Netto indenl. flytning',data:rh.nettoTilflyt,  backgroundColor:'#5DADE2',stack:'s',borderSkipped:false},
+        {label:'Netto indvandring',   data:rh.nettoIndvandring, backgroundColor:'#C9973A',stack:'s',borderSkipped:false},
+        {label:'Korrektioner',        data:rh.korrektioner,     backgroundColor:'#B0A090',stack:'s',borderSkipped:false}]},
+      options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+        plugins:{
+          legend:{display:true,position:'bottom',labels:{font:{family:'DM Sans',size:11},boxWidth:12,padding:12}},
+          tooltip:{...baseTooltip,callbacks:{
+            label:c=>c.dataset.label+': '+(c.parsed.y>=0?'+':'')+c.parsed.y.toLocaleString('da-DK'),
+            footer:items=>{const s=items.reduce((a,c)=>a+c.parsed.y,0);return'Tilvækst: '+(s>=0?'+':'')+Math.round(s).toLocaleString('da-DK');}}}},
+        scales:{
+          x:{ticks:{font:{family:'DM Mono',size:11},color:'#6A6A60',maxRotation:0},grid:{display:false}},
+          y:{stacked:true,ticks:{font:{family:'DM Mono',size:11},color:'#8A8A7E',callback:v=>(v>=0?'+':'')+v.toLocaleString('da-DK')},
+            grid:{color:'rgba(0,0,0,0.05)'},
+            afterDataLimits:ax=>{const pad=20;ax.max+=pad;ax.min-=pad;}}}}});
   }
 }
 
@@ -439,6 +465,8 @@ function skiftAiTab(t){
   document.getElementById('aiHeading').textContent = a? (a.overskrift||'') : '';
   document.getElementById('aiBody').innerHTML = a? `<div class="ai-text">${(a.tekst||'').replace(/</g,'&lt;')}</div>` : '<div class="ai-empty">Ingen analyse.</div>';
 }
+
+function setFdToggle(v){ fdToggle=v; if(aktivView==='foedselDoed') render(); }
 
 function downloadRapport(){
   const blob=new Blob([document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});
