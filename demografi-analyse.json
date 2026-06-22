@@ -876,16 +876,51 @@
   },
   "analyse": {
     "maanedlig": {
-      "overskrift": "Demografisk status for Hvidovre Kommune pr. 1. maj 2026",
-      "tekst": "Hvidovre Kommunes folketal pr. 1. maj 2026 udgør 54.196, hvilket er en stigning på 44 personer i april måned. Denne vækst er primært påvirket af en indvandring på 52 personer i april, en stigning fra 47 i den foregående måned, og bidrager til en samlet årsstigning på 375 personer. Indvandringen bestod af 54% mænd (28 mænd og 24 kvinder), hvor Ukraine (11), Kina (6), Rumænien (4), Sverige (3) og Indien (3) var de mest repræsenterede oprindelseslande, med 35% fra vestlige lande. Aldersfordelingen blandt indvandrerne viser en koncentration i grupperne 27-39 år (14 personer) og 40-64 år (14 personer), efterfulgt af de 17-26 årige (11 personer). En analyse af alderssammensætningen afslører en vækst i gruppen 17-26 år, hvis andel af det samlede folketal steg med 0,22 procentpoint, mens gruppen 0-5 år oplevede det største fald i andelen med 0,2 procentpoint."
+      "overskrift": "Demografisk månedsorientering: Maj 2026",
+      "afsnit": [
+        {
+          "overskrift": "Folketal og udvikling",
+          "tekst": "Pr. 1. maj 2026 udgjorde folketallet i Hvidovre Kommune 54.196 borgere, hvilket markerer en stigning på 44 personer i løbet af april måned. Denne positive udvikling understøtter den langsigtede tendens, hvor befolkningstallet over de seneste 12 måneder er vokset med i alt 375 personer. Væksten i april måned afspejler således en fortsat stabil og moderat befolkningsfremgang i kommunen."
+        },
+        {
+          "overskrift": "Indvandring",
+          "tekst": "I løbet af april blev der registreret 52 indvandringer til Hvidovre Kommune, hvilket er en stigning i forhold til de 47 indvandringer i den foregående måned. Gruppen bestod af 28 mænd og 24 kvinder, hvoraf 35 procent havde vestlig oprindelse, og de primære oprindelseslande var Ukraine og Kina med henholdsvis 11 og 6 personer. Aldersmæssigt var indvandringen primært koncentreret omkring de 27-39-årige og 40-64-årige, der hver tegnede sig for 14 personer."
+        },
+        {
+          "overskrift": "Alderssammensætning",
+          "tekst": "Den største relative befolkningsmæssige vækst i månedens løb sås i aldersgruppen 17-26 år, som steg med 0,22 procentpoint til en samlet andel på 11,87 procent af borgerne. Omvendt oplevede gruppen af de 0-5-årige det største fald, idet deres andel faldt med 0,20 procentpoint til at udgøre 6,41 procent af det samlede folketal. Disse bevægelser medfører en mindre forskydning i den kommunale alderssammensætning i retning af flere yngre voksne."
+        }
+      ]
     },
     "kvartal": {
-      "overskrift": "Befolkningsregnskab for Hvidovre Kommune, 1. kvartal 2026",
-      "tekst": "Hvidovre Kommunes befolkningstal faldt med 76 personer i 1. kvartal 2026, fra 54.228 til 54.152 indbyggere. Tilvæksten fremkommer af et fødselsoverskud på -32, som er resultatet af 107 fødsler og 139 dødsfald. Den netto indenlandske flytning var negativ med 84 personer, idet flere flyttede fra kommunen til andre danske kommuner end omvendt. Internationalt set var der en nettoindvandring på 45 personer (164 indvandrede mod 119 udvandrede), og hertil kommer korrektioner på -5. Den væsentligste drivkraft bag kvartalets negative befolkningsudvikling er den netto indenlandske fraflytning."
+      "overskrift": "Befolkningsudviklingen i Hvidovre Kommune, 1. kvartal 2026",
+      "afsnit": [
+        {
+          "overskrift": "Samlet tilvækst",
+          "tekst": "I første kvartal 2026 oplevede Hvidovre Kommune en befolkningsnedgang på 76 personer, hvilket bragte det samlede indbyggertal ned på 54.152 ved kvartalets udgang. Den væsentligste drivkraft bag dette fald var en negativ indenlandsk flyttebalance, hvor værdierne trak i en nedadgående retning. Denne tilbagegang blev kun delvist modsvaret af en positiv nettotilstrømning fra udlandet."
+        },
+        {
+          "overskrift": "Fødsler og dødsfald",
+          "tekst": "Der blev i perioden registreret 107 fødsler og 139 dødsfald, hvilket resulterede i et negativt fødselsoverskud på 32 personer. Dette fødselsunderskud betyder, at den naturlige befolkningstilvækst i sig selv bidrog til faldet i det samlede befolkningstal. Udviklingen afspejler en periode, hvor det lokale fødselstal ikke var tilstrækkeligt til at erstatte antallet af afdøde."
+        },
+        {
+          "overskrift": "Flytninger og indvandring",
+          "tekst": "Den indenlandske flytteaktivitet resulterede i et nettounderskud på 84 personer, da 883 flyttede til kommunen, mens 967 flyttede væk. Modsat heraf var den internationale migration positiv med en nettoindvandring på 45 personer, fordelt på 164 indvandrede og 119 udvandrede. Samlet set betød flyttemønstrene således, at det indenlandske tab oversteg den internationale tilstrømning."
+        }
+      ]
     },
     "foedselDoed": {
-      "overskrift": "Demografisk Analyse: 1. Kvartal 2026 i Hvidovre Kommune",
-      "tekst": "I 1. kvartal 2026 registrerede Hvidovre Kommune et fødselsunderskud på 32 personer, med 107 levendefødte og 139 døde. Dette repræsenterer en negativ udvikling fra året før, hvor antallet af fødte var 113 og døde 109. Over en længere periode, med 2. kvartal 2015 som basisår (100), viser indekstallene for Hvidovre en markant nedgang i fødselsraten til 86.3, mens landsplan ligger på 101.1. Dette indikerer, at Hvidovres fødselsrate er faldet betydeligt mere end landets gennemsnit siden 2015. Dødeligheden i Hvidovre er steget til indeks 119.8, hvilket er en betydelig stigning, men dog mindre end den generelle stigning på landsplan, som ligger på 127.2. Samlet set oplever Hvidovre en relativt større negativ udvikling i fødselsraten og en relativt mindre stigning i dødsraten sammenlignet med landet som helhed siden 2015."
+      "overskrift": "Demografisk analyse af fødte og døde i Hvidovre Kommune for 1. kvartal 2026",
+      "afsnit": [
+        {
+          "overskrift": "Seneste kvartal",
+          "tekst": "I første kvartal 2026 registrerede Hvidovre Kommune 107 levendefødte og 139 døde, hvilket resulterede i et fødselsunderskud på 32 personer. Sammenlignet med samme kvartal året før, hvor der var 113 fødte og 109 døde, er antallet af fødsler faldet en smule, mens dødstallet er steget mærkbart. Denne udvikling peger på en nedadgående tendens for det naturlige fødselsoverskud i kommunen."
+        },
+        {
+          "overskrift": "Sammenligning med hele landet",
+          "tekst": "Sammenligningen med hele landet viser, at Hvidovre med et fødselsindeks på 86,3 ligger markant under landsplanets indeks på 101,1. For dødsfald ligger Hvidovres indeks på 119,8 ligeledes under landets indeks på 127,2, hvilket vidner om en generel stigning i dødstallet, der dog er mindre udtalt lokalt. Den svagere fødselsudvikling i Hvidovre sammenlignet med resten af landet betyder, at kommunen i højere grad er afhængig af tilflytning for at opretholde befolkningstilvæksten."
+        }
+      ]
     }
   }
 }
