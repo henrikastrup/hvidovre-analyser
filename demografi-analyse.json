@@ -1,6 +1,5 @@
 {
   "genereret": "2026-06-22",
-  "kilde": "Danmarks Statistik · FOLK1AM, VAN1UGE, BEV22 · Hvidovre Kommune (167)",
   "folketal": {
     "senesteMaaned": "2026M05",
     "senesteMaanedDisplay": "Maj 2026",
@@ -279,8 +278,7 @@
         47,
         52,
         11
-      ],
-      "foreloebigIdx": 23
+      ]
     }
   },
   "kvartal": {
@@ -302,12 +300,12 @@
   },
   "analyse": {
     "maanedlig": {
-      "overskrift": "Folketallet steg til 54.196 i maj 2026",
-      "tekst": "Hvidovres folketal var 54.196 pr. 1. i måneden. en stigning på +44 siden måneden før og +375 over de seneste 12 måneder. Folketallet den 1. i måneden afspejler bevægelser i den foregående måned. I april 2026 (seneste hele måned) indvandrede 52 personer mod 47 måneden før; de hyppigste oprindelseslande var Ukraine. Kina. Rumænien. Aldersmæssigt forskydes sammensætningen svagt mod de ældste grupper. mens de nye indvandrere primært er i de erhvervsaktive aldre."
+      "overskrift": "Demografisk udvikling i Hvidovre Kommune, maj 2026",
+      "tekst": "Pr. 1. maj 2026 udgjorde folketallet i Hvidovre Kommune 54.196 personer, hvilket afspejler en stigning på 44 personer i løbet af april måned. I april 2026 blev der registreret 52 indvandringer til kommunen, hvoraf 35% var fra vestlige lande. Indvandringen i april var særligt præget af personer fra Ukraine (11), Kina (6) og Rumænien (4). Aldersmæssigt var de største grupper blandt indvandrerne 27-39 år og 40-64 år, begge med 14 personer. I den samlede alderssammensætning sås den største relative vækst i gruppen 17-26 år, hvis andel af folketallet steg med 0,22 procentpoint. Omvendt oplevede aldersgruppen 0-5 år den største relative tilbagegang, med et fald på 0,2 procentpoint af folketallet."
     },
     "kvartal": {
-      "overskrift": "1. kvartal 2026: samlet tilvækst på -76",
-      "tekst": "I 1. kvartal 2026 faldt befolkningen netto med 76 fra 54.228 til 54.152. Fødselsoverskuddet var -32 (107 fødte mod 139 døde). Den indenlandske flytning gav et nettotab på 84 (883 tilflyttede mod 967 fraflyttede). mens udlandsbevægelserne bidrog positivt med +45 (164 indvandrede mod 119 udvandrede). Den væsentligste drivkraft bag kvartalets fald er dermed nettofraflytningen til andre kommuner."
+      "overskrift": "Analyse af befolkningsregnskabet, 1. kvartal 2026",
+      "tekst": "I 1. kvartal 2026 registrerede Hvidovre Kommune en samlet befolkningsnedgang på 76 personer, fra 54.228 til 54.152 indbyggere. Denne tilvækst fremkommer som summen af fødselsoverskud, netto indenlandsk flytning, netto indvandring og korrektioner. Kvartalets fødselsoverskud bidrog med -32, netto indenlandsk flytning med -84, netto indvandring med +45 og korrektioner med -5. Den mest væsentlige drivkraft bag den samlede befolkningsnedgang var den netto indenlandske fraflytning, som reducerede kommunens indbyggertal med 84 personer i perioden."
     }
   }
 }
