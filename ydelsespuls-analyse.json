@@ -1,5 +1,5 @@
 {
-  "genereret": "2026-06-29",
+  "genereret": "2026-07-06",
   "senesteLabel": "Maj 26",
   "data": {
     "y01a02": {
@@ -477,51 +477,51 @@
   },
   "analyse": {
     "y01a02": {
-      "overskrift": "A-dagpenge falder til 717 i maj efter to måneders fald",
-      "tekst": "Niveauet for A-dagpenge lander på 717 fuldtidspersoner i maj 2026, hvilket er et fald på 24 personer i forhold til april og 42 personer færre end i marts. Set over hele den seneste 12-måneders periode er der dog tale om en stigning, da niveauet ligger 24 personer højere end på samme tid sidste år. Det seneste tocifrede fald i forårsmånederne indikerer en stærk sæsonbetinget tendens, hvor beskæftigelsen typisk stiger i denne periode. Denne kortsigtede udvikling modvirker dermed den mere langsigtede årlige stigning. Den overordnede retning vurderes på nuværende tidspunkt at være stabiliserende med et svagt nedadgående træk på kort sigt."
+      "overskrift": "A-dagpenge falder til 717 fuldtidspersoner i maj efter tidligere stigninger",
+      "tekst": "Modtagerne af A-dagpenge udgjorde 717 fuldtidspersoner i maj 2026, hvilket er et fald på 24 personer i forhold til april og 42 personer færre end i marts. På trods af den seneste månedlige reduktion ligger niveauet fortsat 24 fuldtidspersoner højere end på samme tidspunkt sidste år. Udviklingen over de seneste måneder peger på en stabiliserende eller svagt faldende tendens efter en periode med stigning over det seneste år. Dette fald i forårsmånederne kan hænge sammen med sæsonbetinget øget aktivitet på arbejdsmarkedet. Samlet set viser tallene, at ledigheden på forsikret dagpenge bevæger sig mod et lavere niveau på kort sigt, mens det årlige niveau forbliver let forhøjet."
     },
     "y60a02": {
-      "overskrift": "Kontanthjælp stiger svagt til 711 i maj med stabil årsudvikling",
-      "tekst": "I maj 2026 modtog 711 fuldtidspersoner kontanthjælp, hvilket er en stigning på 3 personer sammenlignet med april og 8 personer sammenlignet med marts. Over det seneste år er antallet af modtagere steget med i alt 14 personer, hvilket vidner om en begrænset årlig vækst. Udviklingen gennem de seneste måneder har været præget af meget små, men konstante stigninger uden pludselige udsving. Der kan ikke spores markante sæsonudsving i de nuværende tal, som i stedet peger på en jævn tilgang. Den fremtidige retning vurderes på denne baggrund at være fortsat svagt stigende til stabil."
+      "overskrift": "Kontanthjælp stiger svagt til 711 helårspersoner i maj måned",
+      "tekst": "Antallet af kontanthjælpsmodtagere landede på 711 helårspersoner i maj 2026, hvilket repræsenterer en stigning på 3 personer i forhold til april. Sammenlignet med marts er der tale om en stigning på 8 personer, og niveauet er nu 14 personer højere end for et år siden. Der tegner sig således et mønster med en jævn, men moderat tilvækst i målgruppen over de seneste to måneder. Den langsigtede 12-måneders trend viser ligeledes en svagt stigende tendens på området. Retningen for kontanthjælpsområdet må i øjeblikket vurderes som svagt opadgående med et stabilt aktivitetsniveau."
     },
     "y07a02": {
-      "overskrift": "Sygedagpenge falder markant til 749 i april efter jævnt fald",
-      "tekst": "Antallet af sygedagpengemodtagere udgør 749 fuldtidspersoner i april 2026, hvilket er et fald på 40 personer i forhold til måneden før og 42 personer sammenlignet med februar. Set i et 12-måneders perspektiv er der tale om en mærkbar reduktion, da niveauet er faldet med 62 personer sammenlignet med samme måned sidste år. Dette markante fald i april understøtter en længerevarende tendens til faldende sygefravær hen over foråret. Udviklingen afviger positivt fra tidligere måneders mere flade tendens og indikerer en accelererende reduktion. Retningen for ydelsesområdet vurderes aktuelt at være klart nedadgående."
+      "overskrift": "Sygedagpenge falder markant til 749 fuldtidspersoner i april måned",
+      "tekst": "Antallet af modtagere af sygedagpenge udgjorde 749 fuldtidspersoner i april 2026, hvilket er et markant fald på 40 personer sammenlignet med måneden før. Set i forhold til to måneder tilbage er der sket en reduktion på 42 personer, mens niveauet ligger 62 personer lavere end i samme måned sidste år. Dette markante fald markerer en tydelig afvigelse fra de foregående måneders mere stabile niveauer omkring de 790 fuldtidspersoner. Udviklingen kan potentielt afspejle en sæsonbetinget afgang eller en generel strukturel reduktion i sygefraværet. Den overordnede retning for sygedagpengeområdet er således nedadgående på både kort og mellemlangt sigt."
     },
     "y11a02": {
-      "overskrift": "Ressourceforløb fortsætter fald til 167 i maj efter stabil tilbagegang",
-      "tekst": "I maj 2026 var der 167 fuldtidspersoner i ressourceforløb, hvilket er en reduktion på 11 personer i forhold til april og 14 personer i forhold til marts. Denne udvikling ligger i forlængelse af den langsigtede trend, hvor antallet af personer i ressourceforløb er faldet med 34 personer over det seneste år. Faldet har været jævnt fordelt over de seneste 12 måneder uden pludselige stigninger eller større månedlige udsving. Mønstret afspejler en kontinuerlig afvikling eller visitation videre til andre ordninger. Den overordnede retning for denne ydelsestype vurderes fortsat at være jævnt faldende."
+      "overskrift": "Ressourceforløb fortsætter faldet til 167 fuldtidspersoner i maj måned",
+      "tekst": "For ressourceforløb blev der i maj 2026 registreret 167 fuldtidspersoner, svarende til et fald på 11 personer i forhold til april. Sammenlignet med situationen for to måneder siden er antallet reduceret med 14 personer, og på årsbasis ses et markant fald på 34 personer. Denne reduktion understøtter en længerevarende og stabil nedadgående trend over det seneste år. Mønstret indikerer en kontinuerlig og systematisk afgang fra ordningen uden pludselige udsving undervejs. Retningen for ydelsestypen vurderes fortsat at være entydigt nedadgående."
     },
     "y09a02": {
-      "overskrift": "Ledighedsydelse falder marginalt til 67 i maj med stabil trend",
-      "tekst": "Ledighedsydelsen lander på 67 fuldtidspersoner i maj 2026, hvilket er 5 personer færre end i april og 1 person færre end i marts. Sammenlignet med samme måned sidste år er der tale om et lille fald på 6 personer i den samlede volumen. Tallene viser generelt meget små forskydninger, og månedens fald bringer ydelsen tilbage til det stabile niveau fra tidligere på året. Der er ingen indikationer på væsentlige sæsonudsving eller ændrede strukturelle mønstre i visitationerne. Retningen for ledighedsydelsen vurderes på denne baggrund at forblive stabil i den kommende periode."
+      "overskrift": "Ledighedsydelse reduceres til 67 fuldtidspersoner efter lille stigning i april",
+      "tekst": "Antallet af modtagere af ledighedsydelse faldt med 5 personer til i alt 67 fuldtidspersoner i maj 2026. Niveauet er dermed næsten tilbage på niveauet fra to måneder tilbage, hvor der blev registreret 68 personer. Sammenlignet med samme måned sidste år er der tale om en mindre reduktion på 6 fuldtidspersoner. Udviklingen over de seneste måneder viser mindre fluktuationer inden for et generelt meget stabilt interval. Retningen for ledighedsydelsesområdet må på denne baggrund betegnes som stabil med en svag undertone af fald."
     },
     "y08a02": {
-      "overskrift": "Fleksjob stiger til 745 i maj efter jævn årlig tilgang",
-      "tekst": "Antallet af personer i fleksjob er opgjort til 745 fuldtidspersoner i maj 2026, hvilket er en stigning på 6 personer sammenlignet med både april og marts. Den årlige udvikling viser en stigning på 33 personer, hvilket bekræfter en vedvarende tilgang til ordningen over de seneste 12 måneder. Udviklingen er karakteriseret ved en stabil og jævn vækst uden markante månedlige fluktuationer. Denne trend afspejler sandsynligvis det løbende arbejdsmarkedsintegrationsarbejde og fraværet af større konjunkturfølsomhed på netop dette område. Retningen for fleksjobområdet vurderes fortsat at være svagt opadgående."
+      "overskrift": "Fleksjob stiger til 745 helårspersoner og fortsætter den langsigtede vækst",
+      "tekst": "Antallet af personer i fleksjob steg til 745 helårspersoner i maj 2026, hvilket er en stigning på 6 personer sammenlignet med både forrige måned og to måneder tilbage. Over det seneste år er antallet af visiterede i fleksjob vokset med i alt 33 helårspersoner. Denne stigning stemmer overens med en generel og langvarig trend på området, hvor visitationerne gradvist akkumuleres. Der ses ingen markante sæsonbetinget udsving, men derimod en stabil og jævn tilgang over hele den 12-måneders periode. Den overordnede retning for fleksjobområdet vurderes fortsat at være svagt stigende."
     },
     "y12a02": {
-      "overskrift": "Jobafklaringsforløb falder til 191 i maj efter jævnt årsfald",
-      "tekst": "Niveauet for jobafklaringsforløb er 191 fuldtidspersoner i maj 2026, hvilket repræsenterer et fald på 7 personer i forhold til april og 10 personer i forhold til marts. Set over det seneste år er antallet af personer i forløb reduceret med 27, hvilket viser en tydelig og vedvarende nedadgående tendens. Udviklingen forløber uden pludselige skift, hvilket tyder på et stabilt flow af borgere ud af ordningen. Der ses ingen umiddelbare tegn på sæsonvariationer, idet faldet har manifesteret sig kontinuerligt hen over de seneste 12 måneder. Vurderingen af den fremtidige retning er, at antallet af jobafklaringsforløb vil fortsætte med at falde svagt."
+      "overskrift": "Jobafklaringsforløb falder til 191 fuldtidspersoner efter jævn tilbagegang",
+      "tekst": "I maj 2026 var der 191 fuldtidspersoner i jobafklaringsforløb, hvilket markerer et fald på 7 personer sammenlignet med april. Siden marts er antallet reduceret med 10 personer, og sammenlignet med samme periode sidste år er der sket et fald på 27 personer. Den seneste udvikling bekræfter den generelle trend for det seneste år, hvor antallet af forløb har været jævnt aftagende. Der er tale om en stabil afvikling af sager i ordningen uden pludselige månedlige skift i intensitet. Den fremadrettede retning for jobafklaringsforløb vurderes at fortsætte i en nedadgående bane."
     },
     "y10a02": {
-      "overskrift": "Førtidspension stiger til 2298 i maj efter fortsat årlig tilgang",
-      "tekst": "I maj 2026 modtog 2.298 personer førtidspension, hvilket er en mindre stigning på 3 personer i forhold til april og 5 personer i forhold til marts. Den langsigtede udvikling viser en markant stigning på 123 personer i forhold til samme måned sidste år. Mønstret med minimale månedlige stigninger, der akkumuleres til en stor årlig vækst, har været gældende gennem hele perioden. Denne stabile tilgang afspejler primært demografiske forskydninger samt overgange fra andre midlertidige ydelser frem for kortsigtede konjunkturændringer. Den overordnede retning for førtidspension vurderes at være fortsat svagt stigende."
+      "overskrift": "Førtidspension stiger til 2.298 personer og fastholder langsigtet vækst",
+      "tekst": "Antallet af førtidspensionister steg til 2.298 personer i maj 2026, hvilket er en mindre stigning på 3 personer i forhold til april. Niveauet ligger 5 personer over tallet fra to måneder siden, og det seneste år har budt på en samlet vækst på 123 modtagere. Den månedlige tilvækst er relativt moderat, men set over hele 12-måneders perioden udgør stigningen en markant strukturel ændring. Udviklingen følger den langsigtede demografiske og administrative trend, der har præget området gennem længere tid. Retningen for førtidspensionsområdet vurderes dermed fortsat at være stabilt stigende."
     },
     "y85a02": {
-      "overskrift": "Data ikke tilgængelig",
+      "overskrift": "Data ikke tilgængeligt",
       "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y13a02": {
-      "overskrift": "Data ikke tilgængelig",
+      "overskrift": "Data ikke tilgængeligt",
       "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y40a02": {
-      "overskrift": "Data ikke tilgængelig",
+      "overskrift": "Data ikke tilgængeligt",
       "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y28a02": {
-      "overskrift": "Data ikke tilgængelig",
+      "overskrift": "Data ikke tilgængeligt",
       "tekst": "Data ikke tilgængeligt for denne periode."
     }
   }
