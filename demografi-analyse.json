@@ -1,16 +1,15 @@
 {
-  "genereret": "2026-06-22",
+  "genereret": "2026-07-12",
   "folketal": {
-    "senesteMaaned": "2026M05",
-    "senesteMaanedDisplay": "Maj 2026",
-    "nu": 54196,
-    "forrige": 54152,
-    "deltaMd": 44,
-    "for12": 53821,
-    "delta12": 375,
+    "senesteMaaned": "2026M06",
+    "senesteMaanedDisplay": "Juni 2026",
+    "nu": 54175,
+    "forrige": 54196,
+    "deltaMd": -21,
+    "for12": 53938,
+    "delta12": 237,
     "serie": {
       "labels": [
-        "Juni 2024",
         "Juli 2024",
         "August 2024",
         "September 2024",
@@ -33,10 +32,10 @@
         "Februar 2026",
         "Marts 2026",
         "April 2026",
-        "Maj 2026"
+        "Maj 2026",
+        "Juni 2026"
       ],
       "values": [
-        53814,
         53803,
         53838,
         53823,
@@ -59,7 +58,8 @@
         54210,
         54175,
         54152,
-        54196
+        54196,
+        54175
       ]
     }
   },
@@ -67,138 +67,138 @@
     "grupper": [
       {
         "gruppe": "0-5 år",
-        "nu": 3476,
-        "foer": 3562,
-        "andelNu": 6.41,
-        "andelFoer": 6.62,
-        "deltaAndel": -0.2
+        "nu": 3482,
+        "foer": 3552,
+        "andelNu": 6.43,
+        "andelFoer": 6.59,
+        "deltaAndel": -0.16
       },
       {
         "gruppe": "6-16 år",
-        "nu": 7606,
-        "foer": 7606,
+        "nu": 7601,
+        "foer": 7625,
         "andelNu": 14.03,
-        "andelFoer": 14.13,
-        "deltaAndel": -0.1
+        "andelFoer": 14.14,
+        "deltaAndel": -0.11
       },
       {
         "gruppe": "17-26 år",
-        "nu": 6433,
-        "foer": 6269,
-        "andelNu": 11.87,
-        "andelFoer": 11.65,
-        "deltaAndel": 0.22
+        "nu": 6409,
+        "foer": 6288,
+        "andelNu": 11.83,
+        "andelFoer": 11.66,
+        "deltaAndel": 0.17
       },
       {
         "gruppe": "27-39 år",
-        "nu": 9184,
-        "foer": 9097,
-        "andelNu": 16.95,
-        "andelFoer": 16.9,
-        "deltaAndel": 0.04
+        "nu": 9167,
+        "foer": 9128,
+        "andelNu": 16.92,
+        "andelFoer": 16.92,
+        "deltaAndel": 0
       },
       {
         "gruppe": "40-64 år",
-        "nu": 17642,
-        "foer": 17569,
-        "andelNu": 32.55,
-        "andelFoer": 32.64,
-        "deltaAndel": -0.09
+        "nu": 17668,
+        "foer": 17601,
+        "andelNu": 32.61,
+        "andelFoer": 32.63,
+        "deltaAndel": -0.02
       },
       {
         "gruppe": "65-79 år",
-        "nu": 6990,
-        "foer": 6962,
-        "andelNu": 12.9,
-        "andelFoer": 12.94,
-        "deltaAndel": -0.04
+        "nu": 6971,
+        "foer": 6975,
+        "andelNu": 12.87,
+        "andelFoer": 12.93,
+        "deltaAndel": -0.06
       },
       {
         "gruppe": "80+ år",
-        "nu": 2865,
-        "foer": 2756,
-        "andelNu": 5.29,
-        "andelFoer": 5.12,
-        "deltaAndel": 0.17
+        "nu": 2877,
+        "foer": 2769,
+        "andelNu": 5.31,
+        "andelFoer": 5.13,
+        "deltaAndel": 0.18
       }
     ]
   },
   "indvandring": {
-    "heleMaaned": "2026M04",
-    "heleMaanedDisplay": "April 2026",
-    "total": 52,
-    "forrige": 47,
-    "delta": 5,
-    "foreloebigMaaned": "2026M05",
-    "foreloebigDisplay": "Maj 2026",
-    "foreloebigTotal": 11,
-    "vestlig": 18,
-    "ikkeVestlig": 34,
+    "heleMaaned": "2026M05",
+    "heleMaanedDisplay": "Maj 2026",
+    "total": 18,
+    "forrige": 52,
+    "delta": -34,
+    "foreloebigMaaned": "2026M06",
+    "foreloebigDisplay": "Juni 2026",
+    "foreloebigTotal": 19,
+    "vestlig": 14,
+    "ikkeVestlig": 4,
     "koen": {
-      "maend": 28,
-      "kvinder": 24,
-      "maendPct": 54
+      "maend": 7,
+      "kvinder": 11,
+      "maendPct": 39
     },
     "topLande": [
       {
-        "land": "Ukraine",
-        "antal": 11,
-        "forrige": 17,
-        "delta": -6
-      },
-      {
-        "land": "Kina",
-        "antal": 6,
-        "forrige": 7,
-        "delta": -1
+        "land": "Nederlandene",
+        "antal": 2,
+        "forrige": 0,
+        "delta": 2
       },
       {
         "land": "Rumænien",
-        "antal": 4,
+        "antal": 2,
         "forrige": 1,
-        "delta": 3
-      },
-      {
-        "land": "Sverige",
-        "antal": 3,
-        "forrige": 3,
-        "delta": 0
-      },
-      {
-        "land": "Indien",
-        "antal": 3,
-        "forrige": 1,
-        "delta": 2
-      },
-      {
-        "land": "Thailand",
-        "antal": 3,
-        "forrige": 0,
-        "delta": 3
-      },
-      {
-        "land": "Spanien",
-        "antal": 2,
-        "forrige": 3,
-        "delta": -1
-      },
-      {
-        "land": "Tyrkiet",
-        "antal": 2,
-        "forrige": 3,
-        "delta": -1
-      },
-      {
-        "land": "Iran",
-        "antal": 2,
-        "forrige": 0,
-        "delta": 2
+        "delta": 1
       },
       {
         "land": "Færøerne",
         "antal": 1,
+        "forrige": 1,
+        "delta": 0
+      },
+      {
+        "land": "Grønland",
+        "antal": 1,
+        "forrige": 1,
+        "delta": 0
+      },
+      {
+        "land": "Belgien",
+        "antal": 1,
+        "forrige": 2,
+        "delta": -1
+      },
+      {
+        "land": "Grækenland",
+        "antal": 1,
+        "forrige": 1,
+        "delta": 0
+      },
+      {
+        "land": "Italien",
+        "antal": 1,
+        "forrige": 1,
+        "delta": 0
+      },
+      {
+        "land": "Norge",
+        "antal": 1,
+        "forrige": 1,
+        "delta": 0
+      },
+      {
+        "land": "Polen",
+        "antal": 1,
         "forrige": 0,
         "delta": 1
+      },
+      {
+        "land": "Spanien",
+        "antal": 1,
+        "forrige": 2,
+        "delta": -1
       }
     ],
     "alderProfil": [
@@ -208,23 +208,23 @@
       },
       {
         "gruppe": "6-16 år",
-        "antal": 6
+        "antal": 1
       },
       {
         "gruppe": "17-26 år",
-        "antal": 11
+        "antal": 4
       },
       {
         "gruppe": "27-39 år",
-        "antal": 14
+        "antal": 10
       },
       {
         "gruppe": "40-64 år",
-        "antal": 14
+        "antal": 2
       },
       {
         "gruppe": "65-79 år",
-        "antal": 6
+        "antal": 0
       },
       {
         "gruppe": "80+ år",
@@ -233,7 +233,6 @@
     ],
     "trend": {
       "labels": [
-        "Juni 2024",
         "Juli 2024",
         "August 2024",
         "September 2024",
@@ -256,33 +255,34 @@
         "Februar 2026",
         "Marts 2026",
         "April 2026",
-        "Maj 2026"
+        "Maj 2026",
+        "Juni 2026"
       ],
       "values": [
-        50,
-        43,
-        123,
+        41,
+        121,
         55,
         62,
         47,
         24,
-        77,
-        72,
+        79,
+        74,
         24,
         43,
-        50,
-        43,
-        79,
-        101,
-        96,
-        79,
-        45,
-        38,
-        70,
-        36,
+        48,
+        42,
+        76,
+        97,
+        95,
+        81,
         47,
+        36,
+        66,
+        35,
+        45,
         52,
-        11
+        18,
+        19
       ]
     }
   },
@@ -876,49 +876,49 @@
   },
   "analyse": {
     "maanedlig": {
-      "overskrift": "Demografisk månedsorientering: Maj 2026",
+      "overskrift": "Demografisk status for Hvidovre Kommune - Juni 2026",
       "afsnit": [
         {
           "overskrift": "Folketal og udvikling",
-          "tekst": "Pr. 1. maj 2026 udgjorde folketallet i Hvidovre Kommune 54.196 borgere, hvilket markerer en stigning på 44 personer i løbet af april måned. Denne positive udvikling understøtter den langsigtede tendens, hvor befolkningstallet over de seneste 12 måneder er vokset med i alt 375 personer. Væksten i april måned afspejler således en fortsat stabil og moderat befolkningsfremgang i kommunen."
+          "tekst": "Pr. 1. juni 2026 udgjorde folketallet i Hvidovre Kommune 54.175 borgere, hvilket markerer et fald på 21 personer som følge af bevægelserne i maj måned. Over de seneste 12 måneder er der dog tale om en samlet befolkningstilvækst, idet folketallet er steget med 237 personer. Den kortsigtede tilbagegang ændrer således ikke på en fortsat positiv langsigtet befolkningstendens i kommunen."
         },
         {
           "overskrift": "Indvandring",
-          "tekst": "I løbet af april blev der registreret 52 indvandringer til Hvidovre Kommune, hvilket er en stigning i forhold til de 47 indvandringer i den foregående måned. Gruppen bestod af 28 mænd og 24 kvinder, hvoraf 35 procent havde vestlig oprindelse, og de primære oprindelseslande var Ukraine og Kina med henholdsvis 11 og 6 personer. Aldersmæssigt var indvandringen primært koncentreret omkring de 27-39-årige og 40-64-årige, der hver tegnede sig for 14 personer."
+          "tekst": "I maj måned indvandrede i alt 18 personer til kommunen, hvilket er et fald fra 52 personer måneden før, og heraf udgjorde vestlige indvandrere 78 pct. Kønsfordelingen var 7 mænd og 11 kvinder, og aldersmæssigt var gruppen af 27-39-årige den største med 10 personer. De primære oprindelseslande var Nederlandene og Rumænien med hver 2 personer, efterfulgt af Færøerne, Grønland og Belgien med hver 1 person."
         },
         {
           "overskrift": "Alderssammensætning",
-          "tekst": "Den største relative befolkningsmæssige vækst i månedens løb sås i aldersgruppen 17-26 år, som steg med 0,22 procentpoint til en samlet andel på 11,87 procent af borgerne. Omvendt oplevede gruppen af de 0-5-årige det største fald, idet deres andel faldt med 0,20 procentpoint til at udgøre 6,41 procent af det samlede folketal. Disse bevægelser medfører en mindre forskydning i den kommunale alderssammensætning i retning af flere yngre voksne."
+          "tekst": "Aldersfordelingen viser, at gruppen af borgere på 80 år og derover oplevede den største relative vækst, idet dens andel af befolkningen steg med 0,18 procentpoint til 5,31 pct. Omvendt registreredes det største fald i gruppen af de 0-5-årige, hvis andel faldt med 0,16 procentpoint til 6,43 pct. Disse forskydninger afspejler en mindre forskydning mod en ældre befolkningssammensætning i kommunen."
         }
       ]
     },
     "kvartal": {
-      "overskrift": "Befolkningsudviklingen i Hvidovre Kommune, 1. kvartal 2026",
+      "overskrift": "Befolkningsudviklingen i Hvidovre Kommune i 1. kvartal 2026",
       "afsnit": [
         {
           "overskrift": "Samlet tilvækst",
-          "tekst": "I første kvartal 2026 oplevede Hvidovre Kommune en befolkningsnedgang på 76 personer, hvilket bragte det samlede indbyggertal ned på 54.152 ved kvartalets udgang. Den væsentligste drivkraft bag dette fald var en negativ indenlandsk flyttebalance, hvor værdierne trak i en nedadgående retning. Denne tilbagegang blev kun delvist modsvaret af en positiv nettotilstrømning fra udlandet."
+          "tekst": "I første kvartal 2026 oplevede Hvidovre Kommune en negativ befolkningstilvækst på i alt 76 personer, hvilket reducerede det samlede indbyggertal til 54.152 ved kvartalets udgang. Den primære drivkraft bag denne tilbagegang er en negativ indenlandsk flyttebalance. Dette fald blev kun delvist modsvaret af en positiv nettoindvandring fra udlandet."
         },
         {
           "overskrift": "Fødsler og dødsfald",
-          "tekst": "Der blev i perioden registreret 107 fødsler og 139 dødsfald, hvilket resulterede i et negativt fødselsoverskud på 32 personer. Dette fødselsunderskud betyder, at den naturlige befolkningstilvækst i sig selv bidrog til faldet i det samlede befolkningstal. Udviklingen afspejler en periode, hvor det lokale fødselstal ikke var tilstrækkeligt til at erstatte antallet af afdøde."
+          "tekst": "Der blev i kvartalet registreret 107 fødsler og 139 dødsfald, hvilket resulterede i et fødselsunderskud på 32 personer. Dette negative fødselsresultat bidrager til den samlede befolkningsnedgang i perioden. Udviklingen viser, at den naturlige befolkningstilvækst i kommunen i øjeblikket er aftagende."
         },
         {
           "overskrift": "Flytninger og indvandring",
-          "tekst": "Den indenlandske flytteaktivitet resulterede i et nettounderskud på 84 personer, da 883 flyttede til kommunen, mens 967 flyttede væk. Modsat heraf var den internationale migration positiv med en nettoindvandring på 45 personer, fordelt på 164 indvandrede og 119 udvandrede. Samlet set betød flyttemønstrene således, at det indenlandske tab oversteg den internationale tilstrømning."
+          "tekst": "Den indenlandske flyttebalance var negativ med et nettotab på 84 personer, baseret på 883 tilflyttede og 967 fraflyttede. Modsat herpå var den internationale migration positiv med en nettoindvandring på 45 personer, hvor 164 indvandrede og 119 udvandrede. Samlet set resulterede flyttebevægelserne således i en samlet nettoudflytning fra kommunen."
         }
       ]
     },
     "foedselDoed": {
-      "overskrift": "Demografisk analyse af fødte og døde i Hvidovre Kommune for 1. kvartal 2026",
+      "overskrift": "Demografisk analyse for Hvidovre Kommune: 1. kvartal 2026",
       "afsnit": [
         {
           "overskrift": "Seneste kvartal",
-          "tekst": "I første kvartal 2026 registrerede Hvidovre Kommune 107 levendefødte og 139 døde, hvilket resulterede i et fødselsunderskud på 32 personer. Sammenlignet med samme kvartal året før, hvor der var 113 fødte og 109 døde, er antallet af fødsler faldet en smule, mens dødstallet er steget mærkbart. Denne udvikling peger på en nedadgående tendens for det naturlige fødselsoverskud i kommunen."
+          "tekst": "I første kvartal 2026 registrerede Hvidovre Kommune 107 levendefødte og 139 døde, hvilket resulterede i et fødselsunderskud på 32 personer. Dette markerer en faldende tendens sammenlignet med samme kvartal året før, hvor der var 113 fødte og 109 døde og dermed et lille fødselsoverskud. Udviklingen i kvartalet er således præget af et fald i antallet af fødsler sideløbende med en stigning i antallet af dødsfald."
         },
         {
           "overskrift": "Sammenligning med hele landet",
-          "tekst": "Sammenligningen med hele landet viser, at Hvidovre med et fødselsindeks på 86,3 ligger markant under landsplanets indeks på 101,1. For dødsfald ligger Hvidovres indeks på 119,8 ligeledes under landets indeks på 127,2, hvilket vidner om en generel stigning i dødstallet, der dog er mindre udtalt lokalt. Den svagere fødselsudvikling i Hvidovre sammenlignet med resten af landet betyder, at kommunen i højere grad er afhængig af tilflytning for at opretholde befolkningstilvæksten."
+          "tekst": "Indekstallene viser, at fødselstallet i Hvidovre med et indeks på 86,3 ligger markant under landsplanets indeks på 101,1 sammenlignet med basisperioden i 2015. Stigningen i antallet af døde er derimod mindre udtalt i Hvidovre (indeks 119,8) end i hele landet (indeks 127,2). Samlet set betyder det, at Hvidovres befolkningsudvikling er mere udfordret af et lavt fødselsniveau end landet som helhed, på trods af en relativt moderat stigning i dødeligheden."
         }
       ]
     }
