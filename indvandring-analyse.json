@@ -1,5 +1,5 @@
 {
-  "genereret": "2026-08-11",
+  "genereret": "2026-08-25",
   "senesteUge": "2026U26",
   "senesteUgeDisplay": "Uge 26, 2026",
   "latestYear": "2026",
@@ -805,9 +805,9 @@
     }
   },
   "analyse": {
-    "overskrift": "Ukraine og Mexico dominerer indvandring til Hvidovre med 9 personer i uge 23-26",
-    "periode4uAnalyse": "I perioden uge 23-26, 2026, modtog Hvidovre Kommune 19 nye borgere, hvilket er en beskeden stigning på 1 person sammenlignet med de foregående fire uger. De mest fremtrædende lande var Ukraine med 5 personer og Mexico med 4 personer. Ukraine oplevede en stigning på 4 ankomster fra 1 til 5, mens Mexico gik fra 0 til 4 nye borgere i perioden. Desuden bidrog Nordmakedonien og Tyskland hver med 2 nye borgere, mens Rumænien faldt med 1 ankomst.",
-    "ytdAnalyse": "År-til-dato, pr. uge 26, 2026, har Hvidovre Kommune registreret 235 indvandrede borgere. Dette er et fald på 75 personer sammenlignet med de 310, der ankom i samme periode sidste år (2025). Ukraine er fortsat det mest betydelige oprindelsesland med 54 ankomster, hvilket er en stigning på 20 personer fra de 34 sidste år. Derimod er indvandringen fra Sverige faldet markant med 20 personer, fra 38 til 18. Kina viser et marginalt fald på 1 person, mens Italien er steget med 2, og Tyrkiet samt Tyskland har uændrede tal.",
-    "trendAnalyse": "Den rullende trend for de seneste uger viser varierende mønstre blandt de typisk store oprindelseslande. For Ukraine, der er den største kilde år-til-dato, ses en svingende tilgang med 2 ankomster i uge 23 og 25, men ingen i den seneste uge 26. Dette kan muligvis indikere en midlertidig aftagende, men ikke nødvendigvis ophørende, tilstrømning. Kina og Tyrkiet har i de seneste fem uger vist ingen aktivitet, mens Sverige kun havde 1 ankomst i uge 22 og Italien 1 i uge 25. Denne tendens kan tyde på en generelt lavere indvandring fra disse lande i den umiddelbare periode, muligvis sæsonbestemt."
+    "overskrift": "Ukraine mest repræsenteret i uge 23-26 med 5 indvandrere",
+    "periode4uAnalyse": "I perioden uge 23-26, 2026, registrerede Hvidovre Kommune en indvandring på 19 personer. Dette er en marginal stigning på 1 person sammenlignet med de foregående fire uger. Ukraine var det mest fremtrædende oprindelsesland med 5 indvandrere, hvilket er en stigning på 4 fra forrige periode. Mexico fulgte med 4 indvandrere, mens Nordmakedonien og Tyskland hver bidrog med 2 personer.",
+    "ytdAnalyse": "År-til-dato, frem til udgangen af uge 26 2026, har Hvidovre Kommune registreret 235 indvandrere. Dette er et fald på 75 personer sammenlignet med samme periode i 2025, hvor tallet var 310. Ukraine er fortsat det mest repræsenterede land med 54 personer, en stigning på 20 sammenlignet med sidste år. Til gengæld er indvandringen fra Sverige faldet med 20 personer til 18, og Kina er faldet med 1 person til 19 i samme periode.",
+    "trendAnalyse": "Den rullende 4-ugers trend viser, at indvandringen fra Ukraine har varieret inden for den seneste periode, med 2 indvandrere i uge 23 og 25, men ingen i uge 26. Tilstrømningen fra Mexico er ny i denne 4-ugers periode, med 4 indvandrere samlet, som ikke var til stede i forrige periode. Lande som Kina, Sverige og Tyrkiet har vist en meget lav eller ingen aktivitet i den rullende femugers periode. Italien har registreret en enkelt indvandrer i uge 25, hvilket kan indikere en stabil, men lav, tilstrømning."
   }
 }
