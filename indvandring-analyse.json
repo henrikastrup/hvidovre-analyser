@@ -1,5 +1,5 @@
 {
-  "genereret": "2026-09-15",
+  "genereret": "2026-10-06",
   "senesteUge": "2026U35",
   "senesteUgeDisplay": "Uge 35, 2026",
   "latestYear": "2026",
@@ -805,9 +805,9 @@
     }
   },
   "analyse": {
-    "overskrift": "Hvidovre modtog 39 indvandrere i uge 32-35; Kina top med 8",
-    "periode4uAnalyse": "I perioden uge 32-35, 2026, registrerede Hvidovre Kommune en tilgang på 39 nye indvandrere. Dette er en stigning på 3 personer sammenlignet med de foregående fire uger, hvor tallet var 36. Kina var det dominerende oprindelsesland med 8 indvandrere, en stigning på 2 fra forrige periode. Ukraine og Tyskland bidrog begge med 4 indvandrere, en stigning på 1 for begge lande. Desuden oplevede Spanien og Indien en bemærkelsesværdig stigning på 2 personer hver, med henholdsvis 3 og 2 indvandrere i perioden.",
-    "ytdAnalyse": "År-til-dato, frem til uge 35, 2026, har Hvidovre Kommune registreret 317 indvandrere. Dette er et fald på 161 personer sammenlignet med samme periode i 2025, hvor det samlede antal var 478. Ukraine er fortsat det mest fremtrædende oprindelsesland med 63 indvandrere, en stigning på 24 fra sidste år. Kina og Sverige har derimod oplevet et fald på henholdsvis 10 (til 34) og 20 (til 25) indvandrere år-til-dato. Grækenland viser en markant stigning på 9 indvandrere til i alt 10 i år.",
-    "trendAnalyse": "Den samlede indvandring har vist en let opadgående tendens i den seneste 4-ugers periode, med en stigning på 3 personer. Blandt de enkelte lande fortsætter Kina med at udvise en stigning, idet antallet af indvandrere fra landet er steget med 2 til 8 i den seneste periode. Spanien og Indien viser også en positiv udvikling med en stigning på 2 personer hver. For Ukraine og Tyskland ses en mindre stigning på 1 person hver, mens indvandringen fra Sverige har fastholdt et stabilt niveau med 3 personer i begge de seneste 4-ugers perioder."
+    "overskrift": "Hvidovre modtager 39 nye borgere i uge 32-35; Kina størst.",
+    "periode4uAnalyse": "I perioden uge 32-35, 2026, modtog Hvidovre Kommune 39 nye borgere, hvilket er en stigning på 3 personer sammenlignet med de foregående fire uger. Kina var det dominerende oprindelsesland med 8 indvandrere, en stigning fra 6. Ukraine og Tyskland fulgte efter med hver 4 indvandrere i perioden. Spanien oplevede en stigning fra 1 til 3 indvandrere, og Indien bidrog med 2 nye borgere efter ingen ankomster i den forrige periode.",
+    "ytdAnalyse": "År-til-dato, fra uge 1 til 35, 2026, har Hvidovre Kommune registreret 317 indvandrere, hvilket er en betydelig nedgang på 161 personer sammenlignet med de 478 i samme periode i 2025. Ukraine er nu det største oprindelsesland med 63 indvandrere, en markant stigning på 24 fra sidste års 39. Derimod er antallet af indvandrere fra Sverige faldet med 20 til 25, og fra Kina med 10 til 34. Grækenland har oplevet en bemærkelsesværdig stigning fra blot 1 til 10 indvandrere år-til-dato.",
+    "trendAnalyse": "Den samlede rullende 4-ugers trend indikerer en let stigning i indvandringen i den seneste periode. Blandt de mest prominente lande viser Kina (+2), Tyskland (+1), Ukraine (+1) og Spanien (+2) alle en stigning i antallet af indvandrere i uge 32-35 sammenlignet med den foregående 4-ugers periode. De ugentlige data for de seneste fem uger viser dog blandede billeder: Ukraine, Kina og Sverige havde ingen registrerede ankomster i uge 35, hvilket kan tyde på en aftagende intensitet i de allersidste uger. Omvendt registrerede Tyskland og Spanien hver 2 ankomster i uge 35, hvilket indikerer fortsat aktivitet fra disse lande."
   }
 }
