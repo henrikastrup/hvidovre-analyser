@@ -1,11 +1,10 @@
 {
-  "genereret": "2026-10-12",
+  "genereret": "2026-10-19",
   "senesteLabel": "Sep 26",
   "data": {
     "y01a02": {
       "navn": "A-dagpenge",
       "labels": [
-        "Sep 25",
         "Okt 25",
         "Nov 25",
         "Dec 25",
@@ -16,24 +15,24 @@
         "Maj 26",
         "Jun 26",
         "Jul 26",
-        "Aug 26"
+        "Aug 26",
+        "Sep 26"
       ],
       "ftp": [
-        687,
-        676,
+        675,
         640,
         607,
         726,
         756,
-        759,
-        740,
-        733,
+        758,
+        739,
+        732,
         745,
         713,
-        735
+        751,
+        696
       ],
       "forrigeLabels": [
-        "Sep 24",
         "Okt 24",
         "Nov 24",
         "Dec 24",
@@ -44,10 +43,10 @@
         "Maj 25",
         "Jun 25",
         "Jul 25",
-        "Aug 25"
+        "Aug 25",
+        "Sep 25"
       ],
       "forrigeFtp": [
-        650,
         636,
         622,
         609,
@@ -58,13 +57,13 @@
         693,
         699,
         716,
-        700
+        700,
+        687
       ]
     },
     "y60a02": {
       "navn": "Kontanthjælp",
       "labels": [
-        "Sep 25",
         "Okt 25",
         "Nov 25",
         "Dec 25",
@@ -75,24 +74,24 @@
         "Maj 26",
         "Jun 26",
         "Jul 26",
-        "Aug 26"
+        "Aug 26",
+        "Sep 26"
       ],
       "ftp": [
-        637,
         648,
         665,
         673,
         665,
-        684,
+        685,
         703,
         708,
         717,
         703,
         675,
-        654
+        661,
+        660
       ],
       "forrigeLabels": [
-        "Sep 24",
         "Okt 24",
         "Nov 24",
         "Dec 24",
@@ -103,10 +102,10 @@
         "Maj 25",
         "Jun 25",
         "Jul 25",
-        "Aug 25"
+        "Aug 25",
+        "Sep 25"
       ],
       "forrigeFtp": [
-        730,
         732,
         731,
         730,
@@ -117,7 +116,8 @@
         696,
         668,
         653,
-        634
+        634,
+        636
       ]
     },
     "y07a02": {
@@ -182,7 +182,6 @@
     "y11a02": {
       "navn": "Ressourceforløb",
       "labels": [
-        "Sep 25",
         "Okt 25",
         "Nov 25",
         "Dec 25",
@@ -193,10 +192,10 @@
         "Maj 26",
         "Jun 26",
         "Jul 26",
-        "Aug 26"
+        "Aug 26",
+        "Sep 26"
       ],
       "ftp": [
-        193,
         197,
         202,
         198,
@@ -207,10 +206,10 @@
         167,
         160,
         144,
-        144
+        144,
+        132
       ],
       "forrigeLabels": [
-        "Sep 24",
         "Okt 24",
         "Nov 24",
         "Dec 24",
@@ -221,10 +220,10 @@
         "Maj 25",
         "Jun 25",
         "Jul 25",
-        "Aug 25"
+        "Aug 25",
+        "Sep 25"
       ],
       "forrigeFtp": [
-        178,
         184,
         184,
         193,
@@ -235,13 +234,13 @@
         201,
         199,
         195,
-        201
+        201,
+        193
       ]
     },
     "y09a02": {
       "navn": "Ledighedsydelse",
       "labels": [
-        "Sep 25",
         "Okt 25",
         "Nov 25",
         "Dec 25",
@@ -252,10 +251,10 @@
         "Maj 26",
         "Jun 26",
         "Jul 26",
-        "Aug 26"
+        "Aug 26",
+        "Sep 26"
       ],
       "ftp": [
-        62,
         59,
         67,
         67,
@@ -266,10 +265,10 @@
         67,
         71,
         67,
-        65
+        66,
+        63
       ],
       "forrigeLabels": [
-        "Sep 24",
         "Okt 24",
         "Nov 24",
         "Dec 24",
@@ -280,10 +279,10 @@
         "Maj 25",
         "Jun 25",
         "Jul 25",
-        "Aug 25"
+        "Aug 25",
+        "Sep 25"
       ],
       "forrigeFtp": [
-        64,
         63,
         59,
         57,
@@ -294,13 +293,13 @@
         73,
         67,
         63,
-        58
+        58,
+        62
       ]
     },
     "y08a02": {
       "navn": "Fleksjob",
       "labels": [
-        "Sep 25",
         "Okt 25",
         "Nov 25",
         "Dec 25",
@@ -311,10 +310,10 @@
         "Maj 26",
         "Jun 26",
         "Jul 26",
-        "Aug 26"
+        "Aug 26",
+        "Sep 26"
       ],
       "ftp": [
-        722,
         723,
         724,
         726,
@@ -323,12 +322,12 @@
         741,
         740,
         746,
-        755,
-        757,
-        759
+        756,
+        758,
+        760,
+        755
       ],
       "forrigeLabels": [
-        "Sep 24",
         "Okt 24",
         "Nov 24",
         "Dec 24",
@@ -339,10 +338,10 @@
         "Maj 25",
         "Jun 25",
         "Jul 25",
-        "Aug 25"
+        "Aug 25",
+        "Sep 25"
       ],
       "forrigeFtp": [
-        709,
         707,
         716,
         721,
@@ -353,13 +352,13 @@
         714,
         719,
         719,
-        720
+        720,
+        722
       ]
     },
     "y12a02": {
       "navn": "Jobafklaringsforløb",
       "labels": [
-        "Sep 25",
         "Okt 25",
         "Nov 25",
         "Dec 25",
@@ -370,10 +369,10 @@
         "Maj 26",
         "Jun 26",
         "Jul 26",
-        "Aug 26"
+        "Aug 26",
+        "Sep 26"
       ],
       "ftp": [
-        222,
         227,
         225,
         226,
@@ -381,13 +380,13 @@
         213,
         210,
         210,
-        207,
+        208,
+        215,
+        215,
         213,
-        212,
         210
       ],
       "forrigeLabels": [
-        "Sep 24",
         "Okt 24",
         "Nov 24",
         "Dec 24",
@@ -398,10 +397,10 @@
         "Maj 25",
         "Jun 25",
         "Jul 25",
-        "Aug 25"
+        "Aug 25",
+        "Sep 25"
       ],
       "forrigeFtp": [
-        227,
         235,
         227,
         213,
@@ -412,7 +411,8 @@
         218,
         227,
         221,
-        227
+        227,
+        222
       ]
     },
     "y10a02": {
@@ -477,51 +477,51 @@
   },
   "analyse": {
     "y01a02": {
-      "overskrift": "A-dagpenge stiger til 735 fuldtidspersoner i august",
-      "tekst": "I august 2026 udgør antallet af fuldtidspersoner på A-dagpenge 735, hvilket er en stigning på 22 personer i forhold til juli. Sammenlignet med juni, hvor niveauet lå på 745, er der tale om et fald på 10 personer. Set over en 12-måneders periode ligger ydelsesniveauet 35 fuldtidspersoner over niveauet for et år siden. Udviklingen afspejler sædvanlige sæsonudsving omkring sensommeren, hvor arbejdsmarkedet genoptager aktiviteten efter ferieperioden. Stigningen fra juli til august modvirker således det dyk, der blev observeret i den foregående måned. Ydelsesniveauet vurderes aktuelt at være stabilt med en svagt opadgående tendens på årsbasis."
+      "overskrift": "A-dagpenge falder til 696 fuldtidspersoner i september",
+      "tekst": "I september 2026 udgør antallet af fuldtidspersoner på A-dagpenge 696. Dette er et fald på 55 fuldtidspersoner sammenlignet med august, hvor niveauet lå på 751. I forhold til juli, hvor antallet var 713, ses ligeledes en reduktion på 17 personer over to måneder. Set over den samlede 12-måneders periode ligger niveauet tæt på udgangspunktet med en beskeden stigning på 9 fuldtidspersoner. Bevægelsen afspejler det typiske sæsonmønster, hvor ledighedstallene falder efter sommerens afslutning. Samlet set vurderes udviklingen i A-dagpenge at udvise kortsigtet sæsonmæssig nedgang inden for en overordnet stabil ramme."
     },
     "y60a02": {
-      "overskrift": "Kontanthjælp falder til 654 helårspersoner i august",
-      "tekst": "Antallet af modtagere af kontanthjælp er i august 2026 opgjort til 654 fuldtidspersoner. Det svarer til en reduktion på 21 personer i forhold til juli og 49 færre end i juni. Trods faldet de seneste måneder er niveauet fortsat 20 personer højere end på samme tidspunkt sidste år. De seneste to måneders reduktion udviser en modgående bevægelse i forhold til den overordnede årlige stigning. Udviklingen over sommeren indikerer en afdæmpning i den samlede tilgang til ordningen. Den kortsigtede retning vurderes som nedadgående, mens det mellemlange niveau fortsat er let forhøjet."
+      "overskrift": "Kontanthjælp fastholdes på 660 fuldtidspersoner i september",
+      "tekst": "Antallet af fuldtidspersoner på kontanthjælp er opgjort til 660 i september 2026. Det svarer til en stort set uændret bestand i forhold til august, hvor tallet var 661. Sammenholdt med juli, hvor niveauet var 675 fuldtidspersoner, er der tale om et fald på 15 personer over to måneder. På årsbasis er antallet af modtagere vokset med 24 fuldtidspersoner set over de seneste 12 måneder. Udviklingen peger på en stabilisering i sensommeren efter en svag stigning set over det seneste år. Retningen for kontanthjælpsområdet vurderes på kort sigt at være flad og stabil."
     },
     "y07a02": {
       "overskrift": "Sygedagpenge falder til 702 fuldtidspersoner i august",
-      "tekst": "I august 2026 modtog 702 fuldtidspersoner sygedagpenge i Hvidovre Kommune. Dette repræsenterer et fald på 55 personer fra juli og en reduktion på 87 personer i forhold til juni. På 12-måneders sigt ligger niveauet 10 fuldtidspersoner lavere end i samme periode året før. Den markante nedgang i sommermånederne følger det generelle sæsonmønster for sygedagpengeområdet. Faldet gennem de seneste to måneder forstærker den afdæmpning, der blev indledt tidligere på sommeren. Retningen vurderes at være klart nedadgående på kort sigt og stabil på årsbasis."
+      "tekst": "For sygedagpenge er det seneste tal opgjort til 702 fuldtidspersoner i august 2026. Dette markerer et fald på 55 fuldtidspersoner fra juli, hvor niveauet var 757. Ses der to måneder tilbage til juni med 789 personer, er der tale om en samlet nedgang på 87 fuldtidspersoner. I et 12-måneders perspektiv ligger niveauet 10 personer lavere end samme tidspunkt året før. Det kontinuerlige fald hen over sommermånederne følger det historiske sæsonmønster på sygedagpengeområdet. Retningen for sygedagpenge vurderes p.t. at være sæsonmæssigt nedadgående."
     },
     "y11a02": {
-      "overskrift": "Ressourceforløb uændret på 144 fuldtidspersoner i august",
-      "tekst": "Niveauet for ressourceforløb ligger i august 2026 på 144 fuldtidspersoner, hvilket er identisk med niveauet i juli. Sammenholdt med juni er der tale om et fald på 16 fuldtidspersoner. Over det seneste år er antallet reduceret med 57 fuldtidspersoner, svarende til et fald på cirka 30 procent. Udviklingen afspejler en længerevarende strukturel nedgang i målgruppen for ressourceforløb. Den uændrede status mellem juli og august viser en midlertidig stabilisering efter tidligere måneders reduktioner. Ydelsens samlede retning vurderes fortsat at være nedadgående over tid."
+      "overskrift": "Ressourceforløb falder til 132 fuldtidspersoner i september",
+      "tekst": "Antallet af personer i ressourceforløb ligger på 132 fuldtidspersoner i september 2026. Dette indebærer et fald på 12 personer sammenlignet med både august og juli, hvor niveauet lå konstant på 144. I løbet af de seneste 12 måneder er bestanden faldet markant med 61 personer, svarende til en reduktion på omkring 30 procent. Udviklingen er udtryk for en vedvarende strukturel nedgang i ordningen frem for kortsigtede udsving. Mønstret hænger sammen med færre nytilgange samt afslutning af ældre forløb. Samlet set vurderes retningen for ressourceforløb fortsat at være entydigt faldende."
     },
     "y09a02": {
-      "overskrift": "Ledighedsydelse falder til 65 fuldtidspersoner i august",
-      "tekst": "For ledighedsydelse er der i august 2026 registreret 65 fuldtidspersoner. Dette udgør et mindre fald på 2 personer fra juli og 6 færre end i juni. Sammenlignet med samme måned sidste år er der tale om en stigning på 7 fuldtidspersoner. Da målgruppen er af begrænset størrelse, giver selv små absolutte ændringer målbare udsving i statistikken. Den svage tilbagegang over sommeren modvirker en del af stigningen over det seneste år. Retningen for ydelsen vurderes på kort sigt at være svagt faldende inden for et snævert spænd."
+      "overskrift": "Ledighedsydelse udgør 63 fuldtidspersoner i september",
+      "tekst": "I september 2026 modtager 63 fuldtidspersoner ledighedsydelse i kommunen. Antallet er faldet med 3 personer i forhold til august, hvor tallet var 66. Sammenlignet med juli med 67 modtagere er der tale om en reduktion på 4 fuldtidspersoner over to måneder. Set over en 12-måneders horisont er niveauet tæt på uændret med en stigning på blot 1 person. Målgruppen for ledighedsydelse er lille, hvorfor mindre nominelle forskydninger ikke afspejler ændrede underliggende tendenser. Retningen på området vurderes at være stabil og uden væsentlige udsving."
     },
     "y08a02": {
-      "overskrift": "Fleksjob stiger til 759 fuldtidspersoner i august",
-      "tekst": "Antallet af personer i fleksjob er i august 2026 opgjort til 759 fuldtidspersoner. Dette er en tilgang på 2 personer i forhold til juli og 4 flere end i juni. Over de seneste 12 måneder er antallet steget med 39 fuldtidspersoner. Udviklingen viderefører en flerårig tendens med stabil vækst i fleksjobordningen. De månedlige forskydninger er beskedne og afspejler en kontinuerlig tilgang til ordningen uden større udsving. Retningen vurderes fortsat at være entydigt opadgående."
+      "overskrift": "Fleksjobområdet tæller 755 fuldtidspersoner i september",
+      "tekst": "Antallet af fuldtidspersoner i fleksjob er opgjort til 755 i september 2026. Det repræsenterer et mindre fald på 5 personer i forhold til august, hvor tallet lå på 760. I forhold til juli er der tale om en nettoændring på minus 3 personer fra daværende 758. På årsbasis udviser fleksjobområdet imidlertid en stigning på 33 fuldtidspersoner over de seneste 12 måneder. Den langsigtede trend er fortsat præget af moderat tilvækst, som er typisk for ordningens udbredelse. På kort sigt vurderes niveauet at ligge stabilt med en svag langsigtet opadgående tendens."
     },
     "y12a02": {
-      "overskrift": "Jobafklaringsforløb falder til 210 fuldtidspersoner i august",
-      "tekst": "I august 2026 var der 210 fuldtidspersoner i jobafklaringsforløb. Niveauet er reduceret med 2 personer i forhold til juli og 3 personer færre end i juni. Set over det seneste år er bestanden faldet med 17 fuldtidspersoner. Ydelsen udviser en relativt jævn udvikling med begrænsede månedlige variationer. De seneste måneders tal fastholder den gradvise afgang, som har præget ordningen gennem det forgangne år. Den overordnede retning vurderes at være svagt nedadgående."
+      "overskrift": "Jobafklaringsforløb falder svagt til 210 fuldtidspersoner i september",
+      "tekst": "I september 2026 var 210 fuldtidspersoner visiteret til et jobafklaringsforløb. Dette er et fald på 3 personer i forhold til august, hvor niveauet udgjorde 213. Sammenholdt med juli, hvor antallet var 215, er bestanden reduceret med 5 personer over to måneder. Set over det forgangne år er der sket en samlet reduktion på 12 fuldtidspersoner. Forløbene udviser en jævn og behersket aftagende tendens uden bratte månedlige skift. Den overordnede retning vurderes at være svagt nedadgående til stabil."
     },
     "y10a02": {
-      "overskrift": "Førtidspension stiger til 2.362 personer i september",
-      "tekst": "Antallet af modtagere af førtidspension udgør 2.362 fuldtidspersoner i september 2026. Det er en stigning på 28 personer sammenlignet med august og 18 flere end i juli. I forhold til samme periode for et år siden er der sket en stigning på 143 personer. Stigningen i september modvirker den midlertidige opbremsning, der blev observeret hen over sensommeren. Udviklingen på 12-måneders sigt afspejler en fortsat tilvækst i antallet af tilkendelser på området. Retningen vurderes som vedvarende opadgående."
+      "overskrift": "Førtidspension stiger til 2.362 fuldtidspersoner i september",
+      "tekst": "Antallet af modtagere af førtidspension udgør 2.362 fuldtidspersoner i september 2026. Det svarer til en stigning på 28 personer sammenlignet med august, hvor tallet var 2.334. I forhold til juli med 2.344 modtagere er der tale om en tilvækst på 18 personer over to måneder. Over de seneste 12 måneder er bestanden steget markant med 143 fuldtidspersoner. Udviklingen følger en flerårig demografisk og strukturel tendens med stigende tilgang til ordningen. Retningen for førtidspension vurderes entydigt at være fortsat opadgående."
     },
     "y85a02": {
-      "overskrift": "Data ikke tilgængeligt",
+      "overskrift": "Data ikke tilgængelig",
       "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y13a02": {
-      "overskrift": "Data ikke tilgængeligt",
+      "overskrift": "Data ikke tilgængelig",
       "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y40a02": {
-      "overskrift": "Data ikke tilgængeligt",
+      "overskrift": "Data ikke tilgængelig",
       "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y28a02": {
-      "overskrift": "Data ikke tilgængeligt",
+      "overskrift": "Data ikke tilgængelig",
       "tekst": "Data ikke tilgængeligt for denne periode."
     }
   }
