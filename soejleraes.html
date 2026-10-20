@@ -59,6 +59,9 @@ header.top p { margin: 0; color: var(--muted); max-width: 70ch; }
 .stage { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: grid; gap: 10px; min-width: 0; }
 .canvas-box { width: 100%; display: flex; justify-content: center; background: var(--sunk); border-radius: 6px; overflow: hidden; }
 canvas#c { display: block; max-width: 100%; height: auto; max-height: 72vh; }
+.stage:fullscreen { background: var(--bg); border: 0; border-radius: 0; padding: 16px; grid-template-rows: minmax(0, 1fr) auto; height: 100%; }
+.stage:fullscreen .canvas-box { align-items: center; min-height: 0; }
+.stage:fullscreen canvas#c { max-height: calc(100vh - 110px); }
 .transport { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .transport input[type=range] { flex: 1 1 200px; min-width: 0; accent-color: var(--accent); }
 .speed { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
@@ -120,7 +123,7 @@ video#preview { width: 100%; border-radius: 6px; background: #000; }
   </header>
 
   <div class="grid">
-    <section class="stage" aria-label="Forhåndsvisning">
+    <section class="stage" id="stage" aria-label="Forhåndsvisning">
       <div class="canvas-box"><canvas id="c" width="1920" height="1080" aria-label="Animeret søjlediagram"></canvas></div>
       <div class="transport">
         <button id="play" class="primary" aria-label="Afspil"><svg class="icon" viewBox="0 0 14 14"><path id="playIcon" d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg><span id="playTxt">Afspil</span></button>
@@ -129,6 +132,7 @@ video#preview { width: 100%; border-radius: 6px; background: #000; }
         <label class="speed"><span>Hastighed</span><select id="speedSel" aria-label="Hastighed"></select></label>
         <span class="period" id="periodLbl">–</span>
         <span class="time" id="timeLbl">0:00 / 0:00</span>
+        <button id="fsBtn" aria-label="Fuld skærm" title="Fuld skærm (F)"><svg class="icon" viewBox="0 0 14 14"><path d="M1.5 5V1.5H5M9 1.5h3.5V5M12.5 9v3.5H9M5 12.5H1.5V9" stroke="currentColor" stroke-width="1.6" fill="none"/></svg><span id="fsTxt">Fuld skærm</span></button>
       </div>
     </section>
 
@@ -748,6 +752,14 @@ document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click
 $("play").onclick = () => playing ? pause() : play();
 $("restart").onclick = () => { t = 0; draw(t); updateUI(); };
 $("speedSel").onchange = e => { S.spp = parseFloat(e.target.value); $("spp").value = S.spp; updateUI(); saveLocal(); };
+const fsEl = $("stage"), fsOn = () => document.fullscreenElement || document.webkitFullscreenElement;
+function toggleFs() {
+  if (fsOn()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+  else (fsEl.requestFullscreen || fsEl.webkitRequestFullscreen).call(fsEl);
+}
+if (!(fsEl.requestFullscreen || fsEl.webkitRequestFullscreen)) $("fsBtn").hidden = true;
+$("fsBtn").onclick = toggleFs;
+["fullscreenchange", "webkitfullscreenchange"].forEach(ev => document.addEventListener(ev, () => { $("fsTxt").textContent = fsOn() ? "Luk fuld skærm" : "Fuld skærm"; draw(t); }));
 $("scrub").oninput = e => { if (!D) return; pause(); t = e.target.value / 1000 * (D.periods.length - 1); draw(t); updateUI(); };
 $("applyData").onclick = applyText;
 $("loadExample").onclick = () => { dataText = EXAMPLE_CSV; $("dataText").value = dataText; S = { ...EXAMPLE_SETTINGS }; toForm(); fmtCache.clear(); useRows(splitText(dataText), "Eksempeldata (fiktive tal)"); };
@@ -760,7 +772,7 @@ document.querySelectorAll("aside input, aside select").forEach(el => { el.addEve
 $("recBtn").onclick = () => recording ? stopRecording() : startRecording();
 $("pngBtn").onclick = () => cv.toBlob(b => b && offer(slug() + ".png", b), "image/png");
 $("cfgBtn").onclick = () => offer(slug() + ".json", JSON.stringify({ settings: S, data: dataText }, null, 1));
-document.addEventListener("keydown", e => { if (e.code === "Space" && !/INPUT|TEXTAREA|SELECT|BUTTON/.test(document.activeElement.tagName)) { e.preventDefault(); playing ? pause() : play(); } });
+document.addEventListener("keydown", e => { if (e.code === "KeyF" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { e.preventDefault(); toggleFs(); return; } if (e.code === "Space" && !/INPUT|TEXTAREA|SELECT|BUTTON/.test(document.activeElement.tagName)) { e.preventDefault(); playing ? pause() : play(); } });
 
 /* ---------- Krog til billedperfekt rendering ---------- */
 window.soejleraes = {
