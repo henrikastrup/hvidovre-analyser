@@ -145,6 +145,7 @@ video#preview { width: 100%; border-radius: 6px; background: #000; }
         <span class="time" id="timeLbl">0:00 / 0:00</span>
         <button id="fsBtn" aria-label="Fuld skærm" title="Fuld skærm (F)"><svg class="icon" viewBox="0 0 14 14"><path d="M1.5 5V1.5H5M9 1.5h3.5V5M12.5 9v3.5H9M5 12.5H1.5V9" stroke="currentColor" stroke-width="1.6" fill="none"/></svg><span id="fsTxt">Fuld skærm</span></button>
         <button id="symBtn" aria-pressed="true" title="Vis/skjul symboler" hidden><span id="symTxt">Symboler: til</span></button>
+        <button id="musicBtn" aria-pressed="false" aria-label="Musik til eller fra" title="Musik til/fra"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6h3l4-3.2v10.4L5 10H2z" fill="currentColor"/><g id="musicWaves"><path d="M11.2 5.6a3.4 3.4 0 0 1 0 4.8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M12.9 3.8a6 6 0 0 1 0 8.4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></g><path id="musicSlash" d="M11 5.5l4 5m0-5l-4 5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></button>
       </div>
     </section>
 
@@ -893,11 +894,16 @@ function populateHighlight() {
   if (!D || !D.names.includes(S.highlightName)) S.highlightName = D ? (D.names.find(n => /^hvidovre/i.test(n)) || "") : "";
   sel.value = S.highlightName; sel.disabled = !S.highlightOn; $("showRank").disabled = !S.highlightOn;
 }
+function syncMusicBtn() {
+  $("musicBtn").setAttribute("aria-pressed", S.musicOn ? "true" : "false");
+  $("musicWaves").style.display = S.musicOn ? "" : "none"; $("musicSlash").style.display = S.musicOn ? "none" : "";
+}
 function syncSymBtn() {
   $("symBtn").setAttribute("aria-pressed", S.showSymbols ? "true" : "false");
   $("symTxt").textContent = S.showSymbols ? "Symboler: til" : "Symboler: fra";
 }
 function toForm() {
+  syncMusicBtn();
   $("musicOpts").hidden = !S.musicOn; setMusicVol(); syncMusicUI(); prepareLink();
   populateHighlight();
   syncSymBtn();
@@ -915,6 +921,7 @@ function fromForm(e) {
   S[k] = v;
   if (k === "spp") syncSpeed();
   if (k === "musicVol") setMusicVol();
+  if (k === "musicOn") syncMusicBtn();
   if (k === "musicSrc") { syncMusicUI(); stopMusic(); prepareLink(); if (playing && S.musicOn) startMusic(true); }
   if (k === "musicOn") { $("musicOpts").hidden = !v; if (v) { prepareLink(); if (playing) startMusic(false); } else stopMusic(); }
   if (k === "showSymbols") syncSymBtn();
@@ -973,7 +980,7 @@ function startRecording() {
   t = 0; draw(0);
   rec.start(500);
   $("recTxt").textContent = "Stop optagelse";
-  for (const id of ["play", "restart", "scrub", "speedSel", "symBtn", "musicOn", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = true;
+  for (const id of ["play", "restart", "scrub", "speedSel", "symBtn", "musicBtn", "musicOn", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = true;
   setStatus($("expStatus"), "<b>Optager…</b> Lad fanen være synlig, til optagelsen er færdig.", "");
   startMusic(true, true);
   playing = true; lastTs = 0; requestAnimationFrame(frame);
@@ -983,7 +990,7 @@ function stopRecording() {
   const r = recording; recording = null; playing = false; stopMusic();
   try { r.rec.stop(); } catch (e) {}
   $("recTxt").textContent = "Optag video"; $("recProg").style.width = "0";
-  for (const id of ["play", "restart", "scrub", "speedSel", "symBtn", "musicOn", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = false;
+  for (const id of ["play", "restart", "scrub", "speedSel", "symBtn", "musicBtn", "musicOn", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = false;
   updateUI();
 }
 
@@ -1005,6 +1012,12 @@ document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click
 }));
 $("play").onclick = () => (playing || waitingMusic) ? pause() : play();
 $("restart").onclick = () => { t = 0; draw(t); updateUI(); };
+$("musicBtn").onclick = () => {
+  const c = $("musicOn"); c.checked = !c.checked; c.dispatchEvent(new Event("change", { bubbles: true }));
+  if (S.musicOn && !linkMode() && !(aud && aud.src)) {   // ingen lydfil valgt endnu: vis indstillingerne
+    $("tab-look").click(); $("musicOpts").scrollIntoView({ block: "center", behavior: "smooth" });
+  }
+};
 $("symBtn").onclick = () => { S.showSymbols = !S.showSymbols; $("showSymbols").checked = S.showSymbols; syncSymBtn(); draw(t); saveLocal(); };
 $("speedSel").onchange = e => { S.spp = parseFloat(e.target.value); $("spp").value = S.spp; updateUI(); saveLocal(); };
 const fsEl = $("stage"), fsOn = () => document.fullscreenElement || document.webkitFullscreenElement;
