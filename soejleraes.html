@@ -630,7 +630,23 @@ function useRows(rows, fromLabel) {
   }
 }
 function showAll() { S.topAuto = true; $("topAuto").checked = true; $("topN").disabled = true; }
-function applyText() { dataText = $("dataText").value; showAll(); useRows(splitText(dataText)); }
+// Nye data: nulstil tekster og visning, så eksemplets titel, enhed og total ikke hænger ved
+function adoptMeta(rows, fileName, force) {
+  const ex = EXAMPLE_SETTINGS, head = (rows[0] || []).map(h => String(h ?? ""));
+  const isEx = k => S[k] === ex[k];
+  if (force || isEx("title")) S.title = (fileName || "").replace(/[.][^.]+$/, "").replace(/[_]+/g, " ").trim() || "Mit datasæt";
+  for (const k of ["subtitle", "source", "unit"]) if (force || isEx(k)) S[k] = "";
+  S.refLine = ""; S.refLabel = ""; S.showTotal = false;
+  S.colorBy = head.some(h => CAT_RX.test(h.trim())) ? "category" : "name";
+  let dec = 0;
+  for (const r of rows.slice(1)) for (const c of r.slice(1)) {
+    const m = String(c ?? "").trim().match(/[.,]([0-9]+)$/);
+    if (m && m[1].length !== 3) dec = Math.max(dec, Math.min(2, m[1].length));
+  }
+  S.decimals = dec; fmtCache.clear();
+  showAll(); toForm();
+}
+function applyText() { dataText = $("dataText").value; adoptMeta(splitText(dataText), "", false); useRows(splitText(dataText)); }
 async function readFile(f) {
   if (!f) return;
   const ext = f.name.split(".").pop().toLowerCase();
@@ -646,12 +662,12 @@ async function readFile(f) {
     const rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: "" });
     // tal-overskrifter (år) som tekst
     if (rows[0]) rows[0] = rows[0].map(h => typeof h === "number" ? String(h) : h);
-    showAll();
+    adoptMeta(rows, f.name, true);
     dataText = rows.map(r => r.map(c => typeof c === "number" ? String(c).replace(".", ",") : String(c)).join(";")).join("\n");
     $("dataText").value = dataText;
     useRows(rows, `Fra ${f.name}, ark "${wb.SheetNames[0]}"`);
   } else {
-    showAll(); dataText = await f.text(); $("dataText").value = dataText;
+    dataText = await f.text(); $("dataText").value = dataText; adoptMeta(splitText(dataText), f.name, true);
     useRows(splitText(dataText), `Fra ${f.name}`);
   }
 }
