@@ -773,18 +773,23 @@ function ensureAudio() {
 }
 function setMusicVol() { const v = (S.musicVol ?? 40) / 100; if (musicGain) musicGain.gain.value = v; if (linkAud) linkAud.volume = v; }
 const musicActive = () => !!(S.musicOn && !linkMode() && aud && aud.src);   // kun egen fil kan komme med i optagelsen
+// Henter og forbereder musik fra et link, så den er klar, før animationen skal starte
+function prepareLink() {
+  const lk = linkMode(); if (!lk || !S.musicOn) return;
+  if (!linkAud) { linkAud = new Audio(); linkAud.loop = true; linkAud.preload = "auto"; }
+  if (linkAud.dataset.k !== S.musicSrc) { linkAud.src = lk.url; linkAud.dataset.k = S.musicSrc; linkAud.load(); }
+  setMusicVol();
+}
+// Starter musikken og returnerer lydelementet (eller null, hvis der ikke skal være musik)
 function startMusic(fromStart, forRecording) {
   const lk = linkMode();
-  if (lk) {   // musik fra et link: afspilles kun, kan ikke blandes ind i videoen
-    if (!S.musicOn || forRecording) return;
-    if (!linkAud) { linkAud = new Audio(); linkAud.loop = true; }
-    if (linkAud.dataset.k !== S.musicSrc) { linkAud.src = lk.url; linkAud.dataset.k = S.musicSrc; }
-    setMusicVol(); if (fromStart) linkAud.currentTime = 0;
-    linkAud.play().catch(() => {}); return;
-  }
-  if (!musicActive()) return;
-  if (fromStart) aud.currentTime = 0;
-  actx.resume(); aud.play().catch(() => {});
+  let el = null;
+  if (lk) { if (!S.musicOn || forRecording) return null; prepareLink(); el = linkAud; }   // link-musik kan ikke komme med i optagelsen
+  else if (musicActive()) { actx.resume(); el = aud; }
+  if (!el) return null;
+  if (fromStart) el.currentTime = 0;
+  el.play().catch(() => {});
+  return el;
 }
 function stopMusic() { if (aud) aud.pause(); if (linkAud) linkAud.pause(); }
 $("musicFile").onchange = e => {
@@ -795,13 +800,20 @@ $("musicFile").onchange = e => {
   if (playing) startMusic(true);
 };
 
-function play() {
-  if (!D) return;
+let waitingMusic = false;
+async function play() {
+  if (!D || waitingMusic) return;
   if (t >= D.periods.length - 1) t = 0;
-  startMusic(t === 0);
+  const el = startMusic(t === 0);
+  if (el && el.readyState < 3) {   // vent på, at musikken faktisk spiller, så lyd og billede starter samtidig
+    waitingMusic = true; $("playTxt").textContent = "Henter musik…";
+    await new Promise(res => { el.addEventListener("playing", res, { once: true }); setTimeout(res, 45000); });
+    if (!waitingMusic) return;   // afbrudt med Pause
+    waitingMusic = false;
+  }
   playing = true; lastTs = 0; updateUI(); requestAnimationFrame(frame);
 }
-function pause() { playing = false; stopMusic(); updateUI(); }
+function pause() { waitingMusic = false; playing = false; stopMusic(); updateUI(); }
 
 /* ---------- Data-flow ---------- */
 function setStatus(el, html, cls) { el.className = "status " + (cls || ""); el.innerHTML = html; }
@@ -886,7 +898,7 @@ function syncSymBtn() {
   $("symTxt").textContent = S.showSymbols ? "Symboler: til" : "Symboler: fra";
 }
 function toForm() {
-  $("musicOpts").hidden = !S.musicOn; setMusicVol(); syncMusicUI();
+  $("musicOpts").hidden = !S.musicOn; setMusicVol(); syncMusicUI(); prepareLink();
   populateHighlight();
   syncSymBtn();
   $("topN").disabled = !!S.topAuto;
@@ -903,8 +915,8 @@ function fromForm(e) {
   S[k] = v;
   if (k === "spp") syncSpeed();
   if (k === "musicVol") setMusicVol();
-  if (k === "musicSrc") { syncMusicUI(); stopMusic(); if (playing && S.musicOn) startMusic(true); }
-  if (k === "musicOn") { $("musicOpts").hidden = !v; if (v && playing) startMusic(false); else stopMusic(); }
+  if (k === "musicSrc") { syncMusicUI(); stopMusic(); prepareLink(); if (playing && S.musicOn) startMusic(true); }
+  if (k === "musicOn") { $("musicOpts").hidden = !v; if (v) { prepareLink(); if (playing) startMusic(false); } else stopMusic(); }
   if (k === "showSymbols") syncSymBtn();
   if (k === "highlightOn") { $("highlightName").disabled = !v; $("showRank").disabled = !v; }
   if (k === "topAuto") $("topN").disabled = !!v;
@@ -991,7 +1003,7 @@ document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click
   document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-selected", x === b ? "true" : "false"));
   document.querySelectorAll(".tabpane").forEach(p => p.hidden = p.dataset.pane !== b.dataset.tab);
 }));
-$("play").onclick = () => playing ? pause() : play();
+$("play").onclick = () => (playing || waitingMusic) ? pause() : play();
 $("restart").onclick = () => { t = 0; draw(t); updateUI(); };
 $("symBtn").onclick = () => { S.showSymbols = !S.showSymbols; $("showSymbols").checked = S.showSymbols; syncSymBtn(); draw(t); saveLocal(); };
 $("speedSel").onchange = e => { S.spp = parseFloat(e.target.value); $("spp").value = S.spp; updateUI(); saveLocal(); };
@@ -1015,7 +1027,7 @@ document.querySelectorAll("aside input, aside select").forEach(el => { el.addEve
 $("recBtn").onclick = () => recording ? stopRecording() : startRecording();
 $("pngBtn").onclick = () => cv.toBlob(b => b && offer(slug() + ".png", b), "image/png");
 $("cfgBtn").onclick = () => offer(slug() + ".json", JSON.stringify({ settings: S, data: dataText }, null, 1));
-document.addEventListener("keydown", e => { if (e.code === "KeyF" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { e.preventDefault(); toggleFs(); return; } if (e.code === "Space" && !/INPUT|TEXTAREA|SELECT|BUTTON/.test(document.activeElement.tagName)) { e.preventDefault(); playing ? pause() : play(); } });
+document.addEventListener("keydown", e => { if (e.code === "KeyF" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { e.preventDefault(); toggleFs(); return; } if (e.code === "Space" && !/INPUT|TEXTAREA|SELECT|BUTTON/.test(document.activeElement.tagName)) { e.preventDefault(); (playing || waitingMusic) ? pause() : play(); } });
 
 /* ---------- Krog til billedperfekt rendering ---------- */
 window.soejleraes = {
