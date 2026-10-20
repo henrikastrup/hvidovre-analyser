@@ -519,7 +519,9 @@ function draw(tt) {
   const x0 = M + labelW + 18 * u + symW;
   ctx.font = `600 ${nameFont}px Barlow, system-ui, sans-serif`;
   const hlOn = !!S.highlightOn && D.names.includes(S.highlightName);
-  const valW = ctx.measureText(fmt(Math.max(...vals)) + (hlOn ? "  (#00)" : "")).width + 24 * u;
+  const pillFont = `700 ${nameFont * 0.62}px Barlow, system-ui, sans-serif`;
+  let valW = ctx.measureText(fmt(Math.max(...vals))).width + 24 * u, pillW = 0;
+  if (hlOn) { ctx.font = pillFont; pillW = ctx.measureText("00. plads").width + 22 * u; valW += pillW + 12 * u; }
   const x1 = W - M - valW;
 
   // Skala
@@ -575,7 +577,13 @@ function draw(tt) {
     ctx.font = `${isHl ? 800 : 600} ${nameFont}px "Barlow Condensed", "Arial Narrow", sans-serif`;
     ctx.fillText(fitText(D.names[k], labelW), x0 - 14 * u - symW, y + barH / 2);
     ctx.textAlign = "left"; ctx.font = `${isHl ? 800 : 600} ${nameFont * 0.92}px Barlow, system-ui, sans-serif`;
-    ctx.fillStyle = th.fg; ctx.fillText(fmt(v) + (isHl ? "  (#" + (Math.round(r) + 1) + ")" : ""), xb + 12 * u, y + barH / 2);
+    ctx.fillStyle = th.fg; ctx.fillText(fmt(v), xb + 12 * u, y + barH / 2);
+    if (isHl) {   // placering som lille pille efter tallet, fx "5. plads"
+      const valTxtW = ctx.measureText(fmt(v)).width, txt = (Math.round(r) + 1) + ". plads";
+      ctx.font = pillFont; const w = ctx.measureText(txt).width + 22 * u, h = Math.min(nameFont * 0.95, barH * 0.8), px = xb + 12 * u + valTxtW + 12 * u;
+      ctx.fillStyle = th.fg; ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(px, y + barH / 2 - h / 2, w, h, h / 2); else ctx.rect(px, y + barH / 2 - h / 2, w, h); ctx.fill();
+      ctx.fillStyle = th.bg; ctx.textAlign = "center"; ctx.fillText(txt, px + w / 2, y + barH / 2 + 1 * u);
+    }
     if (hasSym && D.syms[k]) drawSym(D.syms[k], x0 - 10 * u - symBoxW, y + barH / 2, symBoxW, symH, u);
     ctx.globalAlpha = 1; ctx.textBaseline = "alphabetic";
   }
