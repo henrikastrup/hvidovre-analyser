@@ -61,6 +61,8 @@ header.top p { margin: 0; color: var(--muted); max-width: 70ch; }
 canvas#c { display: block; max-width: 100%; height: auto; max-height: 72vh; }
 .transport { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .transport input[type=range] { flex: 1 1 200px; min-width: 0; accent-color: var(--accent); }
+.speed { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.speed select { width: auto; padding: 7px 8px; text-transform: none; letter-spacing: 0; font-weight: 500; }
 .period { font-family: var(--font-display); font-weight: 700; font-size: 22px; min-width: 5ch; text-align: right; font-variant-numeric: tabular-nums; }
 .time { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
 
@@ -124,6 +126,7 @@ video#preview { width: 100%; border-radius: 6px; background: #000; }
         <button id="play" class="primary" aria-label="Afspil"><svg class="icon" viewBox="0 0 14 14"><path id="playIcon" d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg><span id="playTxt">Afspil</span></button>
         <button id="restart" aria-label="Start forfra"><svg class="icon" viewBox="0 0 14 14"><path d="M2 2v10M12 2 4.5 7 12 12z" stroke="currentColor" stroke-width="1.6" fill="currentColor"/></svg></button>
         <input id="scrub" type="range" min="0" max="1000" step="1" value="0" aria-label="Tidslinje">
+        <label class="speed"><span>Hastighed</span><select id="speedSel" aria-label="Hastighed"></select></label>
         <span class="period" id="periodLbl">–</span>
         <span class="time" id="timeLbl">0:00 / 0:00</span>
       </div>
@@ -651,8 +654,16 @@ async function readFile(f) {
 
 /* ---------- Indstillinger <-> formular ---------- */
 const NUMERIC = ["decimals", "topN", "spp", "holdStart", "holdEnd"];
+const SPEEDS = [0.25, 0.5, 1, 1.5, 2, 3, 4];   // 1× = 2 sek. pr. periode
+function syncSpeed() {
+  const sel = $("speedSel"), opts = SPEEDS.map(m => ({ spp: +(2 / m).toFixed(3), label: m + "×" }));
+  if (!opts.some(o => Math.abs(o.spp - S.spp) < 0.01)) { opts.push({ spp: S.spp, label: String(S.spp).replace(".", ",") + " s/periode" }); opts.sort((a, b) => b.spp - a.spp); }
+  sel.innerHTML = opts.map(o => `<option value="${o.spp}">${o.label}</option>`).join("");
+  sel.value = String(opts.find(o => Math.abs(o.spp - S.spp) < 0.01).spp);
+}
 function toForm() {
   $("topN").disabled = !!S.topAuto;
+  syncSpeed();
   for (const k of SETTING_KEYS) {
     const el = $(k); if (!el) continue;
     if (el.type === "checkbox") el.checked = !!S[k]; else el.value = S[k];
@@ -663,6 +674,7 @@ function fromForm(e) {
   let v = el.type === "checkbox" ? el.checked : el.value;
   if (NUMERIC.includes(k)) { v = parseFloat(String(v).replace(",", ".")); if (!isFinite(v)) return; v = Math.max(+el.min || 0, Math.min(+el.max || 1e9, v)); }
   S[k] = v;
+  if (k === "spp") syncSpeed();
   if (k === "topAuto") $("topN").disabled = !!v;
   if (k === "decimals") fmtCache.clear();
   if (D && (k === "palette" || k === "colorBy")) buildColors();
@@ -715,7 +727,7 @@ function startRecording() {
   t = 0; draw(0);
   rec.start(500);
   $("recTxt").textContent = "Stop optagelse";
-  for (const id of ["play", "restart", "scrub", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = true;
+  for (const id of ["play", "restart", "scrub", "speedSel", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = true;
   setStatus($("expStatus"), "<b>Optager…</b> Lad fanen være synlig, til optagelsen er færdig.", "");
   playing = true; lastTs = 0; requestAnimationFrame(frame);
 }
@@ -724,7 +736,7 @@ function stopRecording() {
   const r = recording; recording = null; playing = false;
   try { r.rec.stop(); } catch (e) {}
   $("recTxt").textContent = "Optag video"; $("recProg").style.width = "0";
-  for (const id of ["play", "restart", "scrub", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = false;
+  for (const id of ["play", "restart", "scrub", "speedSel", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = false;
   updateUI();
 }
 
@@ -735,6 +747,7 @@ document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click
 }));
 $("play").onclick = () => playing ? pause() : play();
 $("restart").onclick = () => { t = 0; draw(t); updateUI(); };
+$("speedSel").onchange = e => { S.spp = parseFloat(e.target.value); $("spp").value = S.spp; updateUI(); saveLocal(); };
 $("scrub").oninput = e => { if (!D) return; pause(); t = e.target.value / 1000 * (D.periods.length - 1); draw(t); updateUI(); };
 $("applyData").onclick = applyText;
 $("loadExample").onclick = () => { dataText = EXAMPLE_CSV; $("dataText").value = dataText; S = { ...EXAMPLE_SETTINGS }; toForm(); fmtCache.clear(); useRows(splitText(dataText), "Eksempeldata (fiktive tal)"); };
