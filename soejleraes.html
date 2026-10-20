@@ -62,6 +62,8 @@ canvas#c { display: block; max-width: 100%; height: auto; max-height: 72vh; }
 .stage:fullscreen { background: var(--bg); border: 0; border-radius: 0; padding: 16px; grid-template-rows: minmax(0, 1fr) auto; height: 100%; }
 .stage:fullscreen .canvas-box { align-items: center; min-height: 0; }
 .stage:fullscreen canvas#c { max-height: calc(100vh - 110px); }
+button[aria-pressed="true"] { border-color: var(--accent); }
+button[aria-pressed="false"] { opacity: .65; }
 .transport { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .transport input[type=range] { flex: 1 1 200px; min-width: 0; accent-color: var(--accent); }
 .speed { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
@@ -133,6 +135,7 @@ video#preview { width: 100%; border-radius: 6px; background: #000; }
         <span class="period" id="periodLbl">–</span>
         <span class="time" id="timeLbl">0:00 / 0:00</span>
         <button id="fsBtn" aria-label="Fuld skærm" title="Fuld skærm (F)"><svg class="icon" viewBox="0 0 14 14"><path d="M1.5 5V1.5H5M9 1.5h3.5V5M12.5 9v3.5H9M5 12.5H1.5V9" stroke="currentColor" stroke-width="1.6" fill="none"/></svg><span id="fsTxt">Fuld skærm</span></button>
+        <button id="symBtn" aria-pressed="true" title="Vis/skjul symboler" hidden><span id="symTxt">Symboler: til</span></button>
       </div>
     </section>
 
@@ -170,7 +173,7 @@ video#preview { width: 100%; border-radius: 6px; background: #000; }
         </div>
         <div class="row2">
           <label class="field"><span>Antal søjler</span><input id="topN" type="number" min="3" max="40" step="1"></label>
-          <label class="field"><span>Sek. pr. periode</span><input id="spp" type="number" min="0.3" max="10" step="0.1"></label>
+          <label class="field"><span>Sek. pr. periode</span><input id="spp" type="number" min="0.3" max="30" step="0.1"></label>
         </div>
         <div class="row2">
           <label class="field"><span>Format</span>
@@ -448,7 +451,7 @@ function loadSymbols() {
     img.src = s; symImgs.set(s, img);
   }
   symReady = Promise.all(pend);
-  $("symRow").hidden = !D.syms.some(Boolean);
+  $("symRow").hidden = $("symBtn").hidden = !D.syms.some(Boolean);
 }
 function drawSym(s, bx, cy, bw, bh, u) {
   if (isImgSym(s)) {
@@ -708,14 +711,19 @@ async function readFile(f) {
 
 /* ---------- Indstillinger <-> formular ---------- */
 const NUMERIC = ["decimals", "topN", "spp", "holdStart", "holdEnd"];
-const SPEEDS = [0.25, 0.5, 1, 1.5, 2, 3, 4];   // 1× = 2 sek. pr. periode
+const SPEEDS = [0.1, 0.25, 0.5, 1, 2];   // 1× = 2 sek. pr. periode
 function syncSpeed() {
-  const sel = $("speedSel"), opts = SPEEDS.map(m => ({ spp: +(2 / m).toFixed(3), label: m + "×" }));
+  const sel = $("speedSel"), opts = SPEEDS.map(m => ({ spp: +(2 / m).toFixed(3), label: String(m).replace(".", ",") + "×" }));
   if (!opts.some(o => Math.abs(o.spp - S.spp) < 0.01)) { opts.push({ spp: S.spp, label: String(S.spp).replace(".", ",") + " s/periode" }); opts.sort((a, b) => b.spp - a.spp); }
   sel.innerHTML = opts.map(o => `<option value="${o.spp}">${o.label}</option>`).join("");
   sel.value = String(opts.find(o => Math.abs(o.spp - S.spp) < 0.01).spp);
 }
+function syncSymBtn() {
+  $("symBtn").setAttribute("aria-pressed", S.showSymbols ? "true" : "false");
+  $("symTxt").textContent = S.showSymbols ? "Symboler: til" : "Symboler: fra";
+}
 function toForm() {
+  syncSymBtn();
   $("topN").disabled = !!S.topAuto;
   syncSpeed();
   for (const k of SETTING_KEYS) {
@@ -729,6 +737,7 @@ function fromForm(e) {
   if (NUMERIC.includes(k)) { v = parseFloat(String(v).replace(",", ".")); if (!isFinite(v)) return; v = Math.max(+el.min || 0, Math.min(+el.max || 1e9, v)); }
   S[k] = v;
   if (k === "spp") syncSpeed();
+  if (k === "showSymbols") syncSymBtn();
   if (k === "topAuto") $("topN").disabled = !!v;
   if (k === "decimals") fmtCache.clear();
   if (D && (k === "palette" || k === "colorBy")) buildColors();
@@ -781,7 +790,7 @@ function startRecording() {
   t = 0; draw(0);
   rec.start(500);
   $("recTxt").textContent = "Stop optagelse";
-  for (const id of ["play", "restart", "scrub", "speedSel", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = true;
+  for (const id of ["play", "restart", "scrub", "speedSel", "symBtn", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = true;
   setStatus($("expStatus"), "<b>Optager…</b> Lad fanen være synlig, til optagelsen er færdig.", "");
   playing = true; lastTs = 0; requestAnimationFrame(frame);
 }
@@ -790,7 +799,7 @@ function stopRecording() {
   const r = recording; recording = null; playing = false;
   try { r.rec.stop(); } catch (e) {}
   $("recTxt").textContent = "Optag video"; $("recProg").style.width = "0";
-  for (const id of ["play", "restart", "scrub", "speedSel", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = false;
+  for (const id of ["play", "restart", "scrub", "speedSel", "symBtn", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = false;
   updateUI();
 }
 
@@ -801,6 +810,7 @@ document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click
 }));
 $("play").onclick = () => playing ? pause() : play();
 $("restart").onclick = () => { t = 0; draw(t); updateUI(); };
+$("symBtn").onclick = () => { S.showSymbols = !S.showSymbols; $("showSymbols").checked = S.showSymbols; syncSymBtn(); draw(t); saveLocal(); };
 $("speedSel").onchange = e => { S.spp = parseFloat(e.target.value); $("spp").value = S.spp; updateUI(); saveLocal(); };
 const fsEl = $("stage"), fsOn = () => document.fullscreenElement || document.webkitFullscreenElement;
 function toggleFs() {
