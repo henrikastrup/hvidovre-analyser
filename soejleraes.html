@@ -87,6 +87,14 @@ aside.panel { background: var(--panel); border: 1px solid var(--line); border-ra
 .tabs { display: flex; border-bottom: 1px solid var(--line); }
 .tabs button { flex: 1; border: 0; border-radius: 0; background: transparent; padding: 13px 8px; color: var(--muted); border-bottom: 2px solid transparent; justify-content: center; }
 .tabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
+.guide { font-size: 14px; }
+.guide h3 { font-family: var(--font-display); font-size: 19px; margin: 6px 0 -4px; letter-spacing: .01em; }
+.guide h3:first-child { margin-top: 0; }
+.guide p, .guide ul, .guide ol { margin: 0; }
+.guide ul, .guide ol { padding-left: 20px; display: grid; gap: 5px; }
+.guide code { font-family: var(--font-mono); font-size: 12px; background: var(--sunk); padding: 1px 4px; border-radius: 3px; }
+.guide pre { margin: 0; font: 12px/1.5 var(--font-mono); background: var(--sunk); border: 1px solid var(--line); border-radius: 6px; padding: 9px 10px; overflow-x: auto; }
+#aiPrompt { min-height: 240px; font-size: 12px; white-space: pre-wrap; }
 .tabpane { padding: 14px; display: grid; gap: 14px; }
 .field { display: grid; gap: 5px; }
 .field > span, .lbl { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
@@ -145,6 +153,7 @@ video#preview { width: 100%; border-radius: 6px; background: #000; }
         <button role="tab" aria-selected="true" data-tab="data" id="tab-data">Data</button>
         <button role="tab" aria-selected="false" data-tab="look" id="tab-look">Udseende</button>
         <button role="tab" aria-selected="false" data-tab="export" id="tab-export">Eksport</button>
+        <button role="tab" aria-selected="false" data-tab="help" id="tab-help">Vejledning</button>
       </div>
 
       <div class="tabpane" data-pane="data">
@@ -222,6 +231,67 @@ video#preview { width: 100%; border-radius: 6px; background: #000; }
         <div id="expStatus" class="status">Format: <b id="mimeLbl">–</b></div>
         <video id="preview" controls playsinline hidden></video>
         <p class="hint">Opsætningsfilen (JSON) indeholder både data og indstillinger. Indlæs den igen under fanen Data for at fortsætte, hvor du slap. Video optages som MP4 i Chrome og Edge og som WebM i Firefox.</p>
+      </div>
+      <div class="tabpane guide" data-pane="help" hidden>
+        <h3>Sådan bruger du Søjleræs</h3>
+        <ol>
+          <li><b>Indlæs data</b> under fanen Data: vælg en fil (CSV, TXT eller Excel), træk den ind, eller indsæt tabellen direkte.</li>
+          <li><b>Tjek diagrammet</b> til venstre. Ret titel, undertitel, kilde, enhed og decimaler under Udseende, og tryk Afspil.</li>
+          <li><b>Gem resultatet</b> under Eksport som video, billede eller opsætningsfil.</li>
+        </ol>
+
+        <h3>Sådan skal data være stillet op</h3>
+        <p>Én række pr. søjle (fx kommune, land eller emne) og én kolonne pr. periode. Første kolonne hedder <code>Navn</code>, og perioderne er kolonner med årstal som overskrift:</p>
+        <pre>Navn;2021;2022;2023
+Hvidovre;116,9;117,5;119,3
+Rødovre;121,0;121,4;122,0</pre>
+        <ul>
+          <li>Semikolon (;), tabulator eller komma kan bruges som skilletegn. Excel-ark læses direkte.</li>
+          <li>Overskrifter for perioder skal starte med et årstal: <code>2021</code>, <code>2021K1</code> (kvartal) eller <code>2021M03</code> (måned). Hvert år er sin egen kolonne.</li>
+          <li>Tal med decimalkomma (<code>116,9</code>) og uden enheder eller procenttegn i cellerne. Skriv enheden under Udseende.</li>
+          <li>Tomme felter midt i en række udfyldes jævnt. Før første og efter sidste tal bliver de 0.</li>
+          <li>Hold navnene korte (højst ca. 35 tegn), ellers afkortes de. Undgå dubletter og samlerækker som "I alt".</li>
+          <li>Langt format virker også: kolonnerne <code>Navn; År; Værdi</code>, med én række pr. navn og år.</li>
+          <li>Der vises højst 40 søjler ad gangen. Under Udseende kan du vælge alle rækker eller et antal.</li>
+        </ul>
+
+        <h3>Symboler: flag, våben og ikoner</h3>
+        <p>Tilføj en kolonne med overskriften <code>Symbol</code> lige efter <code>Navn</code>. Cellen er enten en emoji eller et link til et billede. Tomme celler giver intet symbol.</p>
+        <pre>Navn;Symbol;2024;2025
+Nepal;https://flagcdn.com/w80/np.png;83;91
+Almene boliger;🏠;20;30</pre>
+        <ul>
+          <li><b>Flag:</b> brug billeder (<code>flagcdn.com/w80/</code> + landets to bogstaver med småt + <code>.png</code>). Flag-emoji vises som bogstaver på Windows.</li>
+          <li><b>Kommunevåben:</b> link til et billede på Wikimedia Commons.</li>
+          <li><b>Emner:</b> én farve-emoji pr. række.</li>
+          <li>Billederne hentes fra internettet, så de virker kun online. Knappen <i>Symboler: til/fra</i> under diagrammet slår dem til og fra.</li>
+        </ul>
+
+        <h3>Indstillinger</h3>
+        <ul>
+          <li><b>Fremhæv en række:</b> sæt hak og vælg en række på listen (fx Hvidovre). Den får et farvebånd og en kontur, og de øvrige dæmpes let. Du kan også vise rækkens placering.</li>
+          <li><b>Referencelinje:</b> en stiplet linje ved en værdi, fx 100 ved indeks.</li>
+          <li><b>Total:</b> kun til tal, der kan lægges sammen (antal og beløb). Slå den fra ved indeks og procenter.</li>
+          <li><b>Format:</b> 16:9 til skærm og PowerPoint, 1:1 til opslag, 9:16 til mobil.</li>
+          <li><b>Hastighed:</b> vælgeren under diagrammet (0,1× til 2×). Den gælder også for videoen.</li>
+        </ul>
+
+        <h3>Afspilning og eksport</h3>
+        <ul>
+          <li>Mellemrumstasten starter og stopper. <b>F</b> eller knappen Fuld skærm viser diagrammet over hele skærmen.</li>
+          <li>Videoen optages i realtid og gemmes som MP4 i Chrome og Edge (WebM i Firefox). Lad fanen være synlig under optagelsen.</li>
+          <li>Opsætningsfilen (JSON) gemmer både data og indstillinger, så du kan fortsætte senere.</li>
+          <li>Dine data bliver i din egen browser og sendes ingen steder hen. Kun symbolbilleder hentes udefra.</li>
+        </ul>
+
+        <h3>Lad en AI gøre data klar</h3>
+        <p>Har du et datasæt, der ikke har den rigtige form? Kopiér prompten herunder, indsæt den i din foretrukne AI-chat sammen med dit datasæt (som vedhæftet fil eller tekst), og få en færdig fil tilbage, med korte navne og evt. flag, våben eller ikoner. Gem filen og upload den under fanen Data.</p>
+        <textarea id="aiPrompt" readonly spellcheck="false" aria-label="Prompt til AI"></textarea>
+        <div class="btnrow">
+          <button id="copyPrompt" class="primary">Kopiér prompten</button>
+          <span id="copyMsg" class="hint" role="status"></span>
+        </div>
+        <p class="hint">Tjek altid filen, før du bruger den. AI kan lave fejl i tal og i links til symboler.</p>
       </div>
     </aside>
   </div>
@@ -831,6 +901,17 @@ function stopRecording() {
   for (const id of ["play", "restart", "scrub", "speedSel", "symBtn", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = false;
   updateUI();
 }
+
+/* ---------- Vejledning: prompt til AI ---------- */
+const AI_PROMPT = "Du skal gøre mit datasæt klar til værktøjet Søjleræs (animeret søjlediagram, \"bar chart race\") på analyse.astrup.org/soejleraes.html. Lever resultatet som en CSV-fil, jeg kan downloade og uploade. Kan du ikke lave filer, så skriv hele CSV'en i én kodeblok.\n\nFORMAT (skal følges præcist)\n- Semikolonsepareret CSV, UTF-8, første række er overskrifter.\n- Én række pr. søjle (fx kommune, land eller emne) og én kolonne pr. periode.\n- Første kolonne hedder Navn. Perioderne er kolonner med årstal som overskrift: 2021, 2022 ... (kvartaler: 2021K1, måneder: 2021M03). Hvert år eller kvartal er sin egen kolonne. Læg aldrig perioder sammen.\n- Valgfri kolonne Symbol lige efter Navn (billed-URL eller emoji, tom hvis der intet er). Valgfri kolonne Kategori kun hvis jeg vil have farver efter kategori.\n- Tal med decimalkomma (116,9), uden tusindtalsseparator og uden enheder eller procenttegn i cellerne. Tomme felter kun hvor data virkelig mangler.\n- Ingen dubletter. Ingen samlerækker (fx \"I alt\" eller \"Hele landet\"), medmindre jeg beder om det.\n- En celle med semikolon eller anførselstegn skal stå i anførselstegn.\n\nNAVNE\n- Korte, pæne visningsnavne (højst ca. 35 tegn) i dansk stavemåde med stort begyndelsesbogstav. Fjern koder og præfikser (fx \"000=Hele landet\" bliver \"Hele landet\"). Kommuner skrives uden \"Kommune\". Forkort fx \"med\" til \"m.\".\n- Vis mig en kort liste over de navne, du har ændret.\n\nSYMBOLER (spørg mig først, om jeg vil have: ingen, flag, kommunevåben, ikoner/emoji eller noget andet)\n- Flag: https://flagcdn.com/w80/XX.png hvor XX er landets ISO-kode med to små bogstaver, fx np (Nepal), tr (Tyrkiet), ua (Ukraine), gb-eng (England). Brug aldrig flag-emoji, de vises som bogstaver på Windows.\n- Kommunevåben: billed-URL fra Wikimedia Commons (adresser på upload.wikimedia.org eller thumb.wikimedia.org). Kommunevåbnene hedder ofte \"<Kommune> Kommunevåben.svg\" eller \"<Kommune> Kommune shield.png\".\n- Emner (fx boliger, beskæftigelse, sundhed): ét farve-emoji pr. række, fx 🏠 💼 🎓 💰 🧠 🩺 🧒 🧓 🌍 📍 🍺 🚬. Lad cellen stå tom, hvis intet passer.\n- Opfind aldrig links. Kan du ikke kontrollere, at et link virker, så lad cellen stå tom og fortæl mig, hvilke rækker der mangler symbol.\n\nSÅDAN GÅR DU FREM\n1. Se på mit datasæt og stil kun de spørgsmål, du mangler svar på: hvilke kolonner der er navne, perioder og værdier; om alle rækker skal med, eller kun de N største hvert år (behold i så fald alle rækker, der er blandt de N største mindst ét år, med de faktiske tal for alle år); hvilke symboler jeg vil have; og om tallene skal omregnes (fx til indeks eller faste priser).\n2. Lav filen efter reglerne ovenfor.\n3. Kontrollér: alle perioder er med, alle værdier er tal, ingen dubletter, navnene er pæne, og symbolerne er fundet. Sammenlign to eller tre tal med mit originale datasæt.\n4. Giv mig til sidst forslag til indstillinger i Søjleræs: titel, undertitel (med datastatus, fx faktisk eller prognose), kilde, enhed, antal decimaler, antal søjler, om \"Vis total\" skal slås fra (gælder indeks og procenter), evt. en referencelinje (fx 100) og om en bestemt række (fx Hvidovre) skal fremhæves.\n\nHer er mit datasæt:\n[Indsæt eller vedhæft dit datasæt her]\n";
+$("aiPrompt").value = AI_PROMPT;
+$("copyPrompt").onclick = async () => {
+  let ok = false;
+  try { await navigator.clipboard.writeText(AI_PROMPT); ok = true; }
+  catch (e) { const ta = $("aiPrompt"); ta.focus(); ta.select(); try { ok = document.execCommand("copy"); } catch (e2) {} }
+  $("copyMsg").textContent = ok ? "Kopieret. Indsæt den i din AI-chat." : "Kunne ikke kopiere automatisk. Markér teksten og tryk Ctrl+C.";
+  setTimeout(() => { $("copyMsg").textContent = ""; }, 4000);
+};
 
 /* ---------- Hændelser ---------- */
 document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
