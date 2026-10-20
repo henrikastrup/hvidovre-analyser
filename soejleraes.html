@@ -566,9 +566,10 @@ function draw(tt) {
       const bx = M - 14 * u, by = y - (slot - barH) / 2, bw = W - 2 * M + 28 * u;
       ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(bx, by, bw, slot, 12 * u); else ctx.rect(bx, by, bw, slot); ctx.fill();
     }
-    ctx.globalAlpha = alpha * (hlOn && !isHl ? 0.45 : 1);
+    ctx.globalAlpha = alpha * (hlOn && !isHl ? 0.8 : 1);   // øvrige søjler dæmpes kun let, så farverne ikke flader ud
     ctx.fillStyle = colorOf(k); roundBar(xa, y, Math.max(2 * u, xb - xa), barH, 6 * u);
     if (isHl) { ctx.strokeStyle = th.fg; ctx.lineWidth = 3 * u; ctx.stroke(); }
+    ctx.globalAlpha = alpha;   // tekst og symboler beholder fuld styrke
     ctx.textBaseline = "middle";
     ctx.fillStyle = th.fg; ctx.textAlign = "right";
     ctx.font = `${isHl ? 800 : 600} ${nameFont}px "Barlow Condensed", "Arial Narrow", sans-serif`;
