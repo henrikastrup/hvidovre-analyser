@@ -213,9 +213,17 @@ video#preview { width: 100%; border-radius: 6px; background: #000; }
         <div class="hlbox">
           <label class="check"><input id="musicOn" type="checkbox"> Baggrundsmusik</label>
           <div id="musicOpts" class="hlbox" hidden>
-            <label class="btn" for="musicFile">Vælg lydfil (MP3, WAV m.fl.)</label>
-            <input id="musicFile" type="file" accept="audio/*" hidden>
-            <span id="musicName" class="hint">Ingen fil valgt. Filen bliver i din browser og gemmes ikke.</span>
+            <select id="musicSrc" aria-label="Musik">
+              <option value="file">Min egen lydfil</option>
+              <option value="inspired">Inspired (Kevin MacLeod, gratis)</option>
+              <option value="wallpaper">Wallpaper (Kevin MacLeod, gratis)</option>
+            </select>
+            <div id="musicFileRow" class="hlbox">
+              <label class="btn" for="musicFile">Vælg lydfil (MP3, WAV m.fl.)</label>
+              <input id="musicFile" type="file" accept="audio/*" hidden>
+              <span id="musicName" class="hint">Ingen fil valgt. Filen bliver i din browser og gemmes ikke.</span>
+            </div>
+            <span id="musicCredit" class="hint" hidden></span>
             <label class="field"><span>Lydstyrke</span><input id="musicVol" type="range" min="0" max="100" step="1" aria-label="Lydstyrke for musik"></label>
           </div>
         </div>
@@ -299,7 +307,7 @@ Almene boliger;🏠;20;30</pre>
           <li>Mellemrumstasten starter og stopper. <b>F</b> eller knappen Fuld skærm viser diagrammet over hele skærmen.</li>
           <li>Videoen optages i realtid og gemmes som MP4 i Chrome og Edge (WebM i Firefox). Lad fanen være synlig under optagelsen.</li>
           <li>Opsætningsfilen (JSON) gemmer både data og indstillinger, så du kan fortsætte senere.</li>
-          <li><b>Baggrundsmusik:</b> sæt hak under Udseende, og vælg en lydfil fra din computer (fx MP3). Musikken spiller med animationen og kommer med i den optagede video. Filen bliver i din browser og gemmes ikke, så den skal vælges igen, hvis du genindlæser siden. Brug kun musik, du har ret til at bruge, fx fra YouTubes gratis lydbibliotek.</li>
+          <li><b>Baggrundsmusik:</b> sæt hak under Udseende, og vælg en lydfil fra din computer (fx MP3) eller et af de gratis numre fra listen (spilles fra internettet og kommer ikke med i videoen). Musikken spiller med animationen og kommer med i den optagede video. Filen bliver i din browser og gemmes ikke, så den skal vælges igen, hvis du genindlæser siden. Brug kun musik, du har ret til at bruge, fx fra YouTubes gratis lydbibliotek.</li>
           <li>Dine data bliver i din egen browser og sendes ingen steder hen. Kun symbolbilleder hentes udefra.</li>
         </ul>
 
@@ -314,7 +322,7 @@ Almene boliger;🏠;20;30</pre>
 "use strict";
 const EXAMPLE_CSV = /*@DATA*/"Navn;Kategori;2000;2001;2002;2003;2004;2005;2006;2007;2008;2009;2010;2011;2012;2013;2014;2015;2016;2017;2018;2019;2020;2021;2022;2023;2024;2025\nÆbler;Kernefrugt;900;897;929;928;923;889;889;947;976;1037;1060;1092;1113;1031;1085;1124;1163;1076;993;959;946;970;978;1013;990;1016\nPærer;Kernefrugt;420;404;437;447;471;454;435;425;421;432;435;424;401;389;411;392;395;401;369;368;391;349;342;338;323;329\nJordbær;Bær;600;574;615;654;705;777;814;843;814;863;863;869;840;825;827;906;841;805;839;924;979;915;827;867;861;839\nHindbær;Bær;150;167;179;192;207;236;258;280;304;299;336;372;404;388;399;440;427;448;498;495;565;614;647;696;760;810\nBlåbær;Bær;60;65;72;84;94;101;118;141;155;163;181;202;223;265;284;336;355;383;441;519;604;687;774;873;1002;1114\nAppelsiner;Citrus;800;815;807;830;845;921;927;898;872;863;894;870;878;950;819;765;766;774;775;751;768;771;743;826;833;801\nCitroner;Citrus;300;303;308;272;271;290;279;283;302;321;352;329;330;331;348;374;331;356;337;355;336;345;373;378;389;412\nClementiner;Citrus;380;392;435;473;483;566;554;598;611;637;681;713;761;729;700;746;736;724;696;764;820;909;898;929;909;975\nBananer;Tropisk;1000;970;1061;1129;1136;1041;1130;1141;1124;1163;1205;1313;1266;1357;1478;1607;1617;1581;1685;1720;1757;1908;1912;1721;1713;1580\nMango;Tropisk;80;90;97;108;124;138;163;180;209;248;295;318;367;373;394;398;463;486;539;593;657;710;797;956;1063;1208\nAnanas;Tropisk;250;248;232;225;238;218;212;222;231;231;240;242;228;210;204;213;207;198;190;175;174;164;167;147;150;145\nAvocado;Tropisk;30;36;41;43;48;57;64;77;92;110;130;159;190;224;237;285;350;400;455;572;613;726;930;1035;1237;1551\nKirsebær;Stenfrugt;260;270;285;275;276;283;298;300;300;288;286;301;306;296;286;327;349;364;320;333;345;377;389;392;406;370\nBlommer;Stenfrugt;340;339;320;335;358;326;309;307;304;292;272;295;304;280;256;272;280;300;306;287;285;248;234;229;230;217"/*@END_DATA*/;
 const PLAYER = /*@PLAYER*/false/*@END_PLAYER*/;
-const EXAMPLE_SETTINGS = /*@SETTINGS*/{"title": "Frugtsalg på torvet", "subtitle": "Eksempeldata (fiktive tal) · ton pr. år", "source": "Kilde: dummydata – erstat med dine egne tal", "unit": "t", "decimals": 0, "topN": 10, "topAuto": false, "showSymbols": true, "highlightOn": false, "musicOn": false, "musicVol": 40, "showRank": true, "highlightName": "", "spp": 2, "aspect": "16:9", "vtheme": "light", "palette": "vivid", "colorBy": "name", "showTotal": true, "showLegend": false, "showTimeline": true, "smooth": true, "holdStart": 1.5, "holdEnd": 4, "refLine": "", "refLabel": ""}/*@END_SETTINGS*/;
+const EXAMPLE_SETTINGS = /*@SETTINGS*/{"title": "Frugtsalg på torvet", "subtitle": "Eksempeldata (fiktive tal) · ton pr. år", "source": "Kilde: dummydata – erstat med dine egne tal", "unit": "t", "decimals": 0, "topN": 10, "topAuto": false, "showSymbols": true, "highlightOn": false, "musicOn": false, "musicSrc": "file", "musicVol": 40, "showRank": true, "highlightName": "", "spp": 2, "aspect": "16:9", "vtheme": "light", "palette": "vivid", "colorBy": "name", "showTotal": true, "showLegend": false, "showTimeline": true, "smooth": true, "holdStart": 1.5, "holdEnd": 4, "refLine": "", "refLabel": ""}/*@END_SETTINGS*/;
 const SETTING_KEYS = Object.keys(EXAMPLE_SETTINGS);
 
 /* ---------- Tilstand ---------- */
@@ -742,7 +750,18 @@ function frame(ts) {
   requestAnimationFrame(frame);
 }
 /* ---------- Baggrundsmusik (egen lydfil, bliver i browseren) ---------- */
-let actx = null, aud = null, musicGain = null, musicDest = null, musicUrl = null;
+let actx = null, aud = null, musicGain = null, musicDest = null, musicUrl = null, linkAud = null;
+const MUSIC_LINKS = {
+  inspired: { title: "Inspired", url: "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Inspired.mp3" },
+  wallpaper: { title: "Wallpaper", url: "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Wallpaper.mp3" }
+};
+const linkMode = () => MUSIC_LINKS[S.musicSrc] || null;
+function syncMusicUI() {
+  const lk = linkMode();
+  $("musicSrc").value = MUSIC_LINKS[S.musicSrc] ? S.musicSrc : "file";
+  $("musicFileRow").hidden = !!lk; $("musicCredit").hidden = !lk;
+  if (lk) $("musicCredit").innerHTML = "Musik: «" + lk.title + "» af <a href=\"https://incompetech.com\" target=\"_blank\" rel=\"noopener\">Kevin MacLeod (incompetech.com)</a>, licens CC BY 4.0 (kreditér ham, hvis du deler videoen). Musikken spilles fra internettet og kommer <b>ikke</b> med i den optagede video. Vil du have den med, så hent filen og vælg den som egen lydfil.";
+}
 function ensureAudio() {
   if (actx) return;
   actx = new (window.AudioContext || window.webkitAudioContext)();
@@ -752,14 +771,22 @@ function ensureAudio() {
   musicDest = actx.createMediaStreamDestination(); musicGain.connect(musicDest);   // så musikken også kommer med i optagelsen
   setMusicVol();
 }
-function setMusicVol() { if (musicGain) musicGain.gain.value = (S.musicVol ?? 40) / 100; }
-const musicActive = () => !!(S.musicOn && aud && aud.src);
-function startMusic(fromStart) {
+function setMusicVol() { const v = (S.musicVol ?? 40) / 100; if (musicGain) musicGain.gain.value = v; if (linkAud) linkAud.volume = v; }
+const musicActive = () => !!(S.musicOn && !linkMode() && aud && aud.src);   // kun egen fil kan komme med i optagelsen
+function startMusic(fromStart, forRecording) {
+  const lk = linkMode();
+  if (lk) {   // musik fra et link: afspilles kun, kan ikke blandes ind i videoen
+    if (!S.musicOn || forRecording) return;
+    if (!linkAud) { linkAud = new Audio(); linkAud.loop = true; }
+    if (linkAud.dataset.k !== S.musicSrc) { linkAud.src = lk.url; linkAud.dataset.k = S.musicSrc; }
+    setMusicVol(); if (fromStart) linkAud.currentTime = 0;
+    linkAud.play().catch(() => {}); return;
+  }
   if (!musicActive()) return;
   if (fromStart) aud.currentTime = 0;
   actx.resume(); aud.play().catch(() => {});
 }
-function stopMusic() { if (aud) aud.pause(); }
+function stopMusic() { if (aud) aud.pause(); if (linkAud) linkAud.pause(); }
 $("musicFile").onchange = e => {
   const f = e.target.files[0]; if (!f) return;
   ensureAudio(); if (musicUrl) URL.revokeObjectURL(musicUrl);
@@ -859,7 +886,7 @@ function syncSymBtn() {
   $("symTxt").textContent = S.showSymbols ? "Symboler: til" : "Symboler: fra";
 }
 function toForm() {
-  $("musicOpts").hidden = !S.musicOn; setMusicVol();
+  $("musicOpts").hidden = !S.musicOn; setMusicVol(); syncMusicUI();
   populateHighlight();
   syncSymBtn();
   $("topN").disabled = !!S.topAuto;
@@ -876,6 +903,7 @@ function fromForm(e) {
   S[k] = v;
   if (k === "spp") syncSpeed();
   if (k === "musicVol") setMusicVol();
+  if (k === "musicSrc") { syncMusicUI(); stopMusic(); if (playing && S.musicOn) startMusic(true); }
   if (k === "musicOn") { $("musicOpts").hidden = !v; if (v && playing) startMusic(false); else stopMusic(); }
   if (k === "showSymbols") syncSymBtn();
   if (k === "highlightOn") { $("highlightName").disabled = !v; $("showRank").disabled = !v; }
@@ -935,7 +963,7 @@ function startRecording() {
   $("recTxt").textContent = "Stop optagelse";
   for (const id of ["play", "restart", "scrub", "speedSel", "symBtn", "musicOn", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = true;
   setStatus($("expStatus"), "<b>Optager…</b> Lad fanen være synlig, til optagelsen er færdig.", "");
-  startMusic(true);
+  startMusic(true, true);
   playing = true; lastTs = 0; requestAnimationFrame(frame);
 }
 function stopRecording() {
