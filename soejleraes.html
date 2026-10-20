@@ -637,7 +637,7 @@ function adoptMeta(rows, fileName, force) {
   if (force || isEx("title")) S.title = (fileName || "").replace(/[.][^.]+$/, "").replace(/[_]+/g, " ").trim() || "Mit datasæt";
   for (const k of ["subtitle", "source", "unit"]) if (force || isEx(k)) S[k] = "";
   S.refLine = ""; S.refLabel = ""; S.showTotal = false;
-  S.colorBy = head.some(h => CAT_RX.test(h.trim())) ? "category" : "name";
+  S.colorBy = "name";
   let dec = 0;
   for (const r of rows.slice(1)) for (const c of r.slice(1)) {
     const m = String(c ?? "").trim().match(/[.,]([0-9]+)$/);
