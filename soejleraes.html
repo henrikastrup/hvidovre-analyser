@@ -233,6 +233,15 @@ video#preview { width: 100%; border-radius: 6px; background: #000; }
         <p class="hint">Opsætningsfilen (JSON) indeholder både data og indstillinger. Indlæs den igen under fanen Data for at fortsætte, hvor du slap. Video optages som MP4 i Chrome og Edge og som WebM i Firefox.</p>
       </div>
       <div class="tabpane guide" data-pane="help" hidden>
+        <h3>Lad en AI gøre data klar</h3>
+        <p>Har du et datasæt, der ikke har den rigtige form? Kopiér prompten herunder, indsæt den i din foretrukne AI-chat sammen med dit datasæt (som vedhæftet fil eller tekst), og få en færdig fil tilbage, med korte navne og evt. flag, våben eller ikoner. Gem filen og upload den under fanen Data.</p>
+        <textarea id="aiPrompt" readonly spellcheck="false" aria-label="Prompt til AI"></textarea>
+        <div class="btnrow">
+          <button id="copyPrompt" class="primary">Kopiér prompten</button>
+          <span id="copyMsg" class="hint" role="status"></span>
+        </div>
+        <p class="hint">Tjek altid filen, før du bruger den. AI kan lave fejl i tal og i links til symboler.</p>
+
         <h3>Sådan bruger du Søjleræs</h3>
         <ol>
           <li><b>Indlæs data</b> under fanen Data: vælg en fil (CSV, TXT eller Excel), træk den ind, eller indsæt tabellen direkte.</li>
@@ -284,14 +293,6 @@ Almene boliger;🏠;20;30</pre>
           <li>Dine data bliver i din egen browser og sendes ingen steder hen. Kun symbolbilleder hentes udefra.</li>
         </ul>
 
-        <h3>Lad en AI gøre data klar</h3>
-        <p>Har du et datasæt, der ikke har den rigtige form? Kopiér prompten herunder, indsæt den i din foretrukne AI-chat sammen med dit datasæt (som vedhæftet fil eller tekst), og få en færdig fil tilbage, med korte navne og evt. flag, våben eller ikoner. Gem filen og upload den under fanen Data.</p>
-        <textarea id="aiPrompt" readonly spellcheck="false" aria-label="Prompt til AI"></textarea>
-        <div class="btnrow">
-          <button id="copyPrompt" class="primary">Kopiér prompten</button>
-          <span id="copyMsg" class="hint" role="status"></span>
-        </div>
-        <p class="hint">Tjek altid filen, før du bruger den. AI kan lave fejl i tal og i links til symboler.</p>
       </div>
     </aside>
   </div>
