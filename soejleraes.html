@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Søjleræs</title>
+<meta name="description" content="Lav dit eget animerede søjlediagram (bar chart race) ud fra dine egne data – og gem det som video.">
+<meta property="og:title" content="Søjleræs">
+<meta property="og:description" content="Lav dit eget animerede søjlediagram (bar chart race) ud fra dine egne data – og gem det som video.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+/* Layout: værksted — stor scene (lærredet) til venstre, kontrolpanel med faner til højre; stabler på mobil */
+:root {
+  --bg: #e9edf1;
+  --panel: #ffffff;
+  --sunk: #f3f5f8;
+  --line: #d4dbe3;
+  --fg: #141a22;
+  --muted: #5b6676;
+  --accent: #2647c9;
+  --accent-fg: #ffffff;
+  --rec: #d0312d;
+  --ok: #1d7a4a;
+  --font-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1318; --panel: #171c23; --sunk: #12171d; --line: #2a323d;
+    --fg: #e7ebf0; --muted: #94a0b0; --accent: #7d97ff; --accent-fg: #0b1020;
+    --rec: #ff6b66; --ok: #4fc98a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1318; --panel: #171c23; --sunk: #12171d; --line: #2a323d;
+  --fg: #e7ebf0; --muted: #94a0b0; --accent: #7d97ff; --accent-fg: #0b1020;
+  --rec: #ff6b66; --ok: #4fc98a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 32px;
+  margin: 0;
+}
+.wrap { max-width: 1480px; margin: 0 auto; display: grid; gap: 16px; }
+header.top { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+header.top h1 { font-family: var(--font-display); font-weight: 800; font-size: 34px; letter-spacing: .01em; margin: 0; line-height: 1; }
+header.top p { margin: 0; color: var(--muted); max-width: 70ch; }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; align-items: start; }
+@media (max-width: 980px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+
+.stage { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: grid; gap: 10px; min-width: 0; }
+.canvas-box { width: 100%; display: flex; justify-content: center; background: var(--sunk); border-radius: 6px; overflow: hidden; }
+canvas#c { display: block; max-width: 100%; height: auto; max-height: 72vh; }
+.transport { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.transport input[type=range] { flex: 1 1 200px; min-width: 0; accent-color: var(--accent); }
+.period { font-family: var(--font-display); font-weight: 700; font-size: 22px; min-width: 5ch; text-align: right; font-variant-numeric: tabular-nums; }
+.time { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+button, .btn {
+  font: 600 14px/1 var(--font-body); border: 1px solid var(--line); background: var(--sunk); color: var(--fg);
+  padding: 9px 13px; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+}
+button:hover { border-color: var(--muted); }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+button.rec { background: var(--rec); color: #fff; border-color: var(--rec); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+.icon { width: 14px; height: 14px; display: inline-block; }
+
+aside.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+.tabs { display: flex; border-bottom: 1px solid var(--line); }
+.tabs button { flex: 1; border: 0; border-radius: 0; background: transparent; padding: 13px 8px; color: var(--muted); border-bottom: 2px solid transparent; justify-content: center; }
+.tabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
+.tabpane { padding: 14px; display: grid; gap: 14px; }
+.field { display: grid; gap: 5px; }
+.field > span, .lbl { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+input[type=text], input[type=number], select, textarea {
+  font: 400 14px var(--font-body); color: var(--fg); background: var(--sunk); border: 1px solid var(--line);
+  border-radius: 6px; padding: 8px 9px; width: 100%; min-width: 0;
+}
+textarea { font-family: var(--font-mono); font-size: 12px; line-height: 1.5; min-height: 190px; resize: vertical; white-space: pre; overflow: auto; }
+.check { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.check input { accent-color: var(--accent); width: 16px; height: 16px; }
+.drop { border: 1.5px dashed var(--line); border-radius: 8px; padding: 14px; text-align: center; color: var(--muted); font-size: 14px; cursor: pointer; }
+.drop.over { border-color: var(--accent); color: var(--fg); }
+.drop strong { color: var(--fg); }
+.status { font-size: 13px; padding: 9px 11px; border-radius: 6px; background: var(--sunk); border: 1px solid var(--line); }
+.status.ok { border-color: color-mix(in srgb, var(--ok) 50%, var(--line)); }
+.status.err { border-color: var(--rec); }
+.status b { font-weight: 600; }
+.hint { font-size: 13px; color: var(--muted); margin: 0; }
+.hint code { font-family: var(--font-mono); font-size: 12px; background: var(--sunk); padding: 1px 4px; border-radius: 3px; }
+.btnrow { display: flex; gap: 8px; flex-wrap: wrap; }
+.recbar { height: 6px; background: var(--sunk); border-radius: 3px; overflow: hidden; }
+.recbar > div { height: 100%; width: 0; background: var(--rec); }
+video#preview { width: 100%; border-radius: 6px; background: #000; }
+.foot { font-size: 13px; color: var(--muted); }
+.foot a { color: inherit; }
+.example-tag { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Søjleræs</h1>
+    <p>Animerede søjlediagrammer, hvor søjlerne vokser og bytter plads periode for periode. Indlæs data, juster udseendet, og optag som video.</p>
+  </header>
+
+  <div class="grid">
+    <section class="stage" aria-label="Forhåndsvisning">
+      <div class="canvas-box"><canvas id="c" width="1920" height="1080" aria-label="Animeret søjlediagram"></canvas></div>
+      <div class="transport">
+        <button id="play" class="primary" aria-label="Afspil"><svg class="icon" viewBox="0 0 14 14"><path id="playIcon" d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg><span id="playTxt">Afspil</span></button>
+        <button id="restart" aria-label="Start forfra"><svg class="icon" viewBox="0 0 14 14"><path d="M2 2v10M12 2 4.5 7 12 12z" stroke="currentColor" stroke-width="1.6" fill="currentColor"/></svg></button>
+        <input id="scrub" type="range" min="0" max="1000" step="1" value="0" aria-label="Tidslinje">
+        <span class="period" id="periodLbl">–</span>
+        <span class="time" id="timeLbl">0:00 / 0:00</span>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-tab="data" id="tab-data">Data</button>
+        <button role="tab" aria-selected="false" data-tab="look" id="tab-look">Udseende</button>
+        <button role="tab" aria-selected="false" data-tab="export" id="tab-export">Eksport</button>
+      </div>
+
+      <div class="tabpane" data-pane="data">
+        <label class="drop" id="drop" for="file">
+          <strong>Vælg fil</strong> eller træk den hertil<br>
+          <span class="hint">CSV, TXT, Excel (.xlsx) eller en gemt opsætning (.json)</span>
+          <input id="file" type="file" accept=".csv,.txt,.tsv,.xlsx,.xls,.json" hidden>
+        </label>
+        <label class="field"><span>Eller indsæt data (fx kopieret fra Excel)</span>
+          <textarea id="dataText" spellcheck="false"></textarea>
+        </label>
+        <div class="btnrow">
+          <button id="applyData" class="primary">Brug data</button>
+          <button id="loadExample">Gendan eksempel</button>
+        </div>
+        <div id="dataStatus" class="status">–</div>
+        <p class="hint"><b>Bredt format:</b> én række pr. søjle, én kolonne pr. periode. Første kolonne er navnet, en kolonne med overskriften <code>Kategori</code> styrer farven. <b>Langt format:</b> kolonnerne <code>Navn; År; Værdi</code>. Danske decimaltal (1.234,5) forstås. Tomme celler midt i en serie udfyldes lineært.</p>
+      </div>
+
+      <div class="tabpane" data-pane="look" hidden>
+        <label class="field"><span>Titel</span><input id="title" type="text"></label>
+        <label class="field"><span>Undertitel</span><input id="subtitle" type="text"></label>
+        <label class="field"><span>Kilde</span><input id="source" type="text"></label>
+        <div class="row2">
+          <label class="field"><span>Enhed efter tal</span><input id="unit" type="text" placeholder="fx mio. kr."></label>
+          <label class="field"><span>Decimaler</span><input id="decimals" type="number" min="0" max="3" step="1"></label>
+        </div>
+        <div class="row2">
+          <label class="field"><span>Antal søjler</span><input id="topN" type="number" min="3" max="25" step="1"></label>
+          <label class="field"><span>Sek. pr. periode</span><input id="spp" type="number" min="0.3" max="10" step="0.1"></label>
+        </div>
+        <div class="row2">
+          <label class="field"><span>Format</span>
+            <select id="aspect"><option value="16:9">16:9 (YouTube, skærm)</option><option value="1:1">1:1 (opslag)</option><option value="9:16">9:16 (mobil, reels)</option><option value="4:3">4:3 (PowerPoint, ældre)</option></select>
+          </label>
+          <label class="field"><span>Baggrund</span>
+            <select id="vtheme"><option value="light">Lys</option><option value="dark">Mørk</option></select>
+          </label>
+        </div>
+        <div class="row2">
+          <label class="field"><span>Farver</span>
+            <select id="palette"><option value="vivid">Klare</option><option value="soft">Dæmpede</option><option value="blue">Blå nuancer</option></select>
+          </label>
+          <label class="field"><span>Farv efter</span>
+            <select id="colorBy"><option value="category">Kategori</option><option value="name">Navn</option></select>
+          </label>
+        </div>
+        <div class="row2">
+          <label class="field"><span>Referencelinje ved</span><input id="refLine" type="text" inputmode="decimal" placeholder="fx 100"></label>
+          <label class="field"><span>Tekst på linjen</span><input id="refLabel" type="text" placeholder="fx Landsgns."></label>
+        </div>
+        <label class="check"><input id="showTotal" type="checkbox"> Vis total for alle rækker</label>
+        <label class="check"><input id="showLegend" type="checkbox"> Vis farveforklaring (kategorier)</label>
+        <label class="check"><input id="showTimeline" type="checkbox"> Vis tidslinje i bunden</label>
+        <label class="check"><input id="smooth" type="checkbox"> Blød overgang mellem perioder</label>
+      </div>
+
+      <div class="tabpane" data-pane="export" hidden>
+        <p class="hint">Videoen optages i realtid, mens animationen kører fra start til slut. Lad fanen være synlig under optagelsen.</p>
+        <div class="row2">
+          <label class="field"><span>Pause i starten (sek.)</span><input id="holdStart" type="number" min="0" max="10" step="0.5"></label>
+          <label class="field"><span>Pause i slutningen (sek.)</span><input id="holdEnd" type="number" min="0" max="15" step="0.5"></label>
+        </div>
+        <div class="btnrow">
+          <button id="recBtn" class="rec"><svg class="icon" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.5" fill="currentColor"/></svg><span id="recTxt">Optag video</span></button>
+          <button id="pngBtn">Gem billede (PNG)</button>
+          <button id="cfgBtn">Gem opsætning (JSON)</button>
+        </div>
+        <div class="recbar" aria-hidden="true"><div id="recProg"></div></div>
+        <div id="expStatus" class="status">Format: <b id="mimeLbl">–</b></div>
+        <video id="preview" controls playsinline hidden></video>
+        <p class="hint">Opsætningsfilen (JSON) indeholder både data og indstillinger. Indlæs den igen under fanen Data for at fortsætte, hvor du slap. Video optages som MP4 i Chrome og Edge og som WebM i Firefox.</p>
+      </div>
+    </aside>
+  </div>
+  <footer class="foot">Søjleræs · Henrik Astrup · <a href="https://analyse.astrup.org">analyse.astrup.org</a> · Dine data bliver i din browser og sendes ingen steder hen.</footer>
+</div>
+
+<script>
+(() => {
+"use strict";
+const EXAMPLE_CSV = /*@DATA*/"Navn;Kategori;2000;2001;2002;2003;2004;2005;2006;2007;2008;2009;2010;2011;2012;2013;2014;2015;2016;2017;2018;2019;2020;2021;2022;2023;2024;2025\nÆbler;Kernefrugt;900;897;929;928;923;889;889;947;976;1037;1060;1092;1113;1031;1085;1124;1163;1076;993;959;946;970;978;1013;990;1016\nPærer;Kernefrugt;420;404;437;447;471;454;435;425;421;432;435;424;401;389;411;392;395;401;369;368;391;349;342;338;323;329\nJordbær;Bær;600;574;615;654;705;777;814;843;814;863;863;869;840;825;827;906;841;805;839;924;979;915;827;867;861;839\nHindbær;Bær;150;167;179;192;207;236;258;280;304;299;336;372;404;388;399;440;427;448;498;495;565;614;647;696;760;810\nBlåbær;Bær;60;65;72;84;94;101;118;141;155;163;181;202;223;265;284;336;355;383;441;519;604;687;774;873;1002;1114\nAppelsiner;Citrus;800;815;807;830;845;921;927;898;872;863;894;870;878;950;819;765;766;774;775;751;768;771;743;826;833;801\nCitroner;Citrus;300;303;308;272;271;290;279;283;302;321;352;329;330;331;348;374;331;356;337;355;336;345;373;378;389;412\nClementiner;Citrus;380;392;435;473;483;566;554;598;611;637;681;713;761;729;700;746;736;724;696;764;820;909;898;929;909;975\nBananer;Tropisk;1000;970;1061;1129;1136;1041;1130;1141;1124;1163;1205;1313;1266;1357;1478;1607;1617;1581;1685;1720;1757;1908;1912;1721;1713;1580\nMango;Tropisk;80;90;97;108;124;138;163;180;209;248;295;318;367;373;394;398;463;486;539;593;657;710;797;956;1063;1208\nAnanas;Tropisk;250;248;232;225;238;218;212;222;231;231;240;242;228;210;204;213;207;198;190;175;174;164;167;147;150;145\nAvocado;Tropisk;30;36;41;43;48;57;64;77;92;110;130;159;190;224;237;285;350;400;455;572;613;726;930;1035;1237;1551\nKirsebær;Stenfrugt;260;270;285;275;276;283;298;300;300;288;286;301;306;296;286;327;349;364;320;333;345;377;389;392;406;370\nBlommer;Stenfrugt;340;339;320;335;358;326;309;307;304;292;272;295;304;280;256;272;280;300;306;287;285;248;234;229;230;217"/*@END_DATA*/;
+const PLAYER = /*@PLAYER*/false/*@END_PLAYER*/;
+const EXAMPLE_SETTINGS = /*@SETTINGS*/{"title": "Frugtsalg på torvet", "subtitle": "Eksempeldata (fiktive tal) · ton pr. år", "source": "Kilde: dummydata – erstat med dine egne tal", "unit": "t", "decimals": 0, "topN": 10, "spp": 2, "aspect": "16:9", "vtheme": "light", "palette": "vivid", "colorBy": "name", "showTotal": true, "showLegend": false, "showTimeline": true, "smooth": true, "holdStart": 1.5, "holdEnd": 4, "refLine": "", "refLabel": ""}/*@END_SETTINGS*/;
+const SETTING_KEYS = Object.keys(EXAMPLE_SETTINGS);
+
+/* ---------- Tilstand ---------- */
+let S = { ...EXAMPLE_SETTINGS };
+let D = null;            // { names, cats, periods, values: Float64Array[] per navn }
+let KF = null;           // forudberegnede rangeringer
+let dataText = EXAMPLE_CSV;
+let t = 0;               // position i perioder (0 .. n-1)
+let playing = false, lastTs = 0;
+let recording = null;
+
+const $ = id => document.getElementById(id);
+const cv = $("c"), ctx = cv.getContext("2d");
+
+/* ---------- Lager (kun bekvemmelighed) ---------- */
+function saveLocal() {
+  if (PLAYER) return;
+  try { localStorage.setItem("soejleraes.web.v1", JSON.stringify({ S, dataText: dataText.length < 1.5e6 ? dataText : null })); } catch (e) {}
+}
+function loadLocal() {
+  try {
+    const o = JSON.parse(localStorage.getItem("soejleraes.web.v1") || "null");
+    if (o && o.S) { S = { ...EXAMPLE_SETTINGS, ...o.S }; if (o.dataText) dataText = o.dataText; }
+  } catch (e) {}
+}
+
+/* ---------- Parsing ---------- */
+function splitText(txt) {
+  txt = txt.replace(/^﻿/, "").replace(/\r\n?/g, "\n").trim();
+  const first = txt.split("\n")[0] || "";
+  const counts = { "\t": (first.match(/\t/g) || []).length, ";": (first.match(/;/g) || []).length, ",": (first.match(/,/g) || []).length };
+  const delim = counts["\t"] ? "\t" : counts[";"] ? ";" : ",";
+  const rows = [];
+  for (const line of txt.split("\n")) {
+    if (!line.trim()) continue;
+    const out = []; let cur = "", q = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (q) { if (ch === '"') { if (line[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += ch; }
+      else if (ch === '"') q = true;
+      else if (ch === delim) { out.push(cur); cur = ""; }
+      else cur += ch;
+    }
+    out.push(cur); rows.push(out.map(s => s.trim()));
+  }
+  return rows;
+}
+function num(v) {
+  if (typeof v === "number") return isFinite(v) ? v : NaN;
+  if (v == null) return NaN;
+  let s = String(v).replace(/[\s ]/g, "").replace(/[^\d.,\-−]/g, "").replace("−", "-");
+  if (!s || s === "-") return NaN;
+  const hasC = s.includes(","), hasD = s.includes(".");
+  if (hasC && hasD) {
+    if (s.lastIndexOf(",") > s.lastIndexOf(".")) s = s.replace(/\./g, "").replace(",", ".");
+    else s = s.replace(/,/g, "");
+  } else if (hasC) {
+    s = /^-?\d{1,3}(,\d{3}){2,}$/.test(s) ? s.replace(/,/g, "") : s.replace(",", ".");
+  } else if (hasD) {
+    if (/^-?\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, "");
+  }
+  const n = parseFloat(s); return isFinite(n) ? n : NaN;
+}
+const isTimeHeader = h => /^\s*(1[5-9]|2[0-1])\d{2}(\s*[-/KkQqMmHh]\s*\d{1,2})?(\s*[-/]\s*\d{1,2})?\s*$/.test(String(h));
+const CAT_RX = /^(kategori|gruppe|category|group|farve|type|region)$/i;
+
+function buildDataset(rows) {
+  rows = rows.filter(r => r && r.some(c => String(c ?? "").trim() !== ""));
+  if (rows.length < 2) throw new Error("Der er for få rækker. Første række skal være overskrifter.");
+  const head = rows[0].map(h => String(h ?? "").trim());
+  const timeIdx = head.map((h, i) => isTimeHeader(h) ? i : -1).filter(i => i >= 0);
+  let names = [], cats = [], periods = [], raw = [];
+  if (timeIdx.length >= 2) {
+    // Bredt format
+    const other = head.map((_, i) => i).filter(i => !timeIdx.includes(i));
+    const catIdx = other.find(i => CAT_RX.test(head[i]));
+    const nameIdx = other.find(i => i !== catIdx);
+    if (nameIdx === undefined) throw new Error("Kunne ikke finde en kolonne med navne.");
+    periods = timeIdx.map(i => head[i]);
+    for (const r of rows.slice(1)) {
+      const nm = String(r[nameIdx] ?? "").trim(); if (!nm) continue;
+      names.push(nm); cats.push(catIdx !== undefined ? String(r[catIdx] ?? "").trim() : "");
+      raw.push(timeIdx.map(i => num(r[i])));
+    }
+  } else {
+    // Langt format
+    const find = rx => head.findIndex(h => rx.test(h));
+    let ni = find(/^(navn|name|land|kommune|label|serie)$/i);
+    let ti = find(/^(år|aar|year|periode|period|tid|time|dato|date|kvartal|måned)$/i);
+    let vi = find(/^(værdi|vaerdi|value|antal|beløb|belob|tal|indhold)$/i);
+    const ci = find(CAT_RX);
+    const free = head.map((_, i) => i).filter(i => ![ni, ti, vi, ci].includes(i));
+    if (ni < 0) ni = free.shift(); if (ti < 0) ti = free.shift(); if (vi < 0) vi = free.shift();
+    if ([ni, ti, vi].some(i => i === undefined || i < 0)) throw new Error("Kunne ikke genkende formatet. Brug én kolonne pr. periode, eller kolonnerne Navn, År og Værdi.");
+    const pset = new Map(), map = new Map();
+    for (const r of rows.slice(1)) {
+      const nm = String(r[ni] ?? "").trim(), p = String(r[ti] ?? "").trim(); if (!nm || !p) continue;
+      pset.set(p, true);
+      if (!map.has(nm)) map.set(nm, { cat: ci >= 0 ? String(r[ci] ?? "").trim() : "", v: new Map() });
+      map.get(nm).v.set(p, num(r[vi]));
+    }
+    periods = [...pset.keys()].sort((a, b) => a.localeCompare(b, "da", { numeric: true }));
+    for (const [nm, o] of map) { names.push(nm); cats.push(o.cat); raw.push(periods.map(p => o.v.has(p) ? o.v.get(p) : NaN)); }
+  }
+  if (periods.length < 2) throw new Error("Der skal være mindst to perioder.");
+  if (!names.length) throw new Error("Ingen rækker med navne blev fundet.");
+  // Udfyld huller: lineært inde i serien, 0 udenfor
+  let filled = 0;
+  const values = raw.map(arr => {
+    const a = Float64Array.from(arr);
+    const known = []; a.forEach((v, i) => { if (!isNaN(v)) known.push(i); });
+    for (let i = 0; i < a.length; i++) {
+      if (!isNaN(a[i])) continue;
+      const L = known.filter(k => k < i).pop(), R = known.find(k => k > i);
+      if (L !== undefined && R !== undefined) { a[i] = a[L] + (a[R] - a[L]) * (i - L) / (R - L); filled++; }
+      else a[i] = 0;
+    }
+    return a;
+  });
+  return { names, cats, periods, values, filled };
+}
+
+/* ---------- Forberegning af rangeringer ---------- */
+const SUB = 12;
+function precompute() {
+  const n = D.periods.length, m = D.names.length, steps = (n - 1) * SUB;
+  const ranks = new Array(steps + 1);
+  const idx = [...Array(m).keys()];
+  for (let s = 0; s <= steps; s++) {
+    const tt = s / SUB, vals = valuesAt(tt);
+    const order = idx.slice().sort((a, b) => vals[b] - vals[a] || a - b);
+    const r = new Int16Array(m); order.forEach((k, pos) => r[k] = pos);
+    ranks[s] = r;
+  }
+  KF = { ranks };
+}
+const ease = x => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+function valuesAt(tt) {
+  const n = D.periods.length;
+  const i = Math.min(n - 2, Math.max(0, Math.floor(tt)));
+  let f = Math.min(1, Math.max(0, tt - i));
+  if (S.smooth) f = ease(f);
+  return D.values.map(a => a[i] + (a[i + 1] - a[i]) * f);
+}
+function ranksAt(tt) {
+  const steps = KF.ranks.length - 1;
+  const p = Math.min(steps, Math.max(0, tt * SUB));
+  const s0 = Math.floor(p), s1 = Math.min(steps, s0 + 1), f = p - s0;
+  const a = KF.ranks[s0], b = KF.ranks[s1];
+  return Array.from(a, (r, k) => r + (b[k] - r) * f);
+}
+
+/* ---------- Farver ---------- */
+const PALETTES = {
+  vivid: ["#3a6fe0", "#e8613c", "#2fa36b", "#d6a21e", "#8b5bd6", "#e04a8a", "#1fa3b8", "#7a8c21", "#b5391f", "#5966b8", "#f08c1a", "#3d9a9a", "#a3326a", "#6b7d8f", "#86c94a", "#1d4f91", "#c9a0e8", "#8a5a2b", "#f2b6c6", "#0f6b4f", "#e5c84a", "#5bc0eb", "#9b1d3a", "#4a4a8a"],
+  soft:  ["#6f8fc9", "#d98b6c", "#6fae8c", "#cfb064", "#9a84c4", "#cf7fa2", "#68adb9", "#9aa05e", "#c48f78", "#8189b8", "#c99a62", "#78a8a6", "#b882a0", "#8d99a6"],
+  blue:  ["#0b3d91", "#1f5fbf", "#3f7fd9", "#5fa0e8", "#8dbcf0", "#174a7c", "#2e6da4", "#4c8ec7", "#79aee0", "#a4c8ef", "#123a66", "#3c6e9e", "#6b9bcf", "#98bde6"]
+};
+let colorMap = new Map();
+function buildColors() {
+  colorMap = new Map();
+  const pal = PALETTES[S.palette] || PALETTES.vivid;
+  const useCat = S.colorBy === "category" && D.cats.some(c => c);
+  const keys = useCat ? [...new Set(D.cats)] : D.names;
+  // Unik farve til hver nøgle: paletten først, derefter jævnt fordelte ekstra nuancer (gyldne vinkel)
+  keys.forEach((k, i) => colorMap.set(k, i < pal.length ? pal[i] : `hsl(${Math.round((i - pal.length) * 137.508 + 20) % 360} ${i % 2 ? 62 : 48}% ${i % 3 ? 46 : 58}%)`));
+}
+const colorOf = k => colorMap.get(S.colorBy === "category" && D.cats.some(c => c) ? D.cats[k] : D.names[k]) || "#888";
+
+/* ---------- Formatering ---------- */
+const fmtCache = new Map();
+function fmt(v, dec = S.decimals) {
+  const key = "n" + dec; if (!fmtCache.has(key)) fmtCache.set(key, new Intl.NumberFormat("da-DK", { minimumFractionDigits: dec, maximumFractionDigits: dec }));
+  return fmtCache.get(key).format(v) + (S.unit ? " " + S.unit : "");
+}
+const fmtTickN = new Intl.NumberFormat("da-DK", { maximumFractionDigits: 2 });
+function fmtTick(v, span) {
+  const a = Math.abs(span);
+  if (a >= 5e9) return fmtTickN.format(v / 1e9) + " mia.";
+  if (a >= 5e6) return fmtTickN.format(v / 1e6) + " mio.";
+  return fmtTickN.format(v);
+}
+
+/* ---------- Tegning ---------- */
+const VTHEME = {
+  light: { bg: "#f7f8fa", fg: "#151a21", muted: "#6a7482", grid: "rgba(21,26,33,.09)", big: "rgba(21,26,33,.16)", track: "rgba(21,26,33,.12)" },
+  dark:  { bg: "#10141a", fg: "#eef1f5", muted: "#8e98a6", grid: "rgba(238,241,245,.08)", big: "rgba(238,241,245,.16)", track: "rgba(238,241,245,.14)" }
+};
+function canvasSize() {
+  return { "16:9": [1920, 1080], "1:1": [1080, 1080], "9:16": [1080, 1920], "4:3": [1440, 1080] }[S.aspect] || [1920, 1080];
+}
+function fitText(txt, maxW) {
+  if (ctx.measureText(txt).width <= maxW) return txt;
+  let s = txt; while (s.length > 1 && ctx.measureText(s + "…").width > maxW) s = s.slice(0, -1);
+  return s + "…";
+}
+function roundBar(x, y, w, h, r) {
+  r = Math.min(r, h / 2, w);
+  ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h); ctx.lineTo(x, y + h); ctx.closePath(); ctx.fill();
+}
+function niceStep(max, target) {
+  const raw = max / target, p = Math.pow(10, Math.floor(Math.log10(raw || 1)));
+  for (const m of [1, 2, 2.5, 5, 10]) if (raw <= m * p) return m * p;
+  return 10 * p;
+}
+
+function draw(tt) {
+  const [W, H] = canvasSize();
+  if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+  const th = VTHEME[S.vtheme] || VTHEME.light;
+  const u = Math.min(W, H) / 1080, portrait = H > W;
+  ctx.fillStyle = th.bg; ctx.fillRect(0, 0, W, H);
+  if (!D) return;
+
+  const n = D.periods.length, N = Math.min(S.topN, D.names.length);
+  const vals = valuesAt(tt), ranks = ranksAt(tt);
+  const M = 64 * u;
+
+  // Titel
+  ctx.textBaseline = "alphabetic"; ctx.textAlign = "left";
+  ctx.fillStyle = th.fg; ctx.font = `700 ${62 * u}px "Barlow Condensed", "Arial Narrow", sans-serif`;
+  ctx.fillText(fitText(S.title || "", W - 2 * M), M, M + 46 * u);
+  ctx.fillStyle = th.muted; ctx.font = `500 ${30 * u}px Barlow, system-ui, sans-serif`;
+  if (S.subtitle) ctx.fillText(fitText(S.subtitle, W - 2 * M), M, M + 88 * u);
+
+  // Farveforklaring
+  let top = M + (S.subtitle ? 130 : 90) * u;
+  const useCat = S.colorBy === "category" && D.cats.some(c => c);
+  if (S.showLegend && useCat) {
+    ctx.font = `500 ${24 * u}px Barlow, system-ui, sans-serif`;
+    let lx = M, ly = top;
+    for (const [k, col] of colorMap) {
+      const w = ctx.measureText(k).width + 46 * u;
+      if (lx + w > W - M) { lx = M; ly += 36 * u; }
+      ctx.fillStyle = col; roundBar(lx, ly - 17 * u, 22 * u, 22 * u, 5 * u);
+      ctx.fillStyle = th.fg; ctx.fillText(k, lx + 30 * u, ly + 2 * u); lx += w;
+    }
+    top = ly + 34 * u;
+  }
+
+  // Diagramområde
+  const bottomPad = (S.showTimeline ? 150 : (S.source ? 70 : 40)) * u;
+  const axisH = 34 * u;
+  const y0 = top + axisH, y1 = H - bottomPad;
+  const slot = (y1 - y0) / N, barH = slot * 0.8;
+  const nameFont = Math.max(16 * u, Math.min(34 * u, barH * 0.62));
+  ctx.font = `600 ${nameFont}px "Barlow Condensed", "Arial Narrow", sans-serif`;
+  let labelW = 0;
+  for (let k = 0; k < D.names.length; k++) if (ranks[k] < N + 1) labelW = Math.max(labelW, ctx.measureText(D.names[k]).width);
+  labelW = Math.min(labelW, W * (portrait ? 0.3 : 0.24));
+  const x0 = M + labelW + 18 * u;
+  ctx.font = `600 ${nameFont}px Barlow, system-ui, sans-serif`;
+  const valW = ctx.measureText(fmt(Math.max(...vals))).width + 24 * u;
+  const x1 = W - M - valW;
+
+  // Skala
+  const visible = [...vals.keys()].filter(k => ranks[k] < N);
+  const maxV = Math.max(1e-9, ...visible.map(k => vals[k]));
+  const minV = Math.min(0, ...visible.map(k => vals[k]));
+  const span = maxV - minV;
+  const X = v => x0 + (v - minV) / span * (x1 - x0);
+
+  // Gitter
+  const step = niceStep(span, portrait ? 3 : 5);
+  ctx.font = `500 ${21 * u}px Barlow, system-ui, sans-serif`; ctx.textAlign = "center";
+  for (let v = Math.ceil(minV / step) * step; v <= maxV + 1e-9; v += step) {
+    const x = X(v);
+    ctx.strokeStyle = th.grid; ctx.lineWidth = Math.max(1, 1.5 * u);
+    ctx.beginPath(); ctx.moveTo(x, y0 - 6 * u); ctx.lineTo(x, y1); ctx.stroke();
+    ctx.fillStyle = th.muted; ctx.fillText(fmtTick(v, span), x, y0 - 12 * u);
+  }
+
+  // Stor periodetekst + total
+  const pIdx = Math.min(n - 1, Math.round(tt));
+  ctx.textAlign = "right"; ctx.fillStyle = th.big;
+  const bigSize = (portrait ? 170 : 190) * u;
+  ctx.font = `800 ${bigSize}px "Barlow Condensed", "Arial Narrow", sans-serif`;
+  const bigY = y1 - (S.showTotal ? 58 : 18) * u;
+  ctx.fillText(D.periods[pIdx], W - M, bigY);
+  if (S.showTotal) {
+    const tot = vals.reduce((a, b) => a + b, 0);
+    ctx.fillStyle = th.muted; ctx.font = `600 ${32 * u}px Barlow, system-ui, sans-serif`;
+    ctx.fillText("Total: " + fmt(tot), W - M, y1 - 14 * u);
+  }
+
+  // Søjler (tegn fra bunden så top-søjler ligger øverst)
+  const order = [...vals.keys()].filter(k => ranks[k] < N + 0.999).sort((a, b) => ranks[b] - ranks[a]);
+  for (const k of order) {
+    const r = ranks[k];
+    const alpha = Math.max(0, Math.min(1, N - r));
+    if (alpha <= 0) continue;
+    const y = y0 + Math.min(r, N) * slot + (slot - barH) / 2;
+    const v = vals[k], xa = X(Math.min(0, v)), xb = X(Math.max(0, v));
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = colorOf(k); roundBar(xa, y, Math.max(2 * u, xb - xa), barH, 6 * u);
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = th.fg; ctx.textAlign = "right";
+    ctx.font = `600 ${nameFont}px "Barlow Condensed", "Arial Narrow", sans-serif`;
+    ctx.fillText(fitText(D.names[k], labelW), x0 - 14 * u, y + barH / 2);
+    ctx.textAlign = "left"; ctx.font = `600 ${nameFont * 0.92}px Barlow, system-ui, sans-serif`;
+    ctx.fillStyle = th.fg; ctx.fillText(fmt(v), xb + 12 * u, y + barH / 2);
+    ctx.globalAlpha = 1; ctx.textBaseline = "alphabetic";
+  }
+  // Referencelinje
+  const ref = num(S.refLine);
+  if (isFinite(ref) && ref >= minV && ref <= maxV * 1.02) {
+    const xr = X(ref);
+    ctx.save(); ctx.strokeStyle = th.fg; ctx.globalAlpha = .55; ctx.lineWidth = 2.5 * u; ctx.setLineDash([10 * u, 8 * u]);
+    ctx.beginPath(); ctx.moveTo(xr, y0 - 4 * u); ctx.lineTo(xr, y1 + 6 * u); ctx.stroke(); ctx.restore();
+    if (S.refLabel) {
+      ctx.font = `600 ${21 * u}px Barlow, system-ui, sans-serif`; ctx.textAlign = "left"; ctx.textBaseline = "top";
+      const tw = ctx.measureText(S.refLabel).width;
+      const lx = Math.min(xr + 8 * u, W - M - tw);
+      ctx.fillStyle = th.bg; ctx.fillRect(lx - 4 * u, y1 - 30 * u, tw + 8 * u, 28 * u);
+      ctx.fillStyle = th.fg; ctx.fillText(S.refLabel, lx, y1 - 27 * u); ctx.textBaseline = "alphabetic";
+    }
+  }
+  // Nul-akse
+  ctx.strokeStyle = th.muted; ctx.lineWidth = 2 * u;
+  ctx.beginPath(); ctx.moveTo(X(0), y0 - 4 * u); ctx.lineTo(X(0), y1); ctx.stroke();
+
+  // Tidslinje
+  if (S.showTimeline) {
+    const ty = H - (S.source ? 104 : 70) * u, tx0 = M, tx1 = W - M;
+    const lineY = ty;
+    ctx.strokeStyle = th.track; ctx.lineWidth = 4 * u; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(tx0, lineY); ctx.lineTo(tx1, lineY); ctx.stroke();
+    const px = tx0 + (tx1 - tx0) * (tt / (n - 1));
+    ctx.strokeStyle = th.fg; ctx.beginPath(); ctx.moveTo(tx0, lineY); ctx.lineTo(px, lineY); ctx.stroke();
+    ctx.fillStyle = th.fg; ctx.beginPath(); ctx.arc(px, lineY, 8 * u, 0, Math.PI * 2); ctx.fill();
+    ctx.lineCap = "butt";
+    ctx.font = `500 ${19 * u}px Barlow, system-ui, sans-serif`; ctx.fillStyle = th.muted;
+    const every = Math.max(1, Math.ceil(n / Math.floor((tx1 - tx0) / (90 * u))));
+    for (let i = 0; i < n; i += every) {
+      const x = tx0 + (tx1 - tx0) * (i / (n - 1));
+      ctx.textAlign = i === 0 ? "left" : (i + every >= n && i === n - 1) ? "right" : "center";
+      ctx.fillText(D.periods[i], x, lineY + 30 * u);
+    }
+  }
+  // Kilde
+  if (S.source) {
+    ctx.textAlign = "left"; ctx.fillStyle = th.muted; ctx.font = `500 ${21 * u}px Barlow, system-ui, sans-serif`;
+    ctx.fillText(fitText(S.source, W - 2 * M), M, H - 26 * u);
+  }
+}
+
+/* ---------- Afspilning ---------- */
+function totalSec() { return D ? (D.periods.length - 1) * S.spp : 0; }
+const mmss = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+function updateUI() {
+  if (!D) return;
+  const n = D.periods.length;
+  $("scrub").value = Math.round(t / (n - 1) * 1000);
+  $("periodLbl").textContent = D.periods[Math.min(n - 1, Math.round(t))];
+  $("timeLbl").textContent = `${mmss(t * S.spp)} / ${mmss(totalSec())}`;
+  $("playTxt").textContent = playing ? "Pause" : "Afspil";
+  $("playIcon").setAttribute("d", playing ? "M3 1.5h3v11H3zM8 1.5h3v11H8z" : "M3 1.5v11l9-5.5z");
+}
+function frame(ts) {
+  if (!playing) return;
+  const dt = lastTs ? (ts - lastTs) / 1000 : 0; lastTs = ts;
+  if (recording) {
+    recording.elapsed += dt;
+    const e = recording.elapsed - S.holdStart;
+    t = Math.max(0, Math.min(D.periods.length - 1, e / S.spp));
+    const total = S.holdStart + totalSec() + S.holdEnd;
+    $("recProg").style.width = Math.min(100, recording.elapsed / total * 100) + "%";
+    draw(t); updateUI();
+    if (recording.elapsed >= total) { stopRecording(); return; }
+  } else {
+    t += dt / S.spp;
+    if (t >= D.periods.length - 1) { t = D.periods.length - 1; playing = false; }
+    draw(t); updateUI();
+  }
+  requestAnimationFrame(frame);
+}
+function play() {
+  if (!D) return;
+  if (t >= D.periods.length - 1) t = 0;
+  playing = true; lastTs = 0; updateUI(); requestAnimationFrame(frame);
+}
+function pause() { playing = false; updateUI(); }
+
+/* ---------- Data-flow ---------- */
+function setStatus(el, html, cls) { el.className = "status " + (cls || ""); el.innerHTML = html; }
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+function useRows(rows, fromLabel) {
+  try {
+    const ds = buildDataset(rows);
+    D = ds; precompute(); buildColors(); t = Math.min(t, D.periods.length - 1);
+    const cats = [...new Set(D.cats.filter(Boolean))];
+    setStatus($("dataStatus"),
+      `<b>${D.names.length} rækker</b> · <b>${D.periods.length} perioder</b> (${esc(D.periods[0])}–${esc(D.periods[D.periods.length - 1])})` +
+      (cats.length ? ` · ${cats.length} kategorier` : "") + (ds.filled ? ` · ${ds.filled} tomme celler udfyldt` : "") +
+      (fromLabel ? `<br>${esc(fromLabel)}` : ""), "ok");
+    draw(t); updateUI(); saveLocal();
+    return true;
+  } catch (e) {
+    setStatus($("dataStatus"), "<b>Data kunne ikke læses.</b> " + esc(e.message), "err");
+    return false;
+  }
+}
+function applyText() { dataText = $("dataText").value; useRows(splitText(dataText)); }
+async function readFile(f) {
+  if (!f) return;
+  const ext = f.name.split(".").pop().toLowerCase();
+  if (ext === "json") {
+    try { const cfg = JSON.parse(await f.text()); if (!cfg.data) throw new Error(); window.soejleraes.load(cfg); }
+    catch (e) { setStatus($("dataStatus"), "<b>Opsætningsfilen kunne ikke læses.</b> Brug en fil gemt med Gem opsætning.", "err"); }
+    return;
+  }
+  if (ext === "xlsx" || ext === "xls") {
+    if (!window.XLSX) { setStatus($("dataStatus"), "<b>Excel-læseren kunne ikke indlæses.</b> Gem arket som CSV og prøv igen.", "err"); return; }
+    const wb = XLSX.read(await f.arrayBuffer(), { type: "array" });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: "" });
+    // tal-overskrifter (år) som tekst
+    if (rows[0]) rows[0] = rows[0].map(h => typeof h === "number" ? String(h) : h);
+    dataText = rows.map(r => r.map(c => typeof c === "number" ? String(c).replace(".", ",") : String(c)).join(";")).join("\n");
+    $("dataText").value = dataText;
+    useRows(rows, `Fra ${f.name}, ark "${wb.SheetNames[0]}"`);
+  } else {
+    dataText = await f.text(); $("dataText").value = dataText;
+    useRows(splitText(dataText), `Fra ${f.name}`);
+  }
+}
+
+/* ---------- Indstillinger <-> formular ---------- */
+const NUMERIC = ["decimals", "topN", "spp", "holdStart", "holdEnd"];
+function toForm() {
+  for (const k of SETTING_KEYS) {
+    const el = $(k); if (!el) continue;
+    if (el.type === "checkbox") el.checked = !!S[k]; else el.value = S[k];
+  }
+}
+function fromForm(e) {
+  const el = e.target, k = el.id; if (!SETTING_KEYS.includes(k)) return;
+  let v = el.type === "checkbox" ? el.checked : el.value;
+  if (NUMERIC.includes(k)) { v = parseFloat(String(v).replace(",", ".")); if (!isFinite(v)) return; v = Math.max(+el.min || 0, Math.min(+el.max || 1e9, v)); }
+  S[k] = v;
+  if (k === "decimals") fmtCache.clear();
+  if (D && (k === "palette" || k === "colorBy")) buildColors();
+  if (D && k === "smooth") precompute();
+  draw(t); updateUI(); saveLocal();
+}
+
+/* ---------- Eksport ---------- */
+let downloadsP = null;
+function downloads() {
+  if (!downloadsP) downloadsP = (window.claude && window.claude.use) ? Promise.race([window.claude.use("downloads").catch(() => null), new Promise(r => setTimeout(() => r(null), 1500))]) : Promise.resolve(null);
+  return downloadsP;
+}
+function pickMime() {
+  if (!window.MediaRecorder) return null;
+  const c = ["video/mp4;codecs=avc1.640028", "video/mp4;codecs=avc1.4d0028", "video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"];
+  return c.find(m => { try { return MediaRecorder.isTypeSupported(m); } catch (e) { return false; } }) || null;
+}
+const slug = () => (S.title || "soejleraes").toLowerCase().replace(/[æ]/g, "ae").replace(/[ø]/g, "oe").replace(/[å]/g, "aa").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "soejleraes";
+async function offer(filename, data) {
+  const dl = await downloads();
+  if (!dl) {
+    const blob = data instanceof Blob ? data : new Blob([data], { type: filename.endsWith(".json") ? "application/json" : "application/octet-stream" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+    setStatus($("expStatus"), `<b>Hentet:</b> ${esc(filename)}`, "ok"); return true;
+  }
+  try { await dl.save({ filename, data }); setStatus($("expStatus"), `<b>Gemt:</b> ${esc(filename)}`, "ok"); return true; }
+  catch (e) {
+    const msg = e && e.code === "declined" ? "Gemning annulleret." : e && e.code === "rate_limited" ? "Der er allerede en gem-dialog åben. Prøv igen om lidt." : "Filen kunne ikke gemmes (" + esc(e && e.code || "ukendt fejl") + ").";
+    setStatus($("expStatus"), msg, e && e.code === "declined" ? "" : "err"); return false;
+  }
+}
+function startRecording() {
+  if (!D || recording) return;
+  const mime = pickMime();
+  if (!mime || !cv.captureStream) { setStatus($("expStatus"), "<b>Denne browser kan ikke optage video.</b> Brug Chrome eller Edge, eller gem opsætningen og få videoen renderet.", "err"); return; }
+  const stream = cv.captureStream(30);
+  const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 14e6 });
+  const chunks = [];
+  rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+  rec.onstop = async () => {
+    const blob = new Blob(chunks, { type: mime.split(";")[0] });
+    const ext = mime.includes("mp4") ? "mp4" : "webm";
+    const v = $("preview"); v.src = URL.createObjectURL(blob); v.hidden = false;
+    setStatus($("expStatus"), `Optagelse færdig: <b>${(blob.size / 1048576).toFixed(1)} MB ${ext.toUpperCase()}</b>. Gemmer…`, "ok");
+    await offer(slug() + "." + ext, blob);
+  };
+  recording = { rec, elapsed: 0 };
+  t = 0; draw(0);
+  rec.start(500);
+  $("recTxt").textContent = "Stop optagelse";
+  for (const id of ["play", "restart", "scrub", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = true;
+  setStatus($("expStatus"), "<b>Optager…</b> Lad fanen være synlig, til optagelsen er færdig.", "");
+  playing = true; lastTs = 0; requestAnimationFrame(frame);
+}
+function stopRecording() {
+  if (!recording) return;
+  const r = recording; recording = null; playing = false;
+  try { r.rec.stop(); } catch (e) {}
+  $("recTxt").textContent = "Optag video"; $("recProg").style.width = "0";
+  for (const id of ["play", "restart", "scrub", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = false;
+  updateUI();
+}
+
+/* ---------- Hændelser ---------- */
+document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-selected", x === b ? "true" : "false"));
+  document.querySelectorAll(".tabpane").forEach(p => p.hidden = p.dataset.pane !== b.dataset.tab);
+}));
+$("play").onclick = () => playing ? pause() : play();
+$("restart").onclick = () => { t = 0; draw(t); updateUI(); };
+$("scrub").oninput = e => { if (!D) return; pause(); t = e.target.value / 1000 * (D.periods.length - 1); draw(t); updateUI(); };
+$("applyData").onclick = applyText;
+$("loadExample").onclick = () => { dataText = EXAMPLE_CSV; $("dataText").value = dataText; S = { ...EXAMPLE_SETTINGS }; toForm(); fmtCache.clear(); useRows(splitText(dataText), "Eksempeldata (fiktive tal)"); };
+$("file").onchange = e => readFile(e.target.files[0]);
+const drop = $("drop");
+["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => readFile(e.dataTransfer.files[0]));
+document.querySelectorAll("aside input, aside select").forEach(el => { el.addEventListener("input", fromForm); el.addEventListener("change", fromForm); });
+$("recBtn").onclick = () => recording ? stopRecording() : startRecording();
+$("pngBtn").onclick = () => cv.toBlob(b => b && offer(slug() + ".png", b), "image/png");
+$("cfgBtn").onclick = () => offer(slug() + ".json", JSON.stringify({ settings: S, data: dataText }, null, 1));
+document.addEventListener("keydown", e => { if (e.code === "Space" && !/INPUT|TEXTAREA|SELECT|BUTTON/.test(document.activeElement.tagName)) { e.preventDefault(); playing ? pause() : play(); } });
+
+/* ---------- Krog til billedperfekt rendering ---------- */
+window.soejleraes = {
+  load(cfg) { S = { ...EXAMPLE_SETTINGS, ...(cfg.settings || {}) }; fmtCache.clear(); dataText = cfg.data; toForm(); $("dataText").value = dataText; return useRows(splitText(dataText)); },
+  info() { return { periods: D ? D.periods.length : 0, spp: S.spp, holdStart: S.holdStart, holdEnd: S.holdEnd, size: canvasSize() }; },
+  renderAt(tt) { t = tt; draw(tt); return true; },
+  frame() { return cv.toDataURL("image/png"); }
+};
+
+/* ---------- Start ---------- */
+if (PLAYER) {
+  document.querySelector("header.top").hidden = true;
+  document.querySelector("aside.panel").hidden = true;
+  document.querySelector(".grid").style.gridTemplateColumns = "minmax(0, 1fr)";
+  cv.style.maxHeight = "82vh";
+} else loadLocal();
+toForm(); $("dataText").value = dataText;
+const mime = pickMime();
+$("mimeLbl").textContent = mime ? (mime.includes("mp4") ? "MP4 (H.264)" : "WebM") : "ikke understøttet i denne browser";
+useRows(splitText(dataText), dataText === EXAMPLE_CSV ? "Eksempeldata (fiktive tal)" : "");
+(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => { draw(t); if (PLAYER && !matchMedia("(prefers-reduced-motion: reduce)").matches) setTimeout(play, 600); });
+})();
+</script>
+</body>
+</html>
