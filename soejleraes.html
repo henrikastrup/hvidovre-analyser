@@ -68,6 +68,7 @@ button[aria-pressed="false"] { opacity: .65; }
 .transport { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .transport input[type=range] { flex: 1 1 200px; min-width: 0; accent-color: var(--accent); }
 .speed { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+#dsSel { max-width: 300px; text-overflow: ellipsis; }
 .speed select { width: auto; padding: 7px 8px; text-transform: none; letter-spacing: 0; font-weight: 500; }
 .period { font-family: var(--font-display); font-weight: 700; font-size: 22px; min-width: 5ch; text-align: right; font-variant-numeric: tabular-nums; }
 .time { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -140,6 +141,7 @@ video#preview { width: 100%; border-radius: 6px; background: #000; }
         <button id="play" class="primary" aria-label="Afspil"><svg class="icon" viewBox="0 0 14 14"><path id="playIcon" d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg><span id="playTxt">Afspil</span></button>
         <button id="restart" aria-label="Start forfra"><svg class="icon" viewBox="0 0 14 14"><path d="M2 2v10M12 2 4.5 7 12 12z" stroke="currentColor" stroke-width="1.6" fill="currentColor"/></svg></button>
         <input id="scrub" type="range" min="0" max="1000" step="1" value="0" aria-label="Tidslinje">
+        <label class="speed" id="dsBox" hidden><span>Datasæt</span><select id="dsSel" aria-label="Vælg datasæt"></select></label>
         <label class="speed"><span>Hastighed</span><select id="speedSel" aria-label="Hastighed"></select></label>
         <span class="period" id="periodLbl">–</span>
         <span class="time" id="timeLbl">0:00 / 0:00</span>
@@ -171,7 +173,7 @@ video#preview { width: 100%; border-radius: 6px; background: #000; }
           <button id="loadExample">Gendan eksempel</button>
         </div>
         <div id="dataStatus" class="status">–</div>
-        <p class="hint"><b>Bredt format:</b> én række pr. søjle, én kolonne pr. periode. Første kolonne er navnet, en kolonne med overskriften <code>Kategori</code> styrer farven. <b>Langt format:</b> kolonnerne <code>Navn; År; Værdi</code>. Danske decimaltal (1.234,5) forstås. Tomme celler betyder, at rækken ikke vises i den periode (kan ændres under Udseende).</p>
+        <p class="hint"><b>Bredt format:</b> én række pr. søjle, én kolonne pr. periode. Første kolonne er navnet, en kolonne med overskriften <code>Kategori</code> styrer farven. <b>Langt format:</b> kolonnerne <code>Navn; År; Værdi</code>. Danske decimaltal (1.234,5) forstås. Tomme celler betyder, at rækken ikke vises i den periode (kan ændres under Udseende). <b>Flere datasæt:</b> tilføj en første kolonne <code>Datasæt</code>, eller brug ét Excel-ark pr. datasæt. Så kan du skifte mellem dem i listen under diagrammet.</p>
       </div>
 
       <div class="tabpane" data-pane="look" hidden>
@@ -282,6 +284,10 @@ Rødovre;121,0;121,4;122,0</pre>
           <li>Tomme felter betyder som standard, at rækken ikke vises i den periode (fx en skole, der er lukket eller mangler tal et år). Fjern hakket "Tomme felter: vis ikke rækken i den periode" under Udseende, hvis tomme felter i stedet skal udfyldes jævnt mellem de kendte tal.</li>
           <li>Hold navnene korte (højst ca. 35 tegn), ellers afkortes de. Undgå dubletter og samlerækker som "I alt".</li>
           <li>Langt format virker også: kolonnerne <code>Navn; År; Værdi</code>, med én række pr. navn og år.</li>
+          <li><b>Flere datasæt i én fil:</b> tilføj en første kolonne <code>Datasæt</code>, der angiver, hvilket datasæt rækken hører til. Datasættets navn bruges som titel, når du vælger det. Datasættene må have forskellige år; tomme kolonner springes over. I Excel kan du i stedet lægge hvert datasæt i sit eget ark, så bliver arkets navn datasættets navn.
+<pre>Datasæt;Navn;2019;2022
+Mandater;Venstre;43;23
+Stemmeandel, pct.;Venstre;23,4;13,3</pre></li>
           <li>Der vises højst 40 søjler ad gangen. Under Udseende kan du vælge alle rækker eller et antal.</li>
         </ul>
 
@@ -324,9 +330,9 @@ Almene boliger;🏠;20;30</pre>
 <script>
 (() => {
 "use strict";
-const EXAMPLE_CSV = /*@DATA*/"Navn;Kategori;2000;2001;2002;2003;2004;2005;2006;2007;2008;2009;2010;2011;2012;2013;2014;2015;2016;2017;2018;2019;2020;2021;2022;2023;2024;2025\nÆbler;Kernefrugt;900;897;929;928;923;889;889;947;976;1037;1060;1092;1113;1031;1085;1124;1163;1076;993;959;946;970;978;1013;990;1016\nPærer;Kernefrugt;420;404;437;447;471;454;435;425;421;432;435;424;401;389;411;392;395;401;369;368;391;349;342;338;323;329\nJordbær;Bær;600;574;615;654;705;777;814;843;814;863;863;869;840;825;827;906;841;805;839;924;979;915;827;867;861;839\nHindbær;Bær;150;167;179;192;207;236;258;280;304;299;336;372;404;388;399;440;427;448;498;495;565;614;647;696;760;810\nBlåbær;Bær;60;65;72;84;94;101;118;141;155;163;181;202;223;265;284;336;355;383;441;519;604;687;774;873;1002;1114\nAppelsiner;Citrus;800;815;807;830;845;921;927;898;872;863;894;870;878;950;819;765;766;774;775;751;768;771;743;826;833;801\nCitroner;Citrus;300;303;308;272;271;290;279;283;302;321;352;329;330;331;348;374;331;356;337;355;336;345;373;378;389;412\nClementiner;Citrus;380;392;435;473;483;566;554;598;611;637;681;713;761;729;700;746;736;724;696;764;820;909;898;929;909;975\nBananer;Tropisk;1000;970;1061;1129;1136;1041;1130;1141;1124;1163;1205;1313;1266;1357;1478;1607;1617;1581;1685;1720;1757;1908;1912;1721;1713;1580\nMango;Tropisk;80;90;97;108;124;138;163;180;209;248;295;318;367;373;394;398;463;486;539;593;657;710;797;956;1063;1208\nAnanas;Tropisk;250;248;232;225;238;218;212;222;231;231;240;242;228;210;204;213;207;198;190;175;174;164;167;147;150;145\nAvocado;Tropisk;30;36;41;43;48;57;64;77;92;110;130;159;190;224;237;285;350;400;455;572;613;726;930;1035;1237;1551\nKirsebær;Stenfrugt;260;270;285;275;276;283;298;300;300;288;286;301;306;296;286;327;349;364;320;333;345;377;389;392;406;370\nBlommer;Stenfrugt;340;339;320;335;358;326;309;307;304;292;272;295;304;280;256;272;280;300;306;287;285;248;234;229;230;217"/*@END_DATA*/;
+const EXAMPLE_CSV = /*@DATA*/"Datasæt;Navn;Symbol;1971;1973;1975;1977;1979;1981;1984;1987;1988;1990;1994;1998;2001;2005;2007;2011;2015;2019;2022;2026\nMandater ved folketingsvalg;Socialdemokratiet;https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Socialdemokratiet_symbol_%282014%E2%80%93present%29.svg/120px-Socialdemokratiet_symbol_%282014%E2%80%93present%29.svg.png;70;46;53;65;68;59;56;54;55;69;62;63;52;47;45;44;47;48;50;38\nMandater ved folketingsvalg;Venstre;https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Venstre_symbol_%282013%E2%80%93present%29.svg/120px-Venstre_symbol_%282013%E2%80%93present%29.svg.png;30;22;42;21;22;20;22;19;22;29;42;42;56;52;46;47;34;43;23;18\nMandater ved folketingsvalg;Det Konservative Folkeparti;https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Det_Konservative_Folkeparti_Teillogo.svg/120px-Det_Konservative_Folkeparti_Teillogo.svg.png;31;16;10;15;22;26;42;38;35;30;27;16;16;18;18;8;6;12;10;13\nMandater ved folketingsvalg;Radikale Venstre;https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Radikale_Venstre_symbol_%282021%E2%80%93present%29.svg/120px-Radikale_Venstre_symbol_%282021%E2%80%93present%29.svg.png;27;20;13;6;10;9;10;11;10;7;8;7;9;17;9;17;8;16;7;10\nMandater ved folketingsvalg;SF;https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bc/SF_-_Socialistiske_Folkeparti.svg/250px-SF_-_Socialistiske_Folkeparti.svg.png;17;11;9;7;11;21;21;27;24;15;13;13;12;11;23;16;7;14;15;20\nMandater ved folketingsvalg;Fremskridtspartiet;;;28;24;26;20;16;6;9;16;12;11;4;;;;;;;;\nMandater ved folketingsvalg;Centrum-Demokraterne;https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/Logo_Centre_Democrats_%28Denmark%29.svg/250px-Logo_Centre_Democrats_%28Denmark%29.svg.png;;14;4;11;6;15;8;9;9;9;5;8;;;;;;;;\nMandater ved folketingsvalg;Kristeligt Folkeparti;https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/2022_logo_of_the_Christian_Democrats_%28Denmark%29.svg/120px-2022_logo_of_the_Christian_Democrats_%28Denmark%29.svg.png;;7;9;6;5;4;5;4;4;4;;4;4;;;;;;;\nMandater ved folketingsvalg;Danmarks Kommunistiske Parti;https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/DKP_logo.svg/120px-DKP_logo.svg.png;;6;7;7;;;;;;;;;;;;;;;;\nMandater ved folketingsvalg;Venstresocialisterne;;;;4;5;6;5;5;;;;;;;;;;;;;\nMandater ved folketingsvalg;Retsforbundet;https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Retsstat_symbol%2C_Justice_Party_of_Denmark%2C_1939.svg/60px-Retsstat_symbol%2C_Justice_Party_of_Denmark%2C_1939.svg.png;;5;;6;5;;;;;;;;;;;;;;;\nMandater ved folketingsvalg;Fælles Kurs;;;;;;;;;4;;;;;;;;;;;;\nMandater ved folketingsvalg;Enhedslisten;https://thumb.wikimedia.org/wikipedia/commons/thumb/a/aa/Enhedslisten_symbol_%282017%E2%80%93present%29.svg/120px-Enhedslisten_symbol_%282017%E2%80%93present%29.svg.png;;;;;;;;;;;6;5;4;6;4;12;14;13;9;11\nMandater ved folketingsvalg;Dansk Folkeparti;https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Dansk_Folkeparti_new_small_logo_10_2023_positive.svg/120px-Dansk_Folkeparti_new_small_logo_10_2023_positive.svg.png;;;;;;;;;;;;13;22;24;25;22;37;16;5;16\nMandater ved folketingsvalg;Liberal Alliance;https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/LA_cirkel_blaa_pa_hvid.svg/120px-LA_cirkel_blaa_pa_hvid.svg.png;;;;;;;;;;;;;;;5;9;13;4;14;16\nMandater ved folketingsvalg;Alternativet;https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4f/Alternativet_symbol_%282015%E2%80%93present%29.svg/120px-Alternativet_symbol_%282015%E2%80%93present%29.svg.png;;;;;;;;;;;;;;;;;9;5;6;5\nMandater ved folketingsvalg;Nye Borgerlige;https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/Nye_Borgerlige_election_symbol.svg/250px-Nye_Borgerlige_election_symbol.svg.png;;;;;;;;;;;;;;;;;;4;6;\nMandater ved folketingsvalg;Moderaterne;https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Moderaterne_logo.svg/120px-Moderaterne_logo.svg.png;;;;;;;;;;;;;;;;;;;16;14\nMandater ved folketingsvalg;Danmarksdemokraterne;https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Danmarksdemokraterne_2024_logo_short.svg/250px-Danmarksdemokraterne_2024_logo_short.svg.png;;;;;;;;;;;;;;;;;;;14;10\nMandater ved folketingsvalg;Borgernes Parti;https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/Borgernes_Parti_logo.svg/120px-Borgernes_Parti_logo.svg.png;;;;;;;;;;;;;;;;;;;;4\nMandater ved folketingsvalg;Uden for partierne;;;;;;;;;;;;1;;;;;;;;;\nStemmeandel ved folketingsvalg, pct.;Socialdemokratiet;https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Socialdemokratiet_symbol_%282014%E2%80%93present%29.svg/120px-Socialdemokratiet_symbol_%282014%E2%80%93present%29.svg.png;;;;;;;;;;;;;;;25,5;24,8;26,3;25,9;27,5;21,8\nStemmeandel ved folketingsvalg, pct.;SF;https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bc/SF_-_Socialistiske_Folkeparti.svg/250px-SF_-_Socialistiske_Folkeparti.svg.png;;;;;;;;;;;;;;;13,0;9,2;4,2;7,7;8,3;11,6\nStemmeandel ved folketingsvalg, pct.;Venstre;https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Venstre_symbol_%282013%E2%80%93present%29.svg/120px-Venstre_symbol_%282013%E2%80%93present%29.svg.png;;;;;;;;;;;;;;;26,3;26,7;19,5;23,4;13,3;10,1\nStemmeandel ved folketingsvalg, pct.;Liberal Alliance;https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/LA_cirkel_blaa_pa_hvid.svg/120px-LA_cirkel_blaa_pa_hvid.svg.png;;;;;;;;;;;;;;;2,8;5,0;7,5;2,3;7,9;9,4\nStemmeandel ved folketingsvalg, pct.;Dansk Folkeparti;https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Dansk_Folkeparti_new_small_logo_10_2023_positive.svg/120px-Dansk_Folkeparti_new_small_logo_10_2023_positive.svg.png;;;;;;;;;;;;;;;13,9;12,3;21,1;8,7;2,6;9,1\nStemmeandel ved folketingsvalg, pct.;Moderaterne;https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Moderaterne_logo.svg/120px-Moderaterne_logo.svg.png;;;;;;;;;;;;;;;;;;;9,3;7,7\nStemmeandel ved folketingsvalg, pct.;Det Konservative Folkeparti;https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Det_Konservative_Folkeparti_Teillogo.svg/120px-Det_Konservative_Folkeparti_Teillogo.svg.png;;;;;;;;;;;;;;;10,4;4,9;3,4;6,6;5,5;7,6\nStemmeandel ved folketingsvalg, pct.;Enhedslisten;https://thumb.wikimedia.org/wikipedia/commons/thumb/a/aa/Enhedslisten_symbol_%282017%E2%80%93present%29.svg/120px-Enhedslisten_symbol_%282017%E2%80%93present%29.svg.png;;;;;;;;;;;;;;;2,2;6,7;7,8;6,9;5,1;6,3\nStemmeandel ved folketingsvalg, pct.;Radikale Venstre;https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Radikale_Venstre_symbol_%282021%E2%80%93present%29.svg/120px-Radikale_Venstre_symbol_%282021%E2%80%93present%29.svg.png;;;;;;;;;;;;;;;5,1;9,5;4,6;8,6;3,8;5,8\nStemmeandel ved folketingsvalg, pct.;Danmarksdemokraterne;https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Danmarksdemokraterne_2024_logo_short.svg/250px-Danmarksdemokraterne_2024_logo_short.svg.png;;;;;;;;;;;;;;;;;;;8,1;5,8\nStemmeandel ved folketingsvalg, pct.;Alternativet;https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4f/Alternativet_symbol_%282015%E2%80%93present%29.svg/120px-Alternativet_symbol_%282015%E2%80%93present%29.svg.png;;;;;;;;;;;;;;;;;4,8;3,0;3,3;2,6\nStemmeandel ved folketingsvalg, pct.;Borgernes Parti;https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/Borgernes_Parti_logo.svg/120px-Borgernes_Parti_logo.svg.png;;;;;;;;;;;;;;;;;;;;2,1\nStemmeandel ved folketingsvalg, pct.;Uden for partierne;;;;;;;;;;;;;;;;;0,1;0,1;0,1;0,1;0,1\nStemmeandel ved folketingsvalg, pct.;Nye Borgerlige;https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/Nye_Borgerlige_election_symbol.svg/250px-Nye_Borgerlige_election_symbol.svg.png;;;;;;;;;;;;;;;;;;2,4;3,7;\nStemmeandel ved folketingsvalg, pct.;Klaus Riskær Pedersen;;;;;;;;;;;;;;;;;;;0,8;;\nStemmeandel ved folketingsvalg, pct.;Kristeligt Folkeparti;https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/2022_logo_of_the_Christian_Democrats_%28Denmark%29.svg/120px-2022_logo_of_the_Christian_Democrats_%28Denmark%29.svg.png;;;;;;;;;;;;;;;0,9;0,8;0,8;1,7;0,5;\nStemmeandel ved folketingsvalg, pct.;Stram Kurs;;;;;;;;;;;;;;;;;;;1,8;;\nStemmeandel ved folketingsvalg, pct.;Frie Grønne;;;;;;;;;;;;;;;;;;;;0,9;"/*@END_DATA*/;
 const PLAYER = /*@PLAYER*/false/*@END_PLAYER*/;
-const EXAMPLE_SETTINGS = /*@SETTINGS*/{"title": "Frugtsalg på torvet", "subtitle": "Eksempeldata (fiktive tal) · ton pr. år", "source": "Kilde: dummydata – erstat med dine egne tal", "unit": "t", "decimals": 0, "topN": 10, "topAuto": false, "showClock": true, "dynAxis": false, "blanksHide": true, "showSymbols": true, "highlightOn": false, "musicOn": false, "musicSrc": "file", "musicVol": 40, "showRank": true, "highlightName": "", "spp": 2, "aspect": "16:9", "vtheme": "light", "palette": "vivid", "colorBy": "name", "showTotal": true, "showLegend": false, "showTimeline": true, "smooth": true, "holdStart": 1.5, "holdEnd": 4, "refLine": "", "refLabel": ""}/*@END_SETTINGS*/;
+const EXAMPLE_SETTINGS = /*@SETTINGS*/{"title":"Mandater ved folketingsvalg","subtitle":"Danmark 1971–2026. Skift til stemmeandel i listen under diagrammet","source":"Stemmeandel: Danmarks Statistik (FVPANDEL), 2007–2026","unit":"","decimals":0,"topN":10,"topAuto":true,"showClock":true,"dynAxis":false,"blanksHide":true,"showSymbols":true,"highlightOn":false,"musicOn":false,"musicSrc":"file","musicVol":40,"showRank":true,"highlightName":"","spp":2,"aspect":"16:9","vtheme":"light","palette":"vivid","colorBy":"name","showTotal":false,"showLegend":false,"showTimeline":true,"smooth":true,"holdStart":1.5,"holdEnd":4,"refLine":"","refLabel":"","dsName":""}/*@END_SETTINGS*/;
 const SETTING_KEYS = Object.keys(EXAMPLE_SETTINGS);
 
 /* ---------- Tilstand ---------- */
@@ -862,6 +868,77 @@ async function play() {
 }
 function pause() { waitingMusic = false; playing = false; stopMusic(); updateUI(); }
 
+/* ---------- Flere datasæt i én fil ---------- */
+// CSV: en kolonne "Datasæt" angiver, hvilket datasæt rækken hører til. Excel: hvert ark er ét datasæt.
+const DS_RX = /^(datasæt|datasaet|dataset)$/i;
+let DSL = [], dsIdx = 0;   // [{ name, rows }]
+function splitDatasets(rows, fallbackName) {
+  rows = rows.filter(r => r && r.some(c => String(c ?? "").trim() !== ""));
+  if (!rows.length) return [];
+  const head = rows[0].map(h => String(h ?? "").trim());
+  const di = head.findIndex(h => DS_RX.test(h));
+  if (di < 0) return [{ name: fallbackName || "", rows }];
+  const keep = head.map((_, i) => i).filter(i => i !== di), h2 = keep.map(i => head[i]);
+  const groups = new Map();
+  for (const r of rows.slice(1)) {
+    const n = String(r[di] ?? "").trim() || "Datasæt";
+    if (!groups.has(n)) groups.set(n, []);
+    groups.get(n).push(keep.map(i => r[i]));
+  }
+  // perioder uden et eneste tal i datasættet fjernes, så hvert datasæt kun har sine egne år
+  return [...groups].map(([name, body]) => {
+    const cols = h2.map((_, j) => j).filter(j => !isTimeHeader(h2[j]) || body.some(r => String(r[j] ?? "").trim() !== ""));
+    return { name, rows: [cols.map(j => h2[j]), ...body.map(r => cols.map(j => r[j]))] };
+  });
+}
+const csvCell = c => { const s = typeof c === "number" ? String(c).replace(".", ",") : String(c ?? ""); return /[;"\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+// Samler datasæt til én tekst med kolonnen "Datasæt" (bruges i tekstfeltet, opsætningsfilen og browserens hukommelse)
+function datasetsToText(list) {
+  if (list.length === 1 && !list[0].name) return list[0].rows.map(r => r.map(csvCell).join(";")).join("\n");
+  const other = [], per = [];
+  for (const d of list) d.rows[0].forEach((h, i) => {
+    const s = i === 0 ? "Navn" : String(h ?? "").trim();
+    if (isTimeHeader(s)) { if (!per.includes(s)) per.push(s); } else if (!other.includes(s)) other.push(s);
+  });
+  per.sort((a, b) => a.localeCompare(b, "da", { numeric: true }));
+  const cols = [...other, ...per], lines = [["Datasæt", ...cols]];
+  for (const d of list) {
+    const ix = new Map(d.rows[0].map((h, i) => [i === 0 ? "Navn" : String(h ?? "").trim(), i]));
+    for (const r of d.rows.slice(1)) lines.push([d.name, ...cols.map(h => ix.has(h) ? r[ix.get(h)] : "")]);
+  }
+  return lines.map(r => r.map(csvCell).join(";")).join("\n");
+}
+function detectDecimals(rows) {
+  let dec = 0;
+  for (const r of rows.slice(1)) for (const c of r.slice(1)) {
+    if (typeof c === "number") { if (!Number.isInteger(c)) dec = Math.max(dec, Math.min(2, (String(c).split(".")[1] || "").length)); continue; }
+    const m = String(c ?? "").trim().match(/[.,]([0-9]+)$/);
+    if (m && m[1].length !== 3) dec = Math.max(dec, Math.min(2, m[1].length));
+  }
+  return dec;
+}
+function syncDsSel() {
+  const sel = $("dsSel");
+  $("dsBox").hidden = DSL.length < 2;
+  sel.innerHTML = DSL.map((d, i) => '<option value="' + i + '">' + esc(d.name || "Datasæt " + (i + 1)) + "</option>").join("");
+  sel.value = String(dsIdx);
+}
+// Vælger datasæt nr. i. auto = sæt titel og decimaler ud fra datasættet
+function useDataset(i, fromLabel, auto) {
+  dsIdx = Math.max(0, Math.min(DSL.length - 1, i));
+  const d = DSL[dsIdx]; S.dsName = d.name;
+  if (auto && d.name) { S.title = d.name; S.decimals = detectDecimals(d.rows); fmtCache.clear(); toForm(); }
+  syncDsSel();
+  const lbl = [DSL.length > 1 ? DSL.length + " datasæt i filen" : "", fromLabel || ""].filter(Boolean).join(" · ");
+  return useRows(d.rows, lbl);
+}
+function loadData(list, fromLabel, auto) {
+  if (!list.length) { setStatus($("dataStatus"), "<b>Data kunne ikke læses.</b> Filen er tom.", "err"); return false; }
+  DSL = list;
+  const i = Math.max(0, list.findIndex(d => d.name === S.dsName));
+  return useDataset(i, fromLabel, auto && list.length > 1);
+}
+
 /* ---------- Data-flow ---------- */
 function setStatus(el, html, cls) { el.className = "status " + (cls || ""); el.innerHTML = html; }
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
@@ -888,7 +965,7 @@ function adoptMeta(rows, fileName, force) {
   const isEx = k => S[k] === ex[k];
   if (force || isEx("title")) S.title = (fileName || "").replace(/[.][^.]+$/, "").replace(/[_]+/g, " ").trim() || "Mit datasæt";
   for (const k of ["subtitle", "source", "unit"]) if (force || isEx(k)) S[k] = "";
-  S.refLine = ""; S.refLabel = ""; S.showTotal = false;
+  S.refLine = ""; S.refLabel = ""; S.showTotal = false; S.dsName = "";
   S.colorBy = "name";
   let dec = 0;
   for (const r of rows.slice(1)) for (const c of r.slice(1)) {
@@ -898,7 +975,10 @@ function adoptMeta(rows, fileName, force) {
   S.decimals = dec; fmtCache.clear();
   showAll(); toForm();
 }
-function applyText() { dataText = $("dataText").value; adoptMeta(splitText(dataText), "", false); useRows(splitText(dataText)); }
+function applyText() {
+  dataText = $("dataText").value; const list = splitDatasets(splitText(dataText));
+  adoptMeta(list[0] ? list[0].rows : [], "", false); loadData(list, "", true);
+}
 async function readFile(f) {
   if (!f) return;
   const ext = f.name.split(".").pop().toLowerCase();
@@ -910,17 +990,21 @@ async function readFile(f) {
   if (ext === "xlsx" || ext === "xls") {
     if (!window.XLSX) { setStatus($("dataStatus"), "<b>Excel-læseren kunne ikke indlæses.</b> Gem arket som CSV og prøv igen.", "err"); return; }
     const wb = XLSX.read(await f.arrayBuffer(), { type: "array" });
-    const ws = wb.Sheets[wb.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: "" });
-    // tal-overskrifter (år) som tekst
-    if (rows[0]) rows[0] = rows[0].map(h => typeof h === "number" ? String(h) : h);
-    adoptMeta(rows, f.name, true);
-    dataText = rows.map(r => r.map(c => typeof c === "number" ? String(c).replace(".", ",") : String(c)).join(";")).join("\n");
-    $("dataText").value = dataText;
-    useRows(rows, `Fra ${f.name}, ark "${wb.SheetNames[0]}"`);
+    let list = [];
+    for (const sn of wb.SheetNames) {   // hvert ark med data er ét datasæt (eller flere, hvis arket har kolonnen Datasæt)
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header: 1, raw: true, defval: "" });
+      if (rows[0]) rows[0] = rows[0].map(h => typeof h === "number" ? String(h) : h);   // år som tekst
+      if (rows.filter(r => r.some(c => String(c).trim() !== "")).length < 2) continue;
+      list.push(...splitDatasets(rows, wb.SheetNames.length > 1 ? sn : ""));
+    }
+    if (list.length > 1) list = list.map((d, i) => ({ ...d, name: d.name || "Ark " + (i + 1) }));
+    adoptMeta(list[0] ? list[0].rows : [], f.name, true);
+    dataText = datasetsToText(list); $("dataText").value = dataText;
+    loadData(list, `Fra ${f.name}`, true);
   } else {
-    dataText = await f.text(); $("dataText").value = dataText; adoptMeta(splitText(dataText), f.name, true);
-    useRows(splitText(dataText), `Fra ${f.name}`);
+    dataText = await f.text(); $("dataText").value = dataText;
+    const list = splitDatasets(splitText(dataText)); adoptMeta(list[0] ? list[0].rows : [], f.name, true);
+    loadData(list, `Fra ${f.name}`, true);
   }
 }
 
@@ -1027,7 +1111,7 @@ function startRecording() {
   t = 0; draw(0);
   rec.start(500);
   $("recTxt").textContent = "Stop optagelse";
-  for (const id of ["play", "restart", "scrub", "speedSel", "symBtn", "musicBtn", "musicOn", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = true;
+  for (const id of ["play", "restart", "scrub", "speedSel", "dsSel", "symBtn", "musicBtn", "musicOn", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = true;
   setStatus($("expStatus"), "<b>Optager…</b> Lad fanen være synlig, til optagelsen er færdig.", "");
   startMusic(true, true);
   playing = true; lastTs = 0; requestAnimationFrame(frame);
@@ -1037,12 +1121,12 @@ function stopRecording() {
   const r = recording; recording = null; playing = false; stopMusic();
   try { r.rec.stop(); } catch (e) {}
   $("recTxt").textContent = "Optag video"; $("recProg").style.width = "0";
-  for (const id of ["play", "restart", "scrub", "speedSel", "symBtn", "musicBtn", "musicOn", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = false;
+  for (const id of ["play", "restart", "scrub", "speedSel", "dsSel", "symBtn", "musicBtn", "musicOn", "applyData", "pngBtn", "cfgBtn"]) $(id).disabled = false;
   updateUI();
 }
 
 /* ---------- Vejledning: prompt til AI ---------- */
-const AI_PROMPT = "Du skal gøre mit datasæt klar til værktøjet Søjleræs (animeret søjlediagram, \"bar chart race\") på analyse.astrup.org/soejleraes.html. Lever resultatet som en CSV-fil, jeg kan downloade og uploade. Kan du ikke lave filer, så skriv hele CSV'en i én kodeblok.\n\nFORMAT (skal følges præcist)\n- Semikolonsepareret CSV, UTF-8, første række er overskrifter.\n- Én række pr. søjle (fx kommune, land eller emne) og én kolonne pr. periode.\n- Første kolonne hedder Navn. Perioderne er kolonner med årstal som overskrift: 2021, 2022 ... (kvartaler: 2021K1, måneder: 2021M03). Hvert år eller kvartal er sin egen kolonne. Læg aldrig perioder sammen.\n- Valgfri kolonne Symbol lige efter Navn (billed-URL eller emoji, tom hvis der intet er). Valgfri kolonne Kategori kun hvis jeg vil have farver efter kategori.\n- Tal med decimalkomma (116,9), uden tusindtalsseparator og uden enheder eller procenttegn i cellerne. Tomme felter kun hvor data virkelig mangler.\n- Ingen dubletter. Ingen samlerækker (fx \"I alt\" eller \"Hele landet\"), medmindre jeg beder om det.\n- En celle med semikolon eller anførselstegn skal stå i anførselstegn.\n\nNAVNE\n- Korte, pæne visningsnavne (højst ca. 35 tegn) i dansk stavemåde med stort begyndelsesbogstav. Fjern koder og præfikser (fx \"000=Hele landet\" bliver \"Hele landet\"). Kommuner skrives uden \"Kommune\". Forkort fx \"med\" til \"m.\".\n- Vis mig en kort liste over de navne, du har ændret.\n\nSYMBOLER (spørg mig først, om jeg vil have: ingen, flag, kommunevåben, ikoner/emoji eller noget andet)\n- Flag: https://flagcdn.com/w80/XX.png hvor XX er landets ISO-kode med to små bogstaver, fx np (Nepal), tr (Tyrkiet), ua (Ukraine), gb-eng (England). Brug aldrig flag-emoji, de vises som bogstaver på Windows.\n- Kommunevåben: billed-URL fra Wikimedia Commons (adresser på upload.wikimedia.org eller thumb.wikimedia.org). Kommunevåbnene hedder ofte \"<Kommune> Kommunevåben.svg\" eller \"<Kommune> Kommune shield.png\".\n- Emner (fx boliger, beskæftigelse, sundhed): ét farve-emoji pr. række, fx 🏠 💼 🎓 💰 🧠 🩺 🧒 🧓 🌍 📍 🍺 🚬. Lad cellen stå tom, hvis intet passer.\n- Opfind aldrig links. Kan du ikke kontrollere, at et link virker, så lad cellen stå tom og fortæl mig, hvilke rækker der mangler symbol.\n\nSÅDAN GÅR DU FREM\n1. Se på mit datasæt og stil kun de spørgsmål, du mangler svar på: hvilke kolonner der er navne, perioder og værdier; om alle rækker skal med, eller kun de N største hvert år (behold i så fald alle rækker, der er blandt de N største mindst ét år, med de faktiske tal for alle år); hvilke symboler jeg vil have; og om tallene skal omregnes (fx til indeks eller faste priser).\n2. Lav filen efter reglerne ovenfor.\n3. Kontrollér: alle perioder er med, alle værdier er tal, ingen dubletter, navnene er pæne, og symbolerne er fundet. Sammenlign to eller tre tal med mit originale datasæt.\n4. Giv mig til sidst forslag til indstillinger i Søjleræs: titel, undertitel (med datastatus, fx faktisk eller prognose), kilde, enhed, antal decimaler, antal søjler, om \"Vis total\" skal slås fra (gælder indeks og procenter), evt. en referencelinje (fx 100) og om en bestemt række (fx Hvidovre) skal fremhæves.\n\nHer er mit datasæt:\n[Indsæt eller vedhæft dit datasæt her]\n";
+const AI_PROMPT = "Du skal gøre mit datasæt klar til værktøjet Søjleræs (animeret søjlediagram, \"bar chart race\") på analyse.astrup.org/soejleraes.html. Lever resultatet som en CSV-fil, jeg kan downloade og uploade. Kan du ikke lave filer, så skriv hele CSV'en i én kodeblok.\n\nFORMAT (skal følges præcist)\n- Semikolonsepareret CSV, UTF-8, første række er overskrifter.\n- Én række pr. søjle (fx kommune, land eller emne) og én kolonne pr. periode.\n- Første kolonne hedder Navn. Perioderne er kolonner med årstal som overskrift: 2021, 2022 ... (kvartaler: 2021K1, måneder: 2021M03). Hvert år eller kvartal er sin egen kolonne. Læg aldrig perioder sammen.\n- Flere datasæt i samme fil (fx mandater og stemmeandel, eller flere nøgletal): tilføj en første kolonne Datasæt før Navn, og skriv datasættets navn på hver række. Navnet bruges som titel i diagrammet, så skriv det som en kort, pæn overskrift (fx \"Stemmeandel ved folketingsvalg, pct.\"). Alle datasæt deler samme kolonneoverskrifter; har et datasæt ikke tal for et år, står feltet tomt. Brug samme navn for den samme række i alle datasæt (fx samme partinavn), så fremhævning og symboler passer.\n- Valgfri kolonne Symbol lige efter Navn (billed-URL eller emoji, tom hvis der intet er). Valgfri kolonne Kategori kun hvis jeg vil have farver efter kategori.\n- Tal med decimalkomma (116,9), uden tusindtalsseparator og uden enheder eller procenttegn i cellerne. Tomme felter kun hvor data virkelig mangler.\n- Ingen dubletter. Ingen samlerækker (fx \"I alt\" eller \"Hele landet\"), medmindre jeg beder om det.\n- En celle med semikolon eller anførselstegn skal stå i anførselstegn.\n\nNAVNE\n- Korte, pæne visningsnavne (højst ca. 35 tegn) i dansk stavemåde med stort begyndelsesbogstav. Fjern koder og præfikser (fx \"000=Hele landet\" bliver \"Hele landet\"). Kommuner skrives uden \"Kommune\". Forkort fx \"med\" til \"m.\".\n- Vis mig en kort liste over de navne, du har ændret.\n\nSYMBOLER (spørg mig først, om jeg vil have: ingen, flag, kommunevåben, ikoner/emoji eller noget andet)\n- Flag: https://flagcdn.com/w80/XX.png hvor XX er landets ISO-kode med to små bogstaver, fx np (Nepal), tr (Tyrkiet), ua (Ukraine), gb-eng (England). Brug aldrig flag-emoji, de vises som bogstaver på Windows.\n- Kommunevåben: billed-URL fra Wikimedia Commons (adresser på upload.wikimedia.org eller thumb.wikimedia.org). Kommunevåbnene hedder ofte \"<Kommune> Kommunevåben.svg\" eller \"<Kommune> Kommune shield.png\".\n- Emner (fx boliger, beskæftigelse, sundhed): ét farve-emoji pr. række, fx 🏠 💼 🎓 💰 🧠 🩺 🧒 🧓 🌍 📍 🍺 🚬. Lad cellen stå tom, hvis intet passer.\n- Opfind aldrig links. Kan du ikke kontrollere, at et link virker, så lad cellen stå tom og fortæl mig, hvilke rækker der mangler symbol.\n\nSÅDAN GÅR DU FREM\n1. Se på mit datasæt og stil kun de spørgsmål, du mangler svar på: om det skal være ét eller flere datasæt i filen; hvilke kolonner der er navne, perioder og værdier; om alle rækker skal med, eller kun de N største hvert år (behold i så fald alle rækker, der er blandt de N største mindst ét år, med de faktiske tal for alle år); hvilke symboler jeg vil have; og om tallene skal omregnes (fx til indeks eller faste priser).\n2. Lav filen efter reglerne ovenfor.\n3. Kontrollér: alle perioder er med, alle værdier er tal, ingen dubletter, navnene er pæne, og symbolerne er fundet. Sammenlign to eller tre tal med mit originale datasæt.\n4. Giv mig til sidst forslag til indstillinger i Søjleræs: titel, undertitel (med datastatus, fx faktisk eller prognose), kilde, enhed, antal decimaler, antal søjler, om \"Vis total\" skal slås fra (gælder indeks og procenter), evt. en referencelinje (fx 100) og om en bestemt række (fx Hvidovre) skal fremhæves.\n\nHer er mit datasæt:\n[Indsæt eller vedhæft dit datasæt her]\n";
 $("aiPrompt").value = AI_PROMPT;
 $("copyPrompt").onclick = async () => {
   let ok = false;
@@ -1077,7 +1161,8 @@ $("fsBtn").onclick = toggleFs;
 ["fullscreenchange", "webkitfullscreenchange"].forEach(ev => document.addEventListener(ev, () => { $("fsTxt").textContent = fsOn() ? "Luk fuld skærm" : "Fuld skærm"; draw(t); }));
 $("scrub").oninput = e => { if (!D) return; pause(); t = e.target.value / 1000 * (D.periods.length - 1); draw(t); updateUI(); };
 $("applyData").onclick = applyText;
-$("loadExample").onclick = () => { dataText = EXAMPLE_CSV; $("dataText").value = dataText; S = { ...EXAMPLE_SETTINGS }; toForm(); fmtCache.clear(); useRows(splitText(dataText), "Eksempeldata (fiktive tal)"); };
+$("loadExample").onclick = () => { dataText = EXAMPLE_CSV; $("dataText").value = dataText; S = { ...EXAMPLE_SETTINGS }; toForm(); fmtCache.clear(); loadData(splitDatasets(splitText(dataText)), "Eksempel: folketingsvalg 1971–2026", false); };
+$("dsSel").onchange = e => { pause(); t = 0; useDataset(+e.target.value, "", true); };
 $("file").onchange = e => readFile(e.target.files[0]);
 const drop = $("drop");
 ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
@@ -1091,7 +1176,9 @@ document.addEventListener("keydown", e => { if (e.code === "KeyF" && !/INPUT|TEX
 
 /* ---------- Krog til billedperfekt rendering ---------- */
 window.soejleraes = {
-  load(cfg) { S = { ...EXAMPLE_SETTINGS, ...(cfg.settings || {}) }; fmtCache.clear(); dataText = cfg.data; toForm(); $("dataText").value = dataText; return useRows(splitText(dataText)); },
+  load(cfg) { S = { ...EXAMPLE_SETTINGS, ...(cfg.settings || {}) }; fmtCache.clear(); dataText = cfg.data; toForm(); $("dataText").value = dataText; return loadData(splitDatasets(splitText(dataText)), "", false); },
+  datasets() { return DSL.map(d => d.name); },
+  selectDataset(name, auto = true) { const i = DSL.findIndex(d => d.name === name); return i >= 0 && useDataset(i, "", auto); },
   ready() { return symReady; },
   info() { return { periods: D ? D.periods.length : 0, spp: S.spp, holdStart: S.holdStart, holdEnd: S.holdEnd, size: canvasSize() }; },
   renderAt(tt) { t = tt; draw(tt); return true; },
@@ -1108,7 +1195,7 @@ if (PLAYER) {
 toForm(); $("dataText").value = dataText;
 const mime = pickMime();
 $("mimeLbl").textContent = mime ? (mime.includes("mp4") ? "MP4 (H.264)" : "WebM") : "ikke understøttet i denne browser";
-useRows(splitText(dataText), dataText === EXAMPLE_CSV ? "Eksempeldata (fiktive tal)" : "");
+loadData(splitDatasets(splitText(dataText)), dataText === EXAMPLE_CSV ? "Eksempel: folketingsvalg 1971–2026" : "", false);
 (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => { draw(t); if (PLAYER && !matchMedia("(prefers-reduced-motion: reduce)").matches) setTimeout(play, 600); });
 })();
 </script>
