@@ -5,60 +5,69 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Randomizer</title>
 <meta name="description" content="Træk et antal tilfældige tal inden for et interval.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#e9edf1;--panel:#ffffff;--sunk:#f3f5f8;--line:#d5dbe3;
-  --fg:#16202b;--muted:#5d6b7c;--accent:#2647c9;--accent-fg:#ffffff;--err:#b3261e;
-  --font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+  --green:#1A4D2E;--green-mid:#2E7D54;--green-lite:#4A9B7F;
+  --gold:#C9973A;--gold-lite:#E8C06A;
+  --bg:#0E1612;--bg-2:#131F18;--bg-3:#1A2B1F;
+  --glass:rgba(255,255,255,0.04);--glass-brd:rgba(255,255,255,0.08);--glass-hov:rgba(255,255,255,0.07);
+  --text:#F0EDE8;--text-mid:#B8B5AE;--text-muted:#6E7D74;--err:#E8907A;
+  --r:10px;
 }
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --bg:#0f1318;--panel:#171c23;--sunk:#12171d;--line:#2a323d;
-    --fg:#e7ebf0;--muted:#94a0b0;--accent:#7d97ff;--accent-fg:#0b1020;--err:#ff8a80;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#0f1318;--panel:#171c23;--sunk:#12171d;--line:#2a323d;
-  --fg:#e7ebf0;--muted:#94a0b0;--accent:#7d97ff;--accent-fg:#0b1020;--err:#ff8a80;
-}
-html,body{margin:0}
-body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px;line-height:1.45;padding:32px 16px}
-main{max-width:640px;margin:0 auto}
-h1{font-size:32px;margin:0 0 4px;letter-spacing:-.01em}
-.lead{color:var(--muted);margin:0 0 24px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
+html{background:var(--bg)}
+body{min-height:100vh;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5}
+
+/* HERO */
+.hero{padding:44px 16px 32px;position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(26,77,46,.18) 0%,transparent 60%);border-bottom:1px solid var(--glass-brd)}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:40px 40px;-webkit-mask-image:linear-gradient(to bottom,transparent,rgba(0,0,0,.3) 30%,rgba(0,0,0,.3) 70%,transparent);mask-image:linear-gradient(to bottom,transparent,rgba(0,0,0,.3) 30%,rgba(0,0,0,.3) 70%,transparent);pointer-events:none}
+.hero-inner{position:relative;z-index:1;max-width:680px;margin:0 auto}
+.eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:'';width:20px;height:1px;background:var(--gold)}
+h1{font-family:'DM Serif Display',serif;font-size:clamp(30px,5vw,44px);font-weight:400;line-height:1.1;margin-bottom:12px}
+h1 em{font-style:italic;color:var(--gold-lite)}
+.lead{font-size:13.5px;color:var(--text-muted);font-weight:300;line-height:1.7;max-width:460px}
+
+main{max-width:680px;margin:0 auto;padding:28px 16px 48px}
+.card{background:var(--glass);border:1px solid var(--glass-brd);border-radius:var(--r);padding:20px 22px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-lite))}
 .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 @media (max-width:480px){.row{grid-template-columns:1fr 1fr}.row .antal{grid-column:1/-1}}
-label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px;font-weight:600}
-input[type=number]{width:100%;font:inherit;font-size:18px;font-family:var(--mono);padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--sunk);color:var(--fg)}
-input[type=number]:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
-.opts{display:flex;flex-wrap:wrap;gap:8px 20px;margin:16px 0}
-.opts label{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--fg);font-weight:400;margin:0;cursor:pointer}
-.opts input{width:18px;height:18px;accent-color:var(--accent)}
-button{font:inherit;font-weight:600;border-radius:8px;cursor:pointer}
-#go{width:100%;padding:14px;font-size:17px;background:var(--accent);color:var(--accent-fg);border:0}
-#go:hover{filter:brightness(1.08)}
-.err{color:var(--err);font-size:14px;min-height:1.4em;margin-top:10px}
-#result{margin-top:20px}
-.res-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-.res-head h2{font-size:15px;margin:0;color:var(--muted);font-weight:600}
-#copy{padding:6px 12px;font-size:14px;background:transparent;color:var(--fg);border:1px solid var(--line)}
-#copy:hover{border-color:var(--accent);color:var(--accent)}
-.nums{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;list-style:none;margin:0;padding:0}
-.nums li{background:var(--sunk);border:1px solid var(--line);border-radius:8px;text-align:center;padding:10px 4px;font-family:var(--mono);font-size:18px;font-variant-numeric:tabular-nums}
-.nums li span{display:block;font-size:11px;color:var(--muted);font-family:var(--font)}
+label{display:block;font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+input[type=number]{width:100%;font-family:'DM Mono',monospace;font-size:18px;padding:10px 12px;border:1px solid var(--glass-brd);border-radius:7px;background:var(--glass);color:var(--text);outline:none;transition:border-color .2s}
+input[type=number]:focus{border-color:rgba(201,151,58,.55)}
+.opts{display:flex;flex-wrap:wrap;gap:8px 22px;margin:18px 0}
+.opts label{display:flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;letter-spacing:0;text-transform:none;color:var(--text-mid);margin:0;cursor:pointer}
+.opts input{width:16px;height:16px;accent-color:var(--green-mid)}
+button{font-family:'DM Mono',monospace;cursor:pointer;transition:all .15s}
+#go{width:100%;padding:13px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;background:rgba(46,125,84,.18);color:var(--text);border:1px solid var(--green-mid);border-radius:7px}
+#go:hover{background:rgba(46,125,84,.32);border-color:var(--green-lite)}
+.err{color:var(--err);font-size:13px;min-height:1.4em;margin-top:10px}
+#result{margin-top:18px;padding-top:18px;border-top:1px solid var(--glass-brd)}
+.res-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.res-head h2{font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;color:var(--text)}
+#copy{padding:6px 13px;font-size:11px;background:transparent;color:var(--text-muted);border:1px solid var(--glass-brd);border-radius:6px;white-space:nowrap}
+#copy:hover{border-color:var(--gold);color:var(--gold)}
+.nums{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px;list-style:none}
+.nums li{background:var(--bg-2);border:1px solid var(--glass-brd);border-radius:8px;text-align:center;padding:9px 4px 11px;font-family:'DM Serif Display',serif;font-size:22px;line-height:1.1;color:var(--gold-lite);font-variant-numeric:tabular-nums}
+.nums li span{display:block;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--text-muted);margin-bottom:3px}
 .hidden{display:none}
-footer{color:var(--muted);font-size:13px;margin-top:24px;text-align:center}
-footer a{color:inherit}
+footer{color:var(--text-muted);font-family:'DM Mono',monospace;font-size:10.5px;margin-top:24px;text-align:center;line-height:1.7}
+footer a{color:var(--text-muted);text-decoration:none;border-bottom:1px solid var(--glass-brd)}
+footer a:hover{color:var(--gold-lite)}
 </style>
 </head>
 <body>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Analyseværktøjer</div>
+    <h1>Random<em>izer</em></h1>
+    <p class="lead">Træk et antal tilfældige hele tal inden for et interval — fx 10 tal mellem 0 og 1.400.</p>
+  </div>
+</header>
 <main>
-  <h1>Randomizer</h1>
-  <p class="lead">Træk et antal tilfældige hele tal inden for et interval.</p>
-
   <form class="card" id="form" novalidate>
     <div class="row">
       <div><label for="fra">Fra</label><input type="number" id="fra" value="0" step="1" required></div>
@@ -81,7 +90,7 @@ footer a{color:inherit}
     </section>
   </form>
 
-  <footer>Tallene trækkes med browserens kryptografiske tilfældighedsgenerator. <a href="/">analyse.astrup.org</a></footer>
+  <footer>Tallene trækkes med browserens kryptografiske tilfældighedsgenerator<br><a href="/">analyse.astrup.org</a></footer>
 </main>
 
 <script>
