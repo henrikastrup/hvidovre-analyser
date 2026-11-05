@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Randomizer</title>
+<meta name="description" content="Træk et antal tilfældige tal inden for et interval.">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --bg:#e9edf1;--panel:#ffffff;--sunk:#f3f5f8;--line:#d5dbe3;
+  --fg:#16202b;--muted:#5d6b7c;--accent:#2647c9;--accent-fg:#ffffff;--err:#b3261e;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1318;--panel:#171c23;--sunk:#12171d;--line:#2a323d;
+    --fg:#e7ebf0;--muted:#94a0b0;--accent:#7d97ff;--accent-fg:#0b1020;--err:#ff8a80;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1318;--panel:#171c23;--sunk:#12171d;--line:#2a323d;
+  --fg:#e7ebf0;--muted:#94a0b0;--accent:#7d97ff;--accent-fg:#0b1020;--err:#ff8a80;
+}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px;line-height:1.45;padding:32px 16px}
+main{max-width:640px;margin:0 auto}
+h1{font-size:32px;margin:0 0 4px;letter-spacing:-.01em}
+.lead{color:var(--muted);margin:0 0 24px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
+.row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media (max-width:480px){.row{grid-template-columns:1fr 1fr}.row .antal{grid-column:1/-1}}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px;font-weight:600}
+input[type=number]{width:100%;font:inherit;font-size:18px;font-family:var(--mono);padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--sunk);color:var(--fg)}
+input[type=number]:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+.opts{display:flex;flex-wrap:wrap;gap:8px 20px;margin:16px 0}
+.opts label{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--fg);font-weight:400;margin:0;cursor:pointer}
+.opts input{width:18px;height:18px;accent-color:var(--accent)}
+button{font:inherit;font-weight:600;border-radius:8px;cursor:pointer}
+#go{width:100%;padding:14px;font-size:17px;background:var(--accent);color:var(--accent-fg);border:0}
+#go:hover{filter:brightness(1.08)}
+.err{color:var(--err);font-size:14px;min-height:1.4em;margin-top:10px}
+#result{margin-top:20px}
+.res-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.res-head h2{font-size:15px;margin:0;color:var(--muted);font-weight:600}
+#copy{padding:6px 12px;font-size:14px;background:transparent;color:var(--fg);border:1px solid var(--line)}
+#copy:hover{border-color:var(--accent);color:var(--accent)}
+.nums{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;list-style:none;margin:0;padding:0}
+.nums li{background:var(--sunk);border:1px solid var(--line);border-radius:8px;text-align:center;padding:10px 4px;font-family:var(--mono);font-size:18px;font-variant-numeric:tabular-nums}
+.nums li span{display:block;font-size:11px;color:var(--muted);font-family:var(--font)}
+.hidden{display:none}
+footer{color:var(--muted);font-size:13px;margin-top:24px;text-align:center}
+footer a{color:inherit}
+</style>
+</head>
+<body>
+<main>
+  <h1>Randomizer</h1>
+  <p class="lead">Træk et antal tilfældige hele tal inden for et interval.</p>
+
+  <form class="card" id="form" novalidate>
+    <div class="row">
+      <div><label for="fra">Fra</label><input type="number" id="fra" value="0" step="1" required></div>
+      <div><label for="til">Til</label><input type="number" id="til" value="1400" step="1" required></div>
+      <div class="antal"><label for="antal">Antal tal</label><input type="number" id="antal" value="10" min="1" max="10000" step="1" required></div>
+    </div>
+    <div class="opts">
+      <label><input type="checkbox" id="unik" checked> Ingen gentagelser</label>
+      <label><input type="checkbox" id="sorter"> Sortér stigende</label>
+    </div>
+    <button type="submit" id="go">Generér tal</button>
+    <div class="err" id="err" role="alert"></div>
+
+    <section id="result" class="hidden" aria-live="polite">
+      <div class="res-head">
+        <h2 id="resTitle"></h2>
+        <button type="button" id="copy">Kopiér</button>
+      </div>
+      <ol class="nums" id="nums"></ol>
+    </section>
+  </form>
+
+  <footer>Tallene trækkes med browserens kryptografiske tilfældighedsgenerator. <a href="/">analyse.astrup.org</a></footer>
+</main>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var MAX_ANTAL = 10000;
+  var last = [];
+
+  // Tilfældigt helt tal i [0, n) — uden skævhed, via crypto + forkastelse
+  function randBelow(n) {
+    if (n <= 4294967296) {
+      var limit = 4294967296 - (4294967296 % n);
+      var buf = new Uint32Array(1), x;
+      do { crypto.getRandomValues(buf); x = buf[0]; } while (x >= limit);
+      return x % n;
+    }
+    // Meget store intervaller: 53 bits tilfældighed
+    var b = new Uint32Array(2);
+    crypto.getRandomValues(b);
+    var r = (b[0] * 2097152 + (b[1] >>> 11)) / 9007199254740992;
+    return Math.floor(r * n);
+  }
+
+  function draw(fra, til, antal, unik) {
+    var n = til - fra + 1;
+    var out = [];
+    if (!unik) {
+      for (var i = 0; i < antal; i++) out.push(fra + randBelow(n));
+      return out;
+    }
+    if (antal > n / 2 && n <= 1e6) {
+      // Delvis Fisher–Yates når vi skal bruge en stor del af intervallet
+      var pool = new Array(n);
+      for (var j = 0; j < n; j++) pool[j] = fra + j;
+      for (var k = 0; k < antal; k++) {
+        var m = k + randBelow(n - k);
+        var t = pool[k]; pool[k] = pool[m]; pool[m] = t;
+      }
+      return pool.slice(0, antal);
+    }
+    var seen = new Set();
+    while (out.length < antal) {
+      var v = fra + randBelow(n);
+      if (!seen.has(v)) { seen.add(v); out.push(v); }
+    }
+    return out;
+  }
+
+  var fmt = new Intl.NumberFormat('da-DK');
+
+  $('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var err = $('err'); err.textContent = '';
+    var fra = Number($('fra').value), til = Number($('til').value), antal = Number($('antal').value);
+    var unik = $('unik').checked;
+
+    if ($('fra').value === '' || $('til').value === '' || $('antal').value === '') return fail('Udfyld alle tre felter.');
+    if (!Number.isInteger(fra) || !Number.isInteger(til) || !Number.isInteger(antal)) return fail('Brug kun hele tal.');
+    if (!Number.isSafeInteger(fra) || !Number.isSafeInteger(til)) return fail('Tallene er for store.');
+    if (til < fra) { var s = fra; fra = til; til = s; $('fra').value = fra; $('til').value = til; }
+    if (antal < 1) return fail('Antal skal være mindst 1.');
+    if (antal > MAX_ANTAL) return fail('Højst ' + fmt.format(MAX_ANTAL) + ' tal ad gangen.');
+    var n = til - fra + 1;
+    if (unik && antal > n) return fail('Intervallet ' + fmt.format(fra) + '–' + fmt.format(til) + ' har kun ' + fmt.format(n) + ' forskellige tal. Sænk antallet eller slå "Ingen gentagelser" fra.');
+
+    last = draw(fra, til, antal, unik);
+    if ($('sorter').checked) last.sort(function (a, b) { return a - b; });
+
+    var ol = $('nums'); ol.innerHTML = '';
+    var frag = document.createDocumentFragment();
+    last.forEach(function (v, i) {
+      var li = document.createElement('li');
+      li.innerHTML = '<span>' + (i + 1) + '</span>';
+      li.appendChild(document.createTextNode(String(v)));
+      frag.appendChild(li);
+    });
+    ol.appendChild(frag);
+    $('resTitle').textContent = fmt.format(antal) + ' tilfældige tal mellem ' + fmt.format(fra) + ' og ' + fmt.format(til);
+    $('copy').textContent = 'Kopiér';
+    $('result').classList.remove('hidden');
+  });
+
+  function fail(msg) {
+    $('err').textContent = msg;
+    $('result').classList.add('hidden');
+  }
+
+  $('copy').addEventListener('click', function () {
+    var txt = last.join('\n');
+    var done = function () { $('copy').textContent = 'Kopieret ✓'; };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(done, fallback);
+    } else fallback();
+    function fallback() {
+      var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta);
+      ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} ta.remove();
+    }
+  });
+})();
+</script>
+</body>
+</html>
