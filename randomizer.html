@@ -48,8 +48,13 @@ button{font-family:'DM Mono',monospace;cursor:pointer;transition:all .15s}
 #result{margin-top:18px;padding-top:18px;border-top:1px solid var(--glass-brd)}
 .res-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .res-head h2{font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;color:var(--text)}
-#copy{padding:6px 13px;font-size:11px;background:transparent;color:var(--text-muted);border:1px solid var(--glass-brd);border-radius:6px;white-space:nowrap}
-#copy:hover{border-color:var(--gold);color:var(--gold)}
+.copy-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;margin-top:16px}
+#copy{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--gold-lite);text-decoration:none;background:rgba(201,151,58,.08);border:1px solid rgba(201,151,58,.35);border-radius:7px;transition:all .15s}
+#copy::before{content:'⧉';font-size:14px}
+#copy:hover{background:rgba(201,151,58,.16);border-color:var(--gold)}
+#copy.ok{color:var(--green-lite);border-color:var(--green-mid);background:rgba(46,125,84,.15)}
+#copy.ok::before{content:'✓'}
+.copy-hint{font-size:12px;color:var(--text-muted)}
 .nums{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px;list-style:none}
 .nums li{background:var(--bg-2);border:1px solid var(--glass-brd);border-radius:8px;text-align:center;padding:9px 4px 11px;font-family:'DM Serif Display',serif;font-size:22px;line-height:1.1;color:var(--gold-lite);font-variant-numeric:tabular-nums}
 .nums li span{display:block;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--text-muted);margin-bottom:3px}
@@ -84,9 +89,12 @@ footer a:hover{color:var(--gold-lite)}
     <section id="result" class="hidden" aria-live="polite">
       <div class="res-head">
         <h2 id="resTitle"></h2>
-        <button type="button" id="copy">Kopiér</button>
       </div>
       <ol class="nums" id="nums"></ol>
+      <div class="copy-row">
+        <a href="#" id="copy" role="button">Kopiér alle tal til Excel</a>
+        <span class="copy-hint" id="copyHint">Tryk, og indsæt i Excel med Ctrl+V — ét tal pr. række</span>
+      </div>
     </section>
   </form>
 
@@ -169,7 +177,7 @@ footer a:hover{color:var(--gold-lite)}
     });
     ol.appendChild(frag);
     $('resTitle').textContent = fmt.format(antal) + ' tilfældige tal mellem ' + fmt.format(fra) + ' og ' + fmt.format(til);
-    $('copy').textContent = 'Kopiér';
+    resetCopy();
     $('result').classList.remove('hidden');
   });
 
@@ -178,9 +186,21 @@ footer a:hover{color:var(--gold-lite)}
     $('result').classList.add('hidden');
   }
 
-  $('copy').addEventListener('click', function () {
-    var txt = last.join('\n');
-    var done = function () { $('copy').textContent = 'Kopieret ✓'; };
+  function resetCopy() {
+    $('copy').textContent = 'Kopiér alle tal til Excel';
+    $('copy').classList.remove('ok');
+    $('copyHint').textContent = 'Tryk, og indsæt i Excel med Ctrl+V — ét tal pr. række';
+  }
+
+  $('copy').addEventListener('click', function (e) {
+    e.preventDefault();
+    // Én værdi pr. linje (CRLF) → Excel lægger tallene i én kolonne
+    var txt = last.join('\r\n');
+    var done = function () {
+      $('copy').textContent = 'Kopieret ' + fmt.format(last.length) + ' tal';
+      $('copy').classList.add('ok');
+      $('copyHint').textContent = 'Gå til Excel, klik i en celle og tryk Ctrl+V';
+    };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(txt).then(done, fallback);
     } else fallback();
