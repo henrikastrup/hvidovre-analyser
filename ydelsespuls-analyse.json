@@ -1,5 +1,5 @@
 {
-  "genereret": "2026-10-26",
+  "genereret": "2026-11-09",
   "senesteLabel": "Sep 26",
   "data": {
     "y01a02": {
@@ -123,7 +123,6 @@
     "y07a02": {
       "navn": "Sygedagpenge",
       "labels": [
-        "Sep 25",
         "Okt 25",
         "Nov 25",
         "Dec 25",
@@ -134,24 +133,24 @@
         "Maj 26",
         "Jun 26",
         "Jul 26",
-        "Aug 26"
+        "Aug 26",
+        "Sep 26"
       ],
       "ftp": [
-        725,
-        765,
-        759,
-        774,
-        795,
-        796,
-        804,
-        804,
+        766,
+        760,
         775,
-        789,
-        757,
-        702
+        796,
+        797,
+        805,
+        805,
+        777,
+        792,
+        763,
+        736,
+        716
       ],
       "forrigeLabels": [
-        "Sep 24",
         "Okt 24",
         "Nov 24",
         "Dec 24",
@@ -162,21 +161,22 @@
         "Maj 25",
         "Jun 25",
         "Jul 25",
-        "Aug 25"
+        "Aug 25",
+        "Sep 25"
       ],
       "forrigeFtp": [
-        738,
-        802,
-        831,
-        827,
-        843,
-        861,
-        868,
-        811,
-        767,
-        752,
-        731,
-        712
+        803,
+        832,
+        828,
+        844,
+        862,
+        869,
+        812,
+        768,
+        753,
+        732,
+        713,
+        726
       ]
     },
     "y11a02": {
@@ -478,50 +478,50 @@
   "analyse": {
     "y01a02": {
       "overskrift": "A-dagpenge falder til 696 fuldtidspersoner i september 2026",
-      "tekst": "I september 2026 udgjorde antallet af modtagere af A-dagpenge 696 fuldtidspersoner. Dette svarer til et fald på 55 personer i forhold til august, hvor tallet lå på 751, samt et fald på 17 personer i forhold til juli med 713 personer. Set over den samlede 12-måneders periode ligger niveauet tæt på udgangspunktet, idet der er en beskeden stigning på 9 fuldtidspersoner sammenlignet med samme måned året før. Udviklingen afspejler en normalisering efter en midlertidig stigning i sensommeren, som ofte ses i forbindelse med sæsonmæssige udsving omkring ferieperioden. Bevægelsen i september bringer niveauet tilbage mod niveauet fra forsommeren. Samlet set vurderes retningen for A-dagpengeområdet på nuværende tidspunkt at være stabil."
+      "tekst": "I september 2026 modtog 696 fuldtidspersoner A-dagpenge i Hvidovre Kommune. Dette udgør et fald på 55 fuldtidspersoner sammenlignet med august og et fald på 17 personer i forhold til juli. Set over de seneste 12 måneder er niveauet dog stort set uændret med en beskeden stigning på 9 fuldtidspersoner i forhold til samme måned året før. Faldet i september følger efter en forventelig stigning i sensommeren, hvilket indikerer et velkendt sæsonmønster med aftagende ledighed efter sommerferieperioden. Udviklingen viser dermed, at ledighedstoppen fra august er vendt hurtigt tilbage mod det gennemsnitlige leje for året. På kort sigt vurderes niveauet for A-dagpengeområdet således at udvise en stabiliserende tendens omkring de 700 fuldtidspersoner."
     },
     "y60a02": {
-      "overskrift": "Kontanthjælp uændret på 660 fuldtidspersoner i september 2026",
-      "tekst": "Antallet af modtagere af kontanthjælp lå på 660 fuldtidspersoner i september 2026. Dette er stort set uændret i forhold til august med 661 personer og udgør et fald på 15 personer sammenlignet med juli, hvor niveauet var 675. I et 12-måneders perspektiv er der tale om en stigning på 24 fuldtidspersoner i forhold til samme måned sidste år. Månedstallene viser en overordnet flad profil over de seneste måneder efter en mindre nedgang hen over sensommeren. Der observeres ikke markante sæsonbetingede afvigelser i denne opgørelse. Ydelsesområdet vurderes aktuelt at udvise en stabil tendens med afdæmpede månedlige bevægelser."
+      "overskrift": "Kontanthjælp ligger stabilt på 660 fuldtidspersoner i september 2026",
+      "tekst": "Antallet af modtagere af kontanthjælp opgøres til 660 fuldtidspersoner i september 2026. Ydelsesniveauet er stort set uændret i forhold til august med en reduktion på 1 fuldtidsperson, mens der er tale om et fald på 15 personer over en to-måneders periode. I et 12-måneders perspektiv ligger ydelsen 24 fuldtidspersoner over niveauet fra september foregående år. Månedens tal vidner om en opbremsning i det fald, der blev observeret mellem juli og august. Forskydningerne inden for de seneste måneder er moderate og afspejler ingen markante brud med det hidtidige forløb. Samlet set peger udviklingen på en afdæmpet og overvejende flad tendens for kontanthjælpsområdet."
     },
     "y07a02": {
-      "overskrift": "Sygedagpenge falder til 702 fuldtidspersoner i august 2026",
-      "tekst": "For sygedagpengeområdet var der 702 fuldtidspersoner i august 2026. Antallet er reduceret med 55 fuldtidspersoner fra juli med 757 personer og med 87 sammenlignet med juni, hvor niveauet var 789. Sammenholdt med samme måned sidste år er der tale om et fald på 10 fuldtidspersoner, hvilket vidner om et stabilt flerårsniveau. Det kontinuerlige fald hen over sommermånederne følger et velkendt sæsonmønster på sygedagpengeområdet, hvor det registrerede sygefravær typisk reduceres i ferieperioden. Niveauet for august placerer sig i den lavere ende af det seneste års registreringer. Retningen peger mod en forventet sæsonafledt nedgang med udsigt til potentiel stabilisering i de kommende måneder."
+      "overskrift": "Sygedagpengeområdet falder til 716 fuldtidspersoner i september 2026",
+      "tekst": "I september 2026 var der 716 fuldtidspersoner på sygedagpenge i kommunen. Antallet faldt med 20 fuldtidspersoner fra august og ligger 47 personer lavere end i juli. Sammenholdt med samme måned sidste år er der tale om et fald på 10 fuldtidspersoner, hvilket indikerer en overordnet stabilitet på årsbasis. Den kontinuerlige nedgang over de seneste to måneder bryder med det højere niveau fra forsommeren. Bevægelsen peger mod en gradvis normalisering efter en periode med et mere belastet sygedagpengeområde. Retningen på kort sigt fremstår dermed nedadgående med tegn på tilnærmelse til et lavere stabilt leje."
     },
     "y11a02": {
-      "overskrift": "Ressourceforløb falder til 132 helårspersoner i september 2026",
-      "tekst": "I september 2026 var der 132 fuldtidspersoner i ressourceforløb. Dette repræsenterer en nedgang på 12 personer sammenlignet med både august og juli, hvor tallet i begge måneder lå på 144. Over den seneste 12-måneders periode er bestanden reduceret med 61 fuldtidspersoner, svarende til et fald på omtrent 30 procent. Udviklingen fortsætter en længerevarende nedadgående trend, som er drevet af løbende afslutning af forløb og færre nytilkendelser. Der er således tale om en strukturel bevægelse snarere end tilfældige sæsonudsving. Retningen for ressourceforløb vurderes fortsat at være entydigt faldende."
+      "overskrift": "Ressourceforløb reduceres til 132 fuldtidspersoner i september 2026",
+      "tekst": "Ressourceforløb omfatter 132 fuldtidspersoner i september 2026. Dette repræsenterer et fald på 12 fuldtidspersoner sammenlignet med både august og juli, hvor niveauet lå uændret på 144. I en 12-måneders ramme er der sket en markant reduktion på 61 fuldtidspersoner svarende til et fald på knap 30 procent. Udviklingen afspejler en længerevarende og konsistent nedadgående trend på området frem for kortsigtede sæsonudsving. Faldet kan hænge sammen med ændret lovgivning og øget fokus på hurtigere afklaring og visitation til andre ordninger. Retningen for ressourceforløb vurderes fortsat som entydigt faldende på mellemlangt sigt."
     },
     "y09a02": {
-      "overskrift": "Ledighedsydelse ligger på 63 personer i september 2026",
-      "tekst": "Antallet af modtagere af ledighedsydelse udgjorde 63 fuldtidspersoner i september 2026. Niveauet er faldet med 3 personer i forhold til august med 66 og med 4 personer i forhold til juli med 67. Sammenlignet med september året før er der tale om en marginal stigning på 1 fuldtidsperson. Målgruppen for ledighedsydelse er relativt lille, hvilket medfører, at mindre absolutte ændringer udgør den primære dynamik. Gennem hele det forgangne år har antallet ligget i et meget snævert interval mellem 60 og 70 personer uden væsentlige udsving. Ydelsesområdet vurderes dermed at fastholde en stabil og uændret retning."
+      "overskrift": "Ledighedsydelse falder marginalt til 63 fuldtidspersoner i september 2026",
+      "tekst": "Antallet af modtagere af ledighedsydelse udgør 63 fuldtidspersoner i september 2026. Niveauet er faldet med 3 personer i forhold til august og ligger 4 personer under tallet fra juli. Set over det seneste år er bestanden stort set uforandret med en stigning på blot 1 fuldtidsperson i forhold til september året før. Ydelsen kendetegnes ved en meget stabil udvikling med kun minimale månedlige variationer inden for et snævert spænd. Der er ingen indikationer på væsentlige sæsonmæssige skift eller strukturelle ændringer i tilgangen. Den overordnede vurdering af retningen er fortsat sidelæns og præget af stilstand."
     },
     "y08a02": {
-      "overskrift": "Fleksjob udgør 755 fuldtidspersoner i september 2026",
-      "tekst": "Der var 755 fuldtidspersoner i fleksjob i september 2026. Dette er 5 færre end i august med 760 og 3 færre end i juli med 758 personer. Set i et 12-måneders perspektiv er der tilført 33 fuldtidspersoner til ordningen i forhold til samme tidspunkt året før. Den mindre månedlige tilbagegang afviger midlertidigt fra den jævnt opadgående tendens, der ellers har præget området over det seneste år. Udsvingene mellem de enkelte måneder er beskedne og afspejler løbende til- og afgang i ordningen. Den samlede retning for fleksjob vurderes fortsat at være svagt voksende til stabil."
+      "overskrift": "Fleksjobområdet tæller 755 fuldtidspersoner i september 2026",
+      "tekst": "Der var 755 fuldtidspersoner tilknyttet fleksjobordningen i september 2026. Det svarer til et lille fald på 5 fuldtidspersoner sammenlignet med august og 3 færre end i juli. I et 12-måneders perspektiv er der derimod tale om en stigning på 33 fuldtidspersoner i forhold til samme måned foregående år. Månedens mindre fald afbryder den overordnede flerårige vækst, som ellers har præget fleksjobområdet. Bevægelsen over de seneste måneder peger dog snarere på en midlertidig konsolidering end på et egentligt trendskifte. Samlet set vurderes retningen på årsbasis fortsat svagt stigende, om end den kortsigtede dynamik aktuelt er flad."
     },
     "y12a02": {
-      "overskrift": "Jobafklaringsforløb reduceres til 210 fuldtidspersoner i september 2026",
-      "tekst": "I september 2026 omfattede jobafklaringsforløb 210 fuldtidspersoner. Tallet er reduceret med 3 personer fra august med 213 og med 5 personer i forhold til juli med 215. I forhold til samme måned for et år siden er der sket en reduktion på 12 fuldtidspersoner. Forløbene udviser en jævn og behersket aftagende tendens over de seneste tre måneder såvel som på årsbasis. Der ses ingen tegn på pludselige skift eller sæsonmæssige udsving, men derimod et stabilt sagsflow med en let overvægt af afsluttede forløb. Retningen for jobafklaringsforløb vurderes aktuelt at være svagt faldende."
+      "overskrift": "Jobafklaringsforløb falder svagt til 210 fuldtidspersoner i september 2026",
+      "tekst": "Antallet af borgere i jobafklaringsforløb er opgjort til 210 fuldtidspersoner i september 2026. Der er tale om en reduktion på 3 fuldtidspersoner i forhold til forrige måned og 5 færre end for to måneder siden. Sammenlignet med september året før er der registreret en tilbagegang på 12 fuldtidspersoner over 12-måneders-perioden. Forløbet over de seneste måneder viser en jævn og kontrolleret nedadgående bevægelse uden pludselige udsving. Mønsteret stemmer overens med en gradvis afvikling af sagsbeholdningen i takt med afsluttet afklaring. Retningen på området vurderes at være fortsat svagt vigende."
     },
     "y10a02": {
-      "overskrift": "Førtidspension stiger til 2.362 personer i september 2026",
-      "tekst": "Antallet af modtagere af førtidspension var 2.362 fuldtidspersoner i september 2026. Det udgør en stigning på 28 personer sammenlignet med august med 2.334 og en stigning på 18 i forhold til juli med 2.344. På årsbasis er der tale om en stigning på 143 fuldtidspersoner over de seneste 12 måneder, svarende til en stigning på cirka 6 procent. Månedens stigning viderefører en generel opadgående trend i tilkendelser, som har præget hele 12-måneders perioden. Udviklingen hænger blandt andet sammen med kontinuerlig sagsbehandling og overgang fra de afklarende indsatser. Retningen for førtidspension vurderes at være fortsat stigende."
+      "overskrift": "Førtidspension stiger til 2.362 fuldtidspersoner i september 2026",
+      "tekst": "I september 2026 modtog 2.362 fuldtidspersoner førtidspension i Hvidovre Kommune. Dette svarer til en stigning på 28 fuldtidspersoner i forhold til august og 18 personer mere end i juli. Over de seneste 12 måneder er antallet steget med 143 fuldtidspersoner, hvilket fastholder en tydelig årlig vækstrate. Den månedlige stigning i september følger efter et kort dyk i august og bekræfter den langsigtede strukturelle tilgang. Udviklingen afspejler det generelle billede, hvor tilgangen til førtidspension fortsat overstiger den naturlige afgang. Vurderingen af den fremadrettede retning er uforandret og peger på fortsat tilvækst i bestanden."
     },
     "y85a02": {
-      "overskrift": "Data ikke tilgængelig",
+      "overskrift": "Data ikke tilgængeligt",
       "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y13a02": {
-      "overskrift": "Data ikke tilgængelig",
+      "overskrift": "Data ikke tilgængeligt",
       "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y40a02": {
-      "overskrift": "Data ikke tilgængelig",
+      "overskrift": "Data ikke tilgængeligt",
       "tekst": "Data ikke tilgængeligt for denne periode."
     },
     "y28a02": {
-      "overskrift": "Data ikke tilgængelig",
+      "overskrift": "Data ikke tilgængeligt",
       "tekst": "Data ikke tilgængeligt for denne periode."
     }
   }
