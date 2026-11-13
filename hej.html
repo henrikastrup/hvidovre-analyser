@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hej · analyse.astrup.org</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --green:#1A4D2E;--green-mid:#2E7D54;--green-lite:#4A9B7F;
+  --gold:#C9973A;--gold-lite:#E8C06A;
+  --bg:#0E1612;--bg-2:#131F18;
+  --glass:rgba(255,255,255,0.04);--glass-brd:rgba(255,255,255,0.08);
+  --text:#F0EDE8;--text-muted:#6E7D74;
+}
+html,body{min-height:100%;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+.top-nav{height:48px;background:var(--bg-2);border-bottom:1px solid var(--glass-brd);display:flex;align-items:center;justify-content:space-between;padding:0 16px;}
+.nav-brand{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;color:var(--gold);text-decoration:none;}
+.nav-btn{padding:6px 13px;border:1px solid var(--glass-brd);border-radius:6px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);text-decoration:none;transition:all .15s;}
+.nav-btn:hover{border-color:var(--gold);color:var(--gold);}
+.hero{flex:1;display:flex;align-items:center;padding:48px 40px;position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(26,77,46,.18) 0%,transparent 60%);}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+.hero-inner{position:relative;z-index:1;max-width:720px;}
+.eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);}
+h1{font-family:'DM Serif Display',serif;font-size:clamp(30px,5vw,56px);font-weight:400;line-height:1.1;}
+h1 em{font-style:italic;color:var(--gold-lite);}
+p{margin-top:14px;font-size:13.5px;color:var(--text-muted);font-weight:300;line-height:1.7;}
+@media (max-width:600px){.hero{padding:40px 16px;}}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <a class="nav-brand" href="index.html">ANALYSE.ASTRUP.ORG</a>
+  <a class="nav-btn" href="index.html">← Forsiden</a>
+</nav>
+<main class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Testside</div>
+    <h1>Hilsen fra <em>Claude</em> på nettet</h1>
+    <p>Denne side er lavet og udgivet fra Claude Code på nettet for at teste, at udgivelsen til analyse.astrup.org virker.</p>
+  </div>
+</main>
+</body>
+</html>
