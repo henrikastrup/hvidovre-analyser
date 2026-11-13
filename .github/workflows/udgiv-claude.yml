@@ -1,0 +1,37 @@
+# Fletter automatisk ændringer fra Claude Code på nettet (grene claude/...) ind i main,
+# så de straks kommer ud på analyse.astrup.org.
+name: Udgiv Claude-ændringer
+
+on:
+  push:
+    branches: ['claude/**']
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: udgiv-claude
+  cancel-in-progress: false
+
+jobs:
+  udgiv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Flet ind i main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git merge --no-edit "origin/${GITHUB_REF_NAME}"
+          git push origin main
+          git push origin --delete "${GITHUB_REF_NAME}" || true
+
+      - name: Byg GitHub Pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${GITHUB_REPOSITORY}/pages/builds" || true
